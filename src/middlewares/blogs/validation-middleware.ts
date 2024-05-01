@@ -4,7 +4,7 @@ import { NextFunction, Response } from 'express';
 import { validationResult } from 'express-validator';
 import { HTTP_STATUSES } from '../../utils/consts';
 
-export const blogsValidationMiddleWare = (req: RequestWithBody<PostBlogSchema>, res: Response<PostBlogSchemaResponse | ResponseErrorSchema>, next: NextFunction) => {
+export const errorHandlingMiddleware = (req: RequestWithBody<PostBlogSchema>, res: Response<PostBlogSchemaResponse | ResponseErrorSchema>, next: NextFunction) => {
   const errorsResult = validationResult(req);
 
   if (errorsResult.isEmpty()) {

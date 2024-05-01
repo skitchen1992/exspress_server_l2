@@ -1,5 +1,4 @@
-# espress_server
-
+# Express server
 
 ### Commands
 - `yarn dev` - run dev server

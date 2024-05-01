@@ -1,0 +1,26 @@
+export const HTTP_STATUSES = {
+  OK_200: 200,
+  CREATED_201: 201,
+  NO_CONTENT_204: 204,
+  BAD_REQUEST_400: 400,
+  UNAUTHORIZED_401: 401,
+  FORBIDDEN_403: 403,
+  NOT_FOUND_404: 404,
+  METHOD_NOT_ALLOWED_405: 405,
+  INTERNAL_SERVER_ERROR_500: 500,
+  BAD_GATEWAY_502: 502,
+  SERVICE_UNAVAILABLE_503: 503,
+  GATEWAY_TIMEOUT_504: 504,
+};
+
+export const PATH_URL = {
+  ROOT: '/',
+  ID: '/:id',
+  BLOGS: '/blogs',
+  POSTS: '/posts',
+  TESTING: {
+    ROOT: '/testing',
+    ALL_DATA: '/testing/all-data',
+  },
+
+};

@@ -80,14 +80,18 @@ class DB {
   }
 
   public deleteBlog(id: string) {
-    const index = this.findIndex('blogs', id);
+    return new Promise<boolean>((resolve) => {
+      setTimeout(() => {
+        const index = this.findIndex('blogs', id);
 
-    if (index !== -1) {
-      this.db.blogs.splice(index, 1);
-      return true;
-    } else {
-      return false;
-    }
+        if (index !== -1) {
+          this.db.blogs.splice(index, 1);
+          resolve(true);
+        } else {
+          resolve(false);
+        }
+      }, 0);
+    });
   }
 
   public async getPosts(): Promise<GetPostsListSchema> {

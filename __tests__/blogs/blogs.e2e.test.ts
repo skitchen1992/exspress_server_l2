@@ -195,3 +195,19 @@ describe(`Endpoint (PUT) - ${PATH_URL.BLOGS}${PATH_URL.ID}`, () => {
   });
 });
 
+describe(`Endpoint (DELETE) - ${PATH_URL.BLOGS}${PATH_URL.ID}`, () => {
+  beforeEach(async () => {
+    db.clearDB();
+  });
+
+  it('Should delete blog', async () => {
+    const id = await db.addBlog(data.dataSetNewBlog);
+
+    await req.delete(`${PATH_URL.BLOGS}/${id}`).expect(HTTP_STATUSES.NO_CONTENT_204);
+  });
+
+  it(`Should get error ${HTTP_STATUSES.NOT_FOUND_404}`, async () => {
+
+    await req.delete(`${PATH_URL.BLOGS}/1`).expect(HTTP_STATUSES.NOT_FOUND_404);
+  });
+});

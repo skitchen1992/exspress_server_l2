@@ -3,14 +3,14 @@ import { HTTP_STATUSES } from '../utils/consts';
 import { SETTINGS } from '../utils/settings';
 
 export const basicAuthMiddleware = (req: Request, res: Response, next: NextFunction) => {
-  const auth = req.headers.authorization;
+  const authHeader = req.headers.authorization;
 
-  if (!auth) {
+  if (!authHeader || authHeader.indexOf('Basic ') === -1) {
     res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
     return;
   }
 
-  const buff = Buffer.from(auth.slice(6), 'base64');
+  const buff = Buffer.from(authHeader.slice(6), 'base64');
   const decodedAuth = buff.toString('utf8');
 
   const [username, password] = decodedAuth.split(':');

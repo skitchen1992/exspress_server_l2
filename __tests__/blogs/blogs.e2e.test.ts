@@ -102,7 +102,96 @@ describe(`Endpoint (POST) - ${PATH_URL.BLOGS}`, () => {
 
     expect(res.body).toEqual(data.errorDataSet7);
   });
+
+  it('Should get Error while we add too many fields specified', async () => {
+    const res = await req.post(PATH_URL.BLOGS).send(data.dataSetNewBlog8).expect(HTTP_STATUSES.BAD_REQUEST_400);
+
+    expect(res.body).toEqual(data.errorDataSet8);
+  });
 });
 
+describe(`Endpoint (PUT) - ${PATH_URL.BLOGS}${PATH_URL.ID}`, () => {
+  beforeEach(async () => {
+    db.clearDB();
+  });
 
+  it('Should update blog', async () => {
+    const id = await db.addBlog(data.dataSetNewBlog);
+
+    await req.put(`${PATH_URL.BLOGS}/${id}`).send(data.dataSetUpdateBlog).expect(HTTP_STATUSES.NO_CONTENT_204);
+
+    const blog = await db.getBlogById(id);
+
+    expect(blog).toEqual(expect.objectContaining(data.dataSetUpdateBlog));
+  });
+
+  it(`Should get error ${HTTP_STATUSES.NOT_FOUND_404}`, async () => {
+
+    await req.put(`${PATH_URL.BLOGS}/1`).send(data.dataSetUpdateBlog).expect(HTTP_STATUSES.NOT_FOUND_404);
+  });
+
+  it('Should get Error while field "name" is too long', async () => {
+    const id = await db.addBlog(data.dataSetNewBlog);
+
+    const res = await req.put(`${PATH_URL.BLOGS}/${id}`).send(data.dataSetNewBlog1).expect(HTTP_STATUSES.BAD_REQUEST_400);
+
+    expect(res.body).toEqual(data.errorDataSet1);
+  });
+
+  it('Should get Error while field "name" is not a string', async () => {
+    const id = await db.addBlog(data.dataSetNewBlog);
+
+    const res = await req.put(`${PATH_URL.BLOGS}/${id}`).send(data.dataSetNewBlog2).expect(HTTP_STATUSES.BAD_REQUEST_400);
+
+    expect(res.body).toEqual(data.errorDataSet2);
+  });
+
+  it('Should get Error while field "name" is empty', async () => {
+    const id = await db.addBlog(data.dataSetNewBlog);
+
+    const res = await req.put(`${PATH_URL.BLOGS}/${id}`).send(data.dataSetNewBlog3).expect(HTTP_STATUSES.BAD_REQUEST_400);
+
+    expect(res.body).toEqual(data.errorDataSet3);
+  });
+
+  it('Should get Error while field "description" is too long', async () => {
+    const id = await db.addBlog(data.dataSetNewBlog);
+
+    const res = await req.put(`${PATH_URL.BLOGS}/${id}`).send(data.dataSetNewBlog4).expect(HTTP_STATUSES.BAD_REQUEST_400);
+
+    expect(res.body).toEqual(data.errorDataSet4);
+  });
+
+  it('Should get Error while field "description" is not a string', async () => {
+    const id = await db.addBlog(data.dataSetNewBlog);
+
+    const res = await req.put(`${PATH_URL.BLOGS}/${id}`).send(data.dataSetNewBlog5).expect(HTTP_STATUSES.BAD_REQUEST_400);
+
+    expect(res.body).toEqual(data.errorDataSet5);
+  });
+
+  it('Should get Error while field "description" is empty', async () => {
+    const id = await db.addBlog(data.dataSetNewBlog);
+
+    const res = await req.put(`${PATH_URL.BLOGS}/${id}`).send(data.dataSetNewBlog6).expect(HTTP_STATUSES.BAD_REQUEST_400);
+
+    expect(res.body).toEqual(data.errorDataSet6);
+  });
+
+  it('Should get Error while field "websiteUrl" is not correct', async () => {
+    const id = await db.addBlog(data.dataSetNewBlog);
+
+    const res = await req.put(`${PATH_URL.BLOGS}/${id}`).send(data.dataSetNewBlog7).expect(HTTP_STATUSES.BAD_REQUEST_400);
+
+    expect(res.body).toEqual(data.errorDataSet7);
+  });
+
+  it('Should get Error while we add too many fields specified', async () => {
+    const id = await db.addBlog(data.dataSetNewBlog);
+
+    const res = await req.put(`${PATH_URL.BLOGS}/${id}`).send(data.dataSetNewBlog8).expect(HTTP_STATUSES.BAD_REQUEST_400);
+
+    expect(res.body).toEqual(data.errorDataSet8);
+  });
+});
 

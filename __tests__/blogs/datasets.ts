@@ -4,6 +4,12 @@ export const dataSetNewBlog = {
   websiteUrl: 'https://string.com',
 };
 
+export const dataSetUpdateBlog = {
+  name: 'New test',
+  description: 'New Test description',
+  websiteUrl: 'https://string.ru',
+};
+
 export const dataSetNewBlog1 = {
   name: 'Test very long string in the world',
   description: 'Test description',
@@ -105,6 +111,22 @@ export const errorDataSet7 = {
     {
       message: 'URL is not correct',
       field: 'websiteUrl',
+    },
+  ],
+};
+
+export const dataSetNewBlog8 = {
+  name: 'Test name',
+  description: "Test description",
+  websiteUrl: 'https://string.com',
+  test: 1
+};
+
+export const errorDataSet8 = {
+  errorsMessages: [
+    {
+      message: 'Too many fields specified',
+      field: 'body',
     },
   ],
 };

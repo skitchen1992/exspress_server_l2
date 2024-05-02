@@ -20,7 +20,7 @@ export const PATH_URL = {
   POSTS: '/posts',
   TESTING: {
     ROOT: '/testing',
-    ALL_DATA: '/testing/all-data',
+    ALL_DATA: '/all-data',
   },
 
 };

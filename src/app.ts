@@ -3,6 +3,7 @@ import cors from 'cors';
 import { HTTP_STATUSES, PATH_URL } from './utils/consts';
 import { blogsRouter } from './routers/blogs-router';
 import { postsRouter } from './routers/posts-router';
+import { testingRouter } from './routers/testing-router';
 
 export const app = express();
 
@@ -17,3 +18,5 @@ app.get(PATH_URL.ROOT, (req, res) => {
 app.use(PATH_URL.BLOGS, blogsRouter);
 
 app.use(PATH_URL.POSTS, postsRouter);
+
+app.use(PATH_URL.TESTING.ROOT, testingRouter);

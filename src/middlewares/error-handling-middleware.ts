@@ -3,6 +3,7 @@ import { PostBlogSchema, PostBlogSchemaResponse, ResponseErrorSchema } from '../
 import { NextFunction, Response } from 'express';
 import { validationResult } from 'express-validator';
 import { HTTP_STATUSES } from '../utils/consts';
+import { ErrorMessageSchema } from '../models/errors/ErrorMessageSchema';
 
 export const errorHandlingMiddleware = (req: RequestWithBody<PostBlogSchema>, res: Response<PostBlogSchemaResponse | ResponseErrorSchema>, next: NextFunction) => {
   const errorsResult = validationResult(req);
@@ -10,7 +11,7 @@ export const errorHandlingMiddleware = (req: RequestWithBody<PostBlogSchema>, re
   if (errorsResult.isEmpty()) {
     next();
   } else {
-    const errorsMessages = errorsResult.array().map((error) => {
+    const errorsMessages: ErrorMessageSchema[] = errorsResult.array().map((error) => {
       return {
         message: error.msg.massage,
         field: error.msg.field,

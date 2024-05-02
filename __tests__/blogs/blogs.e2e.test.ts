@@ -3,7 +3,7 @@ import { db } from '../../src/db/db';
 import { HTTP_STATUSES, PATH_URL } from '../../src/utils/consts';
 import * as data from './datasets';
 
-describe(`Endpoint (GET) - ${PATH_URL.BLOGS}: blogs`, () => {
+describe(`Endpoint (GET) - ${PATH_URL.BLOGS}`, () => {
   beforeEach(async () => {
     db.clearDB();
   });
@@ -26,7 +26,27 @@ describe(`Endpoint (GET) - ${PATH_URL.BLOGS}: blogs`, () => {
   });
 });
 
-describe(`Endpoint (POST) - ${PATH_URL.BLOGS}: blogs`, () => {
+describe(`Endpoint (GET) by ID - ${PATH_URL.BLOGS}${PATH_URL.ID}`, () => {
+  beforeEach(async () => {
+    db.clearDB();
+  });
+
+  it('Should get blog', async () => {
+    const id = await db.addBlog(data.dataSetNewBlog);
+
+    const res = await req.get(`${PATH_URL.BLOGS}/${id}`).expect(HTTP_STATUSES.OK_200);
+
+    expect(res.body).toEqual(expect.objectContaining(data.dataSetNewBlog));
+  });
+
+  it(`Should get status ${HTTP_STATUSES.NOT_FOUND_404}`, async () => {
+    await db.addBlog(data.dataSetNewBlog);
+
+    await req.get(`${PATH_URL.BLOGS}/1`).expect(HTTP_STATUSES.NOT_FOUND_404);
+  });
+});
+
+describe(`Endpoint (POST) - ${PATH_URL.BLOGS}`, () => {
   beforeEach(async () => {
     db.clearDB();
   });

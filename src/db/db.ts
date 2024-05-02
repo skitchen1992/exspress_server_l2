@@ -32,6 +32,64 @@ class DB {
     });
   }
 
+  public async getBlogById(id: string): Promise<GetBlogSchema | null> {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const index = this.findIndex('blogs', id);
+
+        if (index === -1) {
+          resolve(null);
+        } else {
+          resolve(this.db.blogs[index]);
+        }
+      }, 0);
+    });
+  }
+
+  public addBlog(data: PostBlogSchema) {
+    return new Promise<string>((resolve) => {
+      setTimeout(() => {
+        const id = this.createId();
+        const newData: GetBlogSchema = {
+          ...data,
+          id,
+        };
+
+        this.db.blogs.push(newData);
+        resolve(id);
+      }, 0);
+    });
+  }
+
+  public updateBlog(id: string, data: PutBlogSchema) {
+    return new Promise<boolean>((resolve) => {
+      setTimeout(() => {
+        const index = this.findIndex('blogs', id);
+
+        if (index !== -1) {
+          this.db.blogs[index] = {
+            ...this.db.blogs[index],
+            ...data,
+          };
+          resolve(true);
+        } else {
+          resolve(false);
+        }
+      }, 0);
+    });
+  }
+
+  public deleteBlog(id: string) {
+    const index = this.findIndex('blogs', id);
+
+    if (index !== -1) {
+      this.db.blogs.splice(index, 1);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   public async getPosts(): Promise<GetPostsListSchema> {
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -40,20 +98,6 @@ class DB {
     });
   }
 
-  public async getBlogById(id: string): Promise<GetBlogSchema | null> {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const index = this.findIndex('blogs', id);
-
-        if (index === -1) {
-          resolve(null) ;
-        } else {
-          resolve(this.db.blogs[index])
-        }
-      }, 0);
-    });
-
-  }
 
   public getPostById(id: string) {
     const index = this.findIndex('posts', id);
@@ -63,22 +107,6 @@ class DB {
     } else {
       return this.db.posts[index];
     }
-  }
-
-  public addBlog(data: PostBlogSchema) {
-    return new Promise<string>((resolve) => {
-      setTimeout(() => {
-        const id = this.createId()
-        const newData: GetBlogSchema = {
-          ...data,
-          id,
-
-        };
-
-        this.db.blogs.push(newData)
-        resolve(id);
-      }, 0);
-    });
   }
 
   public addPost(data: PostPostsSchema) {
@@ -91,21 +119,6 @@ class DB {
     this.db.posts.push(newData);
   }
 
-  public updateBlog(id: string, data: PutBlogSchema) {
-    const index = this.findIndex('blogs', id);
-
-
-    if (index !== -1) {
-      this.db.blogs[index] = {
-        ...this.db.blogs[index],
-        ...data,
-      };
-      return true;
-    } else {
-      return false;
-    }
-  }
-
   public updatePost(id: string, data: PutPostsSchema) {
     const index = this.findIndex('posts', id);
 
@@ -114,17 +127,6 @@ class DB {
         ...this.db.posts[index],
         ...data,
       };
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  public deleteBlog(id: string) {
-    const index = this.findIndex('blogs', id);
-
-    if (index !== -1) {
-      this.db.blogs.splice(index, 1);
       return true;
     } else {
       return false;

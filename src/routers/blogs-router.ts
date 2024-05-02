@@ -1,16 +1,24 @@
 import { Router } from 'express';
 import { PATH_URL } from '../utils/consts';
-import { getBlogsController } from '../controllers';
-import { postBlogsController } from '../controllers/blogs/post-blogs';
-import { errorHandlingMiddleware } from '../middlewares/blogs/validation-middleware';
-import { validatePostSchema } from '../middlewares/blogs';
+import * as controllers  from '../controllers';
+import { validatePostSchema, validatePutSchema } from '../middlewares/blogs';
+import { errorHandlingMiddleware } from '../middlewares/error-handling-middleware';
+import { checkExactMiddleware } from '../middlewares/check-exact-middleware';
 
 export const blogsRouter = Router();
 
-blogsRouter.get(PATH_URL.ROOT, getBlogsController);
+blogsRouter.get(PATH_URL.ROOT, controllers.getBlogsController);
+
+blogsRouter.get(PATH_URL.ID, controllers.getBlogByIdController);
 
 blogsRouter.post(PATH_URL.ROOT,
-  validatePostSchema(),
+  checkExactMiddleware(validatePostSchema),
   errorHandlingMiddleware,
-  postBlogsController,
+  controllers.postBlogController,
+);
+
+blogsRouter.put(PATH_URL.ID,
+  checkExactMiddleware(validatePutSchema),
+  errorHandlingMiddleware,
+  controllers.putBlogController,
 );

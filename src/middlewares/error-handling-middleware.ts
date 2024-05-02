@@ -1,8 +1,8 @@
-import { RequestWithBody } from '../../types/request-types';
-import { PostBlogSchema, PostBlogSchemaResponse, ResponseErrorSchema } from '../../models';
+import { RequestWithBody } from '../types/request-types';
+import { PostBlogSchema, PostBlogSchemaResponse, ResponseErrorSchema } from '../models';
 import { NextFunction, Response } from 'express';
 import { validationResult } from 'express-validator';
-import { HTTP_STATUSES } from '../../utils/consts';
+import { HTTP_STATUSES } from '../utils/consts';
 
 export const errorHandlingMiddleware = (req: RequestWithBody<PostBlogSchema>, res: Response<PostBlogSchemaResponse | ResponseErrorSchema>, next: NextFunction) => {
   const errorsResult = validationResult(req);

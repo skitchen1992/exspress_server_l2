@@ -4,7 +4,9 @@ import { HTTP_STATUSES } from '../../utils/consts';
 import { PostBlogSchema, PostBlogSchemaResponse, ResponseErrorSchema } from '../../models';
 import { RequestWithBody } from '../../types/request-types';
 
-export const postBlogsController = async (req: RequestWithBody<PostBlogSchema>, res: Response<PostBlogSchemaResponse | ResponseErrorSchema>) => {
+type ResponseType = PostBlogSchemaResponse | ResponseErrorSchema
+
+export const postBlogController = async (req: RequestWithBody<PostBlogSchema>, res: Response<ResponseType>) => {
   try {
     const id = await db.addBlog(req.body);
 

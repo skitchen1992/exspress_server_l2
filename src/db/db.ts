@@ -84,12 +84,16 @@ class DB {
   }
 
   public async addPost(data: PostPostsSchema): Promise<string> {
+    const id = this.createId();
+    const blog = await this.getBlogById(data.blogId)
+
     return new Promise<string>((resolve) => {
       setTimeout(() => {
-        const id = this.createId();
+
         const newData: GetPostsSchema = {
           ...data,
           id,
+          blogName: blog!.name
         };
 
         this.db.posts.push(newData);

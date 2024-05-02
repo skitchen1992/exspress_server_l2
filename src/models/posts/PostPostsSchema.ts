@@ -3,5 +3,4 @@ export type PostPostsSchema = {
   shortDescription: string,
   content: string,
   blogId: string,
-  blogName: string
 }

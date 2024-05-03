@@ -375,5 +375,4 @@ describe(`Endpoint (DELETE) - ${PATH_URL.POSTS}${PATH_URL.ID}`, () => {
     const post = await db.getPostById(postId);
     expect(Boolean(post)).toBe(true);
   });
-
 });

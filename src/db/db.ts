@@ -94,6 +94,7 @@ class DB {
             ...data,
             id,
             blogName: blog!.name,
+            blogId: blog.id,
           };
 
           this.db.posts.push(newData);

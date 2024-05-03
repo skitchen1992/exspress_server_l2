@@ -25,7 +25,7 @@ postsRouter.post(PATH_URL.ROOT,
   basicAuthMiddleware,
   sanitizerQueryMiddleware(),
   checkExactMiddleware(validatePostsPostSchema),
-  checkBlogExistsMiddleware,
+  checkBlogExistsMiddleware(),
   errorHandlingMiddleware<PostPostsSchema>,
   controllers.postPostController,
 );

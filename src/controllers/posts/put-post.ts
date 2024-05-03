@@ -1,14 +1,14 @@
 import { db } from '../../db/db';
 import { Response } from 'express';
 import { HTTP_STATUSES } from '../../utils/consts';
-import { PutBlogSchema } from '../../models';
+import { PutPostsSchema } from '../../models';
 import { RequestWithPramsAndBody } from '../../types/request-types';
 
-type RequestType = RequestWithPramsAndBody<PutBlogSchema, { id: string }>
+type RequestType = RequestWithPramsAndBody<PutPostsSchema, { id: string }>
 
-export const putBlogController = async (req: RequestType, res: Response) => {
+export const putPostController = async (req: RequestType, res: Response) => {
   try {
-    const isUpdated = await db.updateBlog(req.params.id, req.body);
+    const isUpdated = await db.updatePost(req.params.id, req.body);
 
     if (isUpdated) {
       res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);

@@ -169,6 +169,22 @@ export const errorDataSet10 = {
   ],
 };
 
+export const dataSetUpdatePost = {
+  title: 'Title',
+  shortDescription: 'Short Description',
+  content: 'Content',
+  blogId: '1',
+};
+
+export const errorDataSet11 = {
+  errorsMessages: [
+    {
+      message: 'Too many fields specified',
+      field: 'unknown_fields',
+    },
+  ],
+};
+
 
 
 

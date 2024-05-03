@@ -34,6 +34,7 @@ postsRouter.put(PATH_URL.ID,
   basicAuthMiddleware,
   sanitizerQueryMiddleware(),
   checkExactMiddleware(validatePostsPutSchema),
+  checkBlogExistsMiddleware(),
   errorHandlingMiddleware<PutPostsSchema>,
   controllers.putPostController,
 );

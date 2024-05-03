@@ -1,16 +1,18 @@
-export const dataSetNewBlog = {
+import { PostBlogSchema } from '../../src/models';
+
+export const dataSetNewBlog: PostBlogSchema = {
   name: 'Test',
   description: 'Test description',
   websiteUrl: 'https://string.com',
 };
 
-export const dataSetUpdateBlog = {
+export const dataSetUpdateBlog: PostBlogSchema = {
   name: 'New test',
   description: 'New Test description',
   websiteUrl: 'https://string.ru',
 };
 
-export const dataSetNewBlog1 = {
+export const dataSetNewBlog1: PostBlogSchema = {
   name: 'Test very long string in the world',
   description: 'Test description',
   websiteUrl: 'https://string.com',
@@ -19,7 +21,7 @@ export const dataSetNewBlog1 = {
 export const errorDataSet1 = {
   errorsMessages: [
     {
-      message: 'Cannot be more than 15',
+      message: 'Max length 15',
       field: 'name',
     },
   ],
@@ -30,7 +32,6 @@ export const dataSetNewBlog2 = {
   description: 'Test description',
   websiteUrl: 'https://string.com',
 };
-
 
 export const errorDataSet2 = {
   errorsMessages: [
@@ -65,7 +66,7 @@ export const dataSetNewBlog4 = {
 export const errorDataSet4 = {
   errorsMessages: [
     {
-      message: 'Cannot be more than 500',
+      message: 'Max length 500',
       field: 'description',
     },
   ],
@@ -102,7 +103,7 @@ export const errorDataSet6 = {
 
 export const dataSetNewBlog7 = {
   name: 'Test name',
-  description: "Test description",
+  description: 'Test description',
   websiteUrl: 'https://string',
 };
 
@@ -117,16 +118,16 @@ export const errorDataSet7 = {
 
 export const dataSetNewBlog8 = {
   name: 'Test name',
-  description: "Test description",
+  description: 'Test description',
   websiteUrl: 'https://string.com',
-  test: 1
+  test: 1,
 };
 
 export const errorDataSet8 = {
   errorsMessages: [
     {
       message: 'Too many fields specified',
-      field: 'body',
+      field: 'unknown_fields',
     },
   ],
 };

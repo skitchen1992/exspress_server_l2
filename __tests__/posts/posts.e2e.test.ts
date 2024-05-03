@@ -2,7 +2,7 @@ import { createAuthorizationHeader, req } from '../test-helpers';
 import { db } from '../../src/db/db';
 import { HTTP_STATUSES, PATH_URL } from '../../src/utils/consts';
 import * as data from './datasets';
-import { SETTINGS } from '../../src/utils/settings';
+
 
 describe(`Endpoint (GET) - ${PATH_URL.POSTS}`, () => {
   beforeEach(async () => {
@@ -15,37 +15,43 @@ describe(`Endpoint (GET) - ${PATH_URL.POSTS}`, () => {
     expect(res.body.length).toBe(0);
   });
 
-  // it('Should get not empty array', async () => {
-  //   await db.addPost(data.dataSetNewBlog);
-  //
-  //   const res = await req.get(PATH_URL.POSTS).expect(HTTP_STATUSES.OK_200);
-  //
-  //   const blog = await db.getBlogById(res.body.at(-1).id);
-  //
-  //   expect(res.body.length).toBe(1);
-  //   expect(res.body).toEqual([blog]);
-  // });
+  it('Should get not empty array', async () => {
+    const blogId = await db.addBlog(data.dataSetNewBlog);
+
+    await db.addPost({ ...data.dataSetNewPost, blogId });
+
+    const res = await req.get(PATH_URL.POSTS).expect(HTTP_STATUSES.OK_200);
+
+    const post = await db.getPostById(res.body.at(-1).id);
+
+    expect(res.body.length).toBe(1);
+    expect(res.body).toEqual([post]);
+  });
 });
 
-// describe(`Endpoint (GET) by ID - ${PATH_URL.POSTS}${PATH_URL.ID}`, () => {
-//   beforeEach(async () => {
-//     db.clearDB();
-//   });
-//
-//   it('Should get blog', async () => {
-//     const id = await db.addBlog(data.dataSetNewBlog);
-//
-//     const res = await req.get(`${PATH_URL.POSTS}/${id}`).expect(HTTP_STATUSES.OK_200);
-//
-//     expect(res.body).toEqual(expect.objectContaining(data.dataSetNewBlog));
-//   });
-//
-//   it(`Should get status ${HTTP_STATUSES.NOT_FOUND_404}`, async () => {
-//     await db.addBlog(data.dataSetNewBlog);
-//
-//     await req.get(`${PATH_URL.POSTS}/1`).expect(HTTP_STATUSES.NOT_FOUND_404);
-//   });
-// });
+describe(`Endpoint (GET) by ID - ${PATH_URL.POSTS}${PATH_URL.ID}`, () => {
+  beforeEach(async () => {
+    db.clearDB();
+  });
+
+  it('Should get a post', async () => {
+    const blogId = await db.addBlog(data.dataSetNewBlog);
+
+    const postId = await db.addPost({ ...data.dataSetNewPost, blogId });
+
+    const res = await req.get(`${PATH_URL.POSTS}/${postId}`).expect(HTTP_STATUSES.OK_200);
+
+    expect(res.body).toEqual(expect.objectContaining({ ...data.dataSetNewPost, id: postId, blogId }));
+  });
+
+  it(`Should get status ${HTTP_STATUSES.NOT_FOUND_404}`, async () => {
+    const postId = await db.addPost({ ...data.dataSetNewPost, blogId: '1' });
+
+    if (!Number(postId)) {
+      await req.get(`${PATH_URL.POSTS}/1`).expect(HTTP_STATUSES.NOT_FOUND_404);
+    }
+  });
+});
 //
 // describe(`Endpoint (POST) - ${PATH_URL.POSTS}`, () => {
 //   beforeEach(async () => {

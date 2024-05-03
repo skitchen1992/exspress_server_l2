@@ -1,11 +1,12 @@
 import { Router } from 'express';
 import { PATH_URL } from '../utils/consts';
 import * as controllers from '../controllers';
-import { validatePostSchema, validatePutSchema } from '../middlewares/blogs';
+import { validateBlogPostSchema, validateBlogPutSchema } from '../middlewares/blogs';
 import { errorHandlingMiddleware } from '../middlewares/error-handling-middleware';
 import { checkExactMiddleware } from '../middlewares/check-exact-middleware';
 import { sanitizerQueryMiddleware } from '../middlewares/sanitizer-query-middleware';
 import { basicAuthMiddleware } from '../middlewares/basic-auth-middleware';
+import { PostBlogSchema, PutBlogSchema } from '../models';
 
 export const blogsRouter = Router();
 
@@ -22,16 +23,16 @@ blogsRouter.get(PATH_URL.ID,
 blogsRouter.post(PATH_URL.ROOT,
   basicAuthMiddleware,
   sanitizerQueryMiddleware(),
-  checkExactMiddleware(validatePostSchema),
-  errorHandlingMiddleware,
+  checkExactMiddleware(validateBlogPostSchema),
+  errorHandlingMiddleware<PostBlogSchema>,
   controllers.postBlogController,
 );
 
 blogsRouter.put(PATH_URL.ID,
   basicAuthMiddleware,
   sanitizerQueryMiddleware(),
-  checkExactMiddleware(validatePutSchema),
-  errorHandlingMiddleware,
+  checkExactMiddleware(validateBlogPutSchema),
+  errorHandlingMiddleware<PutBlogSchema>,
   controllers.putBlogController,
 );
 

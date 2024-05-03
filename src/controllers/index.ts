@@ -6,3 +6,4 @@ export { deleteBlogController } from './blogs/delete-blog';
 export { deleteAllDataController } from './testing/delete-all-data';
 export { getPostsController } from './posts/get-posts';
 export { getPostByIdController } from './posts/get-post-by-id';
+export { postPostController } from './posts/post-post';

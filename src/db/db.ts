@@ -85,21 +85,25 @@ class DB {
 
   public async addPost(data: PostPostsSchema): Promise<string> {
     const id = this.createId();
-    const blog = await this.getBlogById(data.blogId)
+    const blog = await this.getBlogById(data.blogId);
 
     return new Promise<string>((resolve) => {
-      setTimeout(() => {
+      if (blog) {
+        setTimeout(() => {
+          const newData: GetPostsSchema = {
+            ...data,
+            id,
+            blogName: blog!.name,
+          };
 
-        const newData: GetPostsSchema = {
-          ...data,
-          id,
-          blogName: blog!.name
-        };
-
-        this.db.posts.push(newData);
-        resolve(id);
-      }, 0);
+          this.db.posts.push(newData);
+          resolve(id);
+        }, 0);
+      } else {
+        resolve('0');
+      }
     });
+
   }
 
   public async updateBlog(id: string, data: PutBlogSchema): Promise<boolean> {

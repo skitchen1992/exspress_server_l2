@@ -1,4 +1,13 @@
-export const dataSetNewPost = {
+import { PostBlogSchema, PostPostsSchema } from '../../src/models';
+
+export const dataSetNewPost: PostPostsSchema = {
+  title: "Title",
+  shortDescription: "ShortDescription",
+  content: "Content",
+  blogId: "",
+};
+
+export const dataSetNewBlog: PostBlogSchema = {
   name: 'Test',
   description: 'Test description',
   websiteUrl: 'https://string.com',
@@ -19,7 +28,7 @@ export const dataSetNewBlog1 = {
 export const errorDataSet1 = {
   errorsMessages: [
     {
-      message: 'Cannot be more than 15',
+      message: 'Max length 15',
       field: 'name',
     },
   ],

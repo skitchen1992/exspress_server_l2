@@ -7,5 +7,5 @@ export type { GetPostSchema } from './posts/GetPostSchema';
 export type { GetPostListSchema } from './posts/GetPostListSchema';
 export type { CreatePostSchema } from './posts/CreatePostSchema';
 export type { CreatePostSchemaResponse } from './posts/CreatePostSchemaResponse';
-export type { UpdatePostsSchema } from './posts/UpdatePostsSchema';
+export type { UpdatePostSchema } from './posts/UpdatePostSchema';
 export type { ResponseErrorSchema } from './errors/ResponseErrorSchema';

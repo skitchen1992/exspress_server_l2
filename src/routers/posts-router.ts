@@ -5,7 +5,7 @@ import { sanitizerQueryMiddleware } from '../middlewares/sanitizer-query-middlew
 import { errorHandlingMiddleware } from '../middlewares/error-handling-middleware';
 import { checkExactMiddleware } from '../middlewares/check-exact-middleware';
 import { validatePostsPostSchema, validatePostsPutSchema } from '../middlewares/posts';
-import { CreatePostSchema, UpdatePostsSchema } from '../models';
+import { CreatePostSchema, UpdatePostSchema } from '../models';
 import { checkBlogExistsMiddleware } from '../middlewares/posts/check-blog-exists-middleware';
 import { basicAuthMiddleware } from '../middlewares/basic-auth-middleware';
 
@@ -35,7 +35,7 @@ postsRouter.put(PATH_URL.ID,
   sanitizerQueryMiddleware(),
   checkExactMiddleware(validatePostsPutSchema),
   checkBlogExistsMiddleware(),
-  errorHandlingMiddleware<UpdatePostsSchema>,
+  errorHandlingMiddleware<UpdatePostSchema>,
   controllers.putPostController,
 );
 

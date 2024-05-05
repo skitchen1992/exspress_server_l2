@@ -4,7 +4,7 @@ import {
   GetPostListSchema,
   GetPostSchema,
   CreateBlogSchema,
-  CreatePostSchema, UpdateBlogSchema, UpdatePostsSchema,
+  CreatePostSchema, UpdateBlogSchema, UpdatePostSchema,
 } from '../models';
 
 export type DBType = {
@@ -125,7 +125,7 @@ class DB {
     });
   }
 
-  public async updatePost(id: string, data: UpdatePostsSchema): Promise<boolean> {
+  public async updatePost(id: string, data: UpdatePostSchema): Promise<boolean> {
     return new Promise<boolean>((resolve) => {
       setTimeout(() => {
         const index = this.findIndex('posts', id);

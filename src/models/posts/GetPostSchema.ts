@@ -1,4 +1,4 @@
-export type GetPostsSchema = {
+export type GetPostSchema = {
   id: string,
   title: string,
   shortDescription: string,

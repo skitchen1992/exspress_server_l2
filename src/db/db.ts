@@ -1,15 +1,15 @@
 import {
   GetBlogListSchema,
   GetBlogSchema,
-  GetPostsListSchema,
-  GetPostsSchema,
-  PostBlogSchema,
-  PostPostsSchema, PutBlogSchema, PutPostsSchema,
+  GetPostListSchema,
+  GetPostSchema,
+  CreateBlogSchema,
+  CreatePostSchema, UpdateBlogSchema, UpdatePostsSchema,
 } from '../models';
 
 export type DBType = {
   blogs: GetBlogListSchema;
-  posts: GetPostsListSchema;
+  posts: GetPostListSchema;
 };
 
 const data_base: DBType = {
@@ -32,7 +32,7 @@ class DB {
     });
   }
 
-  public async getPosts(): Promise<GetPostsListSchema> {
+  public async getPosts(): Promise<GetPostListSchema> {
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve(this.db.posts);
@@ -54,7 +54,7 @@ class DB {
     });
   }
 
-  public async getPostById(id: string): Promise<GetPostsSchema | null> {
+  public async getPostById(id: string): Promise<GetPostSchema | null> {
     return new Promise((resolve) => {
       setTimeout(() => {
         const index = this.findIndex('posts', id);
@@ -68,7 +68,7 @@ class DB {
     });
   }
 
-  public addBlog(data: PostBlogSchema): Promise<string> {
+  public addBlog(data: CreateBlogSchema): Promise<string> {
     return new Promise<string>((resolve) => {
       setTimeout(() => {
         const id = this.createId();
@@ -83,14 +83,14 @@ class DB {
     });
   }
 
-  public async addPost(data: PostPostsSchema): Promise<string> {
+  public async addPost(data: CreatePostSchema): Promise<string> {
     const id = this.createId();
     const blog = await this.getBlogById(data.blogId);
 
     return new Promise<string>((resolve) => {
       if (blog) {
         setTimeout(() => {
-          const newData: GetPostsSchema = {
+          const newData: GetPostSchema = {
             ...data,
             id,
             blogName: blog!.name,
@@ -107,7 +107,7 @@ class DB {
 
   }
 
-  public async updateBlog(id: string, data: PutBlogSchema): Promise<boolean> {
+  public async updateBlog(id: string, data: UpdateBlogSchema): Promise<boolean> {
     return new Promise<boolean>((resolve) => {
       setTimeout(() => {
         const index = this.findIndex('blogs', id);
@@ -125,7 +125,7 @@ class DB {
     });
   }
 
-  public async updatePost(id: string, data: PutPostsSchema): Promise<boolean> {
+  public async updatePost(id: string, data: UpdatePostsSchema): Promise<boolean> {
     return new Promise<boolean>((resolve) => {
       setTimeout(() => {
         const index = this.findIndex('posts', id);

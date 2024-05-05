@@ -1,10 +1,10 @@
 import { db } from '../../db/db';
 import { Response } from 'express';
 import { HTTP_STATUSES } from '../../utils/consts';
-import { PostPostsSchemaResponse, ResponseErrorSchema } from '../../models';
+import { CreatePostSchemaResponse, ResponseErrorSchema } from '../../models';
 import { RequestWithPrams } from '../../types/request-types';
 
-type ResponseType = PostPostsSchemaResponse | ResponseErrorSchema
+type ResponseType = CreatePostSchemaResponse | ResponseErrorSchema
 
 export const getPostByIdController = async (req: RequestWithPrams<{ id: string }>, res: Response<ResponseType>) => {
   try {

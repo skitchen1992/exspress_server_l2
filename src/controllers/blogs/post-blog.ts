@@ -1,12 +1,12 @@
 import { db } from '../../db/db';
 import { Response } from 'express';
 import { HTTP_STATUSES } from '../../utils/consts';
-import { PostBlogSchema, PostBlogSchemaResponse, ResponseErrorSchema } from '../../models';
+import { CreateBlogSchema, CreateBlogSchemaResponse, ResponseErrorSchema } from '../../models';
 import { RequestWithBody } from '../../types/request-types';
 
-type ResponseType = PostBlogSchemaResponse | ResponseErrorSchema
+type ResponseType = CreateBlogSchemaResponse | ResponseErrorSchema
 
-export const postBlogController = async (req: RequestWithBody<PostBlogSchema>, res: Response<ResponseType>) => {
+export const postBlogController = async (req: RequestWithBody<CreateBlogSchema>, res: Response<ResponseType>) => {
   try {
     const id = await db.addBlog(req.body);
 

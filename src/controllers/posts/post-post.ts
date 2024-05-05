@@ -2,16 +2,16 @@ import { db } from '../../db/db';
 import { Response } from 'express';
 import { HTTP_STATUSES } from '../../utils/consts';
 import {
-  PostPostsSchema,
-  PostPostsSchemaResponse,
+  CreatePostSchema,
+  CreatePostSchemaResponse,
   ResponseErrorSchema,
 } from '../../models';
 
 import { RequestWithBody } from '../../types/request-types';
 
-type ResponseType = PostPostsSchemaResponse | ResponseErrorSchema
+type ResponseType = CreatePostSchemaResponse | ResponseErrorSchema
 
-export const postPostController = async (req: RequestWithBody<PostPostsSchema>, res: Response<ResponseType>) => {
+export const postPostController = async (req: RequestWithBody<CreatePostSchema>, res: Response<ResponseType>) => {
   try {
     const id = await db.addPost(req.body);
 

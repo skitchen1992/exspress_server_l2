@@ -1,4 +1,4 @@
-export type PostPostsSchemaResponse = {
+export type CreatePostSchemaResponse = {
   id: string,
   title: string,
   shortDescription: string,

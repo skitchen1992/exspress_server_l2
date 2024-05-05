@@ -1,10 +1,10 @@
 import { db } from '../../db/db';
 import { Response } from 'express';
 import { HTTP_STATUSES } from '../../utils/consts';
-import { PutPostsSchema } from '../../models';
+import { UpdatePostsSchema } from '../../models';
 import { RequestWithPramsAndBody } from '../../types/request-types';
 
-type RequestType = RequestWithPramsAndBody<PutPostsSchema, { id: string }>
+type RequestType = RequestWithPramsAndBody<UpdatePostsSchema, { id: string }>
 
 export const putPostController = async (req: RequestType, res: Response) => {
   try {

@@ -3,8 +3,6 @@ import { db } from '../../src/db/db';
 import { HTTP_STATUSES, PATH_URL } from '../../src/utils/consts';
 import * as data from './datasets';
 import { SETTINGS } from '../../src/utils/settings';
-import { dataSetNewPost1, dataSetUpdatePost } from './datasets';
-
 
 describe(`Endpoint (GET) - ${PATH_URL.POSTS}`, () => {
   beforeEach(async () => {

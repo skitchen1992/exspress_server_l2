@@ -6,7 +6,7 @@ import { errorHandlingMiddleware } from '../middlewares/error-handling-middlewar
 import { checkExactMiddleware } from '../middlewares/check-exact-middleware';
 import { sanitizerQueryMiddleware } from '../middlewares/sanitizer-query-middleware';
 import { basicAuthMiddleware } from '../middlewares/basic-auth-middleware';
-import { PostBlogSchema, PutBlogSchema } from '../models';
+import { CreateBlogSchema, UpdateBlogSchema } from '../models';
 
 export const blogsRouter = Router();
 
@@ -26,7 +26,7 @@ blogsRouter.post(PATH_URL.ROOT,
   //remove for tests
   //checkExactMiddleware(validateBlogPostSchema),
   validateBlogPostSchema(),
-  errorHandlingMiddleware<PostBlogSchema>,
+  errorHandlingMiddleware<CreateBlogSchema>,
   controllers.postBlogController,
 );
 
@@ -36,7 +36,7 @@ blogsRouter.put(PATH_URL.ID,
   //remove for tests
   //checkExactMiddleware(validateBlogPutSchema),
   validateBlogPutSchema(),
-  errorHandlingMiddleware<PutBlogSchema>,
+  errorHandlingMiddleware<UpdateBlogSchema>,
   controllers.putBlogController,
 );
 

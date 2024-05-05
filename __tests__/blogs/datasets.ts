@@ -1,18 +1,18 @@
-import { PostBlogSchema } from '../../src/models';
+import { CreateBlogSchema } from '../../src/models';
 
-export const dataSetNewBlog: PostBlogSchema = {
+export const dataSetNewBlog: CreateBlogSchema = {
   name: 'Test',
   description: 'Test description',
   websiteUrl: 'https://string.com',
 };
 
-export const dataSetUpdateBlog: PostBlogSchema = {
+export const dataSetUpdateBlog: CreateBlogSchema = {
   name: 'New test',
   description: 'New Test description',
   websiteUrl: 'https://string.ru',
 };
 
-export const dataSetNewBlog1: PostBlogSchema = {
+export const dataSetNewBlog1: CreateBlogSchema = {
   name: 'Test very long string in the world',
   description: 'Test description',
   websiteUrl: 'https://string.com',

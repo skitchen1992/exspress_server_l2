@@ -12,4 +12,3 @@ export const getBlogsController = async (req: Request, res: Response<GetBlogList
     console.log(e);
   }
 };
-

@@ -4,7 +4,7 @@ import { HTTP_STATUSES } from '../../utils/consts';
 import { UpdatePostSchema } from '../../models';
 import { RequestWithPramsAndBody } from '../../types/request-types';
 
-type RequestType = RequestWithPramsAndBody<UpdatePostSchema, { id: string }>
+type RequestType = RequestWithPramsAndBody<UpdatePostSchema, { id: string }>;
 
 export const putPostController = async (req: RequestType, res: Response) => {
   try {
@@ -19,4 +19,3 @@ export const putPostController = async (req: RequestType, res: Response) => {
     console.log(e);
   }
 };
-

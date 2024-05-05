@@ -8,19 +8,20 @@
     "watch": "tsc -w",
     "jest": "jest -i",
     "jest:coverage": "jest --coverage",
-    "test": "yarn jest"
+    "test": "yarn jest",
+    "format": "prettier --write \"src/**/*.ts\""
   },
   "dependencies": {
     "cors": "2.8.5",
     "dotenv": "16.4.5",
     "express": "4.19.2",
-    "express-validator": "^7.0.1"
+    "express-validator": "7.0.1"
   },
   "devDependencies": {
     "@types/cors": "2.8.17",
     "@types/express": "4.17.21",
     "@types/jest": "29.5.12",
-    "@types/node": "20.12.7",
+    "@types/node": "20.12.8",
     "@types/supertest": "6.0.2",
     "concurrently": "8.2.2",
     "jest": "29.7.0",

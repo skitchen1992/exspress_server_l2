@@ -7,6 +7,6 @@ export const checkExactMiddleware = (validateSchema: {
 }) => {
   return checkExact([validateSchema()], {
     locations: ['body'],
-    message: 'Too many fields specified'
+    message: 'Too many fields specified',
   });
 };

@@ -10,4 +10,3 @@ export const deleteAllDataController = async (req: Request, res: Response) => {
     console.log(e);
   }
 };
-

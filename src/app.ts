@@ -10,7 +10,6 @@ export const app = express();
 app.use(express.json());
 app.use(cors());
 
-
 app.get(PATH_URL.ROOT, (req, res) => {
   res.status(HTTP_STATUSES.OK_200).json({ version: '1.0' });
 });

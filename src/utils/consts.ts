@@ -22,5 +22,4 @@ export const PATH_URL = {
     ROOT: '/testing',
     ALL_DATA: '/all-data',
   },
-
 };

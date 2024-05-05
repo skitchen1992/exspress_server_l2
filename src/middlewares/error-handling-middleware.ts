@@ -4,9 +4,13 @@ import { NextFunction, Response } from 'express';
 import { Result, validationResult } from 'express-validator';
 import { HTTP_STATUSES } from '../utils/consts';
 import { ErrorMessageSchema } from '../models/errors/ErrorMessageSchema';
-import { FieldValidationError, UnknownFieldsError } from 'express-validator/src/base';
+import { FieldValidationError } from 'express-validator/src/base';
 
-export const errorHandlingMiddleware = <T>(req: RequestWithBody<T>, res: Response<ResponseErrorSchema>, next: NextFunction) => {
+export const errorHandlingMiddleware = <T>(
+  req: RequestWithBody<T>,
+  res: Response<ResponseErrorSchema>,
+  next: NextFunction
+) => {
   const errorsResult = validationResult(req) as Result<FieldValidationError>;
 
   if (errorsResult.isEmpty()) {

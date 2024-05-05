@@ -4,7 +4,7 @@ import { HTTP_STATUSES } from '../../utils/consts';
 import { CreateBlogSchema, CreateBlogSchemaResponse, ResponseErrorSchema } from '../../models';
 import { RequestWithBody } from '../../types/request-types';
 
-type ResponseType = CreateBlogSchemaResponse | ResponseErrorSchema
+type ResponseType = CreateBlogSchemaResponse | ResponseErrorSchema;
 
 export const postBlogController = async (req: RequestWithBody<CreateBlogSchema>, res: Response<ResponseType>) => {
   try {
@@ -28,4 +28,3 @@ export const postBlogController = async (req: RequestWithBody<CreateBlogSchema>,
     console.log(e);
   }
 };
-

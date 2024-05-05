@@ -1,15 +1,11 @@
 import { db } from '../../db/db';
 import { Response } from 'express';
 import { HTTP_STATUSES } from '../../utils/consts';
-import {
-  CreatePostSchema,
-  CreatePostSchemaResponse,
-  ResponseErrorSchema,
-} from '../../models';
+import { CreatePostSchema, CreatePostSchemaResponse, ResponseErrorSchema } from '../../models';
 
 import { RequestWithBody } from '../../types/request-types';
 
-type ResponseType = CreatePostSchemaResponse | ResponseErrorSchema
+type ResponseType = CreatePostSchemaResponse | ResponseErrorSchema;
 
 export const postPostController = async (req: RequestWithBody<CreatePostSchema>, res: Response<ResponseType>) => {
   try {
@@ -33,4 +29,3 @@ export const postPostController = async (req: RequestWithBody<CreatePostSchema>,
     console.log(e);
   }
 };
-

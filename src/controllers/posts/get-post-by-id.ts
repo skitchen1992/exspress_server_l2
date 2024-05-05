@@ -4,7 +4,7 @@ import { HTTP_STATUSES } from '../../utils/consts';
 import { CreatePostSchemaResponse, ResponseErrorSchema } from '../../models';
 import { RequestWithPrams } from '../../types/request-types';
 
-type ResponseType = CreatePostSchemaResponse | ResponseErrorSchema
+type ResponseType = CreatePostSchemaResponse | ResponseErrorSchema;
 
 export const getPostByIdController = async (req: RequestWithPrams<{ id: string }>, res: Response<ResponseType>) => {
   try {
@@ -20,4 +20,3 @@ export const getPostByIdController = async (req: RequestWithPrams<{ id: string }
     console.log(e);
   }
 };
-

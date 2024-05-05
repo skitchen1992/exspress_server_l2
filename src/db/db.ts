@@ -4,7 +4,9 @@ import {
   GetPostListSchema,
   GetPostSchema,
   CreateBlogSchema,
-  CreatePostSchema, UpdateBlogSchema, UpdatePostSchema,
+  CreatePostSchema,
+  UpdateBlogSchema,
+  UpdatePostSchema,
 } from '../models';
 
 export type DBType = {
@@ -104,7 +106,6 @@ class DB {
         resolve('0');
       }
     });
-
   }
 
   public async updateBlog(id: string, data: UpdateBlogSchema): Promise<boolean> {

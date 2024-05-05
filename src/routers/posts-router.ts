@@ -11,37 +11,34 @@ import { basicAuthMiddleware } from '../middlewares/basic-auth-middleware';
 
 export const postsRouter = Router();
 
-postsRouter.get(PATH_URL.ROOT,
-  sanitizerQueryMiddleware(),
-  errorHandlingMiddleware,
-  controllers.getPostsController);
+postsRouter.get(PATH_URL.ROOT, sanitizerQueryMiddleware(), errorHandlingMiddleware, controllers.getPostsController);
 
-postsRouter.get(PATH_URL.ID,
-  sanitizerQueryMiddleware(),
-  errorHandlingMiddleware,
-  controllers.getPostByIdController);
+postsRouter.get(PATH_URL.ID, sanitizerQueryMiddleware(), errorHandlingMiddleware, controllers.getPostByIdController);
 
-postsRouter.post(PATH_URL.ROOT,
+postsRouter.post(
+  PATH_URL.ROOT,
   basicAuthMiddleware,
   sanitizerQueryMiddleware(),
   checkExactMiddleware(validatePostsPostSchema),
   checkBlogExistsMiddleware(),
   errorHandlingMiddleware<CreatePostSchema>,
-  controllers.postPostController,
+  controllers.postPostController
 );
 
-postsRouter.put(PATH_URL.ID,
+postsRouter.put(
+  PATH_URL.ID,
   basicAuthMiddleware,
   sanitizerQueryMiddleware(),
   checkExactMiddleware(validatePostsPutSchema),
   checkBlogExistsMiddleware(),
   errorHandlingMiddleware<UpdatePostSchema>,
-  controllers.putPostController,
+  controllers.putPostController
 );
 
-postsRouter.delete(PATH_URL.ID,
+postsRouter.delete(
+  PATH_URL.ID,
   basicAuthMiddleware,
   sanitizerQueryMiddleware(),
   errorHandlingMiddleware,
-  controllers.deletePostController,
+  controllers.deletePostController
 );

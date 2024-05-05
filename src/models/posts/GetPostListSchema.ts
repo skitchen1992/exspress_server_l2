@@ -1,3 +1,3 @@
 import { GetPostSchema } from './GetPostSchema';
 
-export type GetPostListSchema = GetPostSchema[]
+export type GetPostListSchema = GetPostSchema[];

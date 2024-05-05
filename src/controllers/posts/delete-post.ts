@@ -3,7 +3,7 @@ import { Response } from 'express';
 import { HTTP_STATUSES } from '../../utils/consts';
 import { RequestWithPrams } from '../../types/request-types';
 
-type RequestType = RequestWithPrams<{ id: string }>
+type RequestType = RequestWithPrams<{ id: string }>;
 
 export const deletePostController = async (req: RequestType, res: Response) => {
   try {
@@ -18,4 +18,3 @@ export const deletePostController = async (req: RequestType, res: Response) => {
     console.log(e);
   }
 };
-

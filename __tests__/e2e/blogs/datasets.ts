@@ -1,4 +1,4 @@
-import { CreateBlogSchema } from '../../src/models';
+import { CreateBlogSchema } from '../../../src/models';
 
 export const dataSetNewBlog: CreateBlogSchema = {
   name: 'Test',

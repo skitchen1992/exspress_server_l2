@@ -1,8 +1,8 @@
-import { createAuthorizationHeader, req } from '../test-helpers';
-import { db } from '../../src/db/db';
-import { HTTP_STATUSES, PATH_URL } from '../../src/utils/consts';
+import { createAuthorizationHeader, req } from '../../test-helpers';
+import { db } from '../../../src/db/db';
+import { HTTP_STATUSES, PATH_URL } from '../../../src/utils/consts';
 import * as data from './datasets';
-import { SETTINGS } from '../../src/utils/settings';
+import { SETTINGS } from '../../../src/utils/settings';
 
 describe(`Endpoint (GET) - ${PATH_URL.POSTS}`, () => {
   beforeEach(async () => {

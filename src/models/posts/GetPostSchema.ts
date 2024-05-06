@@ -5,4 +5,5 @@ export type GetPostSchema = {
   content: string;
   blogId: string;
   blogName: string;
+  createdAt?: string;
 };

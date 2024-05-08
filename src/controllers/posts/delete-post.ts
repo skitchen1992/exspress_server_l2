@@ -1,15 +1,16 @@
-import { db } from '../../db/db';
 import { Response } from 'express';
 import { HTTP_STATUSES } from '../../utils/consts';
-import { RequestWithPrams } from '../../types/request-types';
+import { RequestWithParams } from '../../types/request-types';
+import { mongoDB } from '../../db/database';
+import { postsCollection } from '../../db';
 
-type RequestType = RequestWithPrams<{ id: string }>;
+type RequestType = RequestWithParams<{ id: string }>;
 
 export const deletePostController = async (req: RequestType, res: Response) => {
   try {
-    const isDelete = await db.deletePost(req.params.id);
+    const deleteResult = await mongoDB.delete(postsCollection, req.params.id);
 
-    if (isDelete) {
+    if (deleteResult.deletedCount === 1) {
       res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
     } else {
       res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);

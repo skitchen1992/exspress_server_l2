@@ -4,6 +4,6 @@ export type RequestWithBody<B> = Request<{}, {}, B>;
 
 export type RequestWithQuery<Q> = Request<{}, {}, {}, Q>;
 
-export type RequestWithPrams<P> = Request<P>;
+export type RequestWithParams<P> = Request<P>;
 
-export type RequestWithPramsAndBody<B, P> = Request<P, {}, B>;
+export type RequestWithParamsAndBody<B, P> = Request<P, {}, B>;

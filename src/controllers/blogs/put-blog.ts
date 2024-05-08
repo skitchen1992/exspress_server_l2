@@ -1,11 +1,11 @@
 import { Response } from 'express';
 import { HTTP_STATUSES } from '../../utils/consts';
 import { UpdateBlogSchema } from '../../models';
-import { RequestWithPramsAndBody } from '../../types/request-types';
+import { RequestWithParamsAndBody } from '../../types/request-types';
 import { mongoDB } from '../../db/database';
 import { blogsCollection } from '../../db';
 
-type RequestType = RequestWithPramsAndBody<UpdateBlogSchema, { id: string }>;
+type RequestType = RequestWithParamsAndBody<UpdateBlogSchema, { id: string }>;
 
 export const putBlogController = async (req: RequestType, res: Response) => {
   try {

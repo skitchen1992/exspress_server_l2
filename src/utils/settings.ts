@@ -14,6 +14,7 @@ export const SETTINGS = {
     },
     COLLECTION: {
       BLOGS: 'blogs',
+      POSTS: 'posts',
     },
   },
 };

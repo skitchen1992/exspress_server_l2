@@ -20,3 +20,5 @@ export const deleteBlogController = async (req: RequestType, res: Response) => {
     console.log(e);
   }
 };
+
+console.log();

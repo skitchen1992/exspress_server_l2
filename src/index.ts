@@ -2,8 +2,10 @@ import { SETTINGS } from './utils/settings';
 import { app } from './app';
 import { connectToDb } from './db';
 
+const url = SETTINGS.MONGO_DB_URL || 'mongodb://localhost:27017';
+
 const startApp = async () => {
-  if (!(await connectToDb(SETTINGS.MONGO_DB_URL || ''))) {
+  if (!(await connectToDb(url))) {
     console.log('Not connected to data base');
     process.exit(1);
   }

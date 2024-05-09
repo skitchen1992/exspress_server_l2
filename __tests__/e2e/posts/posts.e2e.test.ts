@@ -1,12 +1,33 @@
-import { createAuthorizationHeader, req } from '../../test-helpers';
-import { db } from '../../../src/db/db';
+import { createAuthorizationHeader } from '../../test-helpers';
 import { HTTP_STATUSES, PATH_URL } from '../../../src/utils/consts';
 import * as data from './datasets';
 import { SETTINGS } from '../../../src/utils/settings';
+import { agent, Test } from 'supertest';
+import { MongoMemoryServer } from 'mongodb-memory-server';
+import { blogsCollection, connectToDb, postsCollection } from '../../../src/db';
+import { app } from '../../../src/app';
+import TestAgent from 'supertest/lib/agent';
+import { mongoDB } from '../../../src/db/database';
+import { BlogDbType } from '../../../src/types/blog_types';
+import { PostDbType } from '../../../src/types/post-types';
+import { ID } from './datasets';
 
 describe(`Endpoint (GET) - ${PATH_URL.POSTS}`, () => {
-  beforeEach(async () => {
-    db.clearDB();
+  let req: TestAgent<Test>;
+  let mongoServer: MongoMemoryServer;
+
+  beforeAll(async () => {
+    mongoServer = await MongoMemoryServer.create();
+    await connectToDb(mongoServer.getUri());
+
+    req = agent(app);
+
+    await blogsCollection.deleteMany();
+    await postsCollection.deleteMany();
+  });
+
+  afterAll(async () => {
+    await mongoServer.stop();
   });
 
   it('Should get empty array', async () => {
@@ -16,168 +37,272 @@ describe(`Endpoint (GET) - ${PATH_URL.POSTS}`, () => {
   });
 
   it('Should get not empty array', async () => {
-    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
+    const insertOneResultBlog = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
 
-    await db.addPost({ ...data.dataSetNewPost, blogId });
+    const { insertedId: blogId } = insertOneResultBlog;
+
+    const blog = await mongoDB.getById<BlogDbType>(blogsCollection, blogId.toString());
+
+    const createdAt = new Date().toISOString();
+
+    const insertOneResultPost = await mongoDB.add<PostDbType>(postsCollection, {
+      ...data.dataSetNewPost,
+      blogId: blogId.toString(),
+      blogName: blog!.name,
+      createdAt,
+    });
+
+    const { insertedId: postId } = insertOneResultPost;
 
     const res = await req.get(PATH_URL.POSTS).expect(HTTP_STATUSES.OK_200);
 
-    const post = await db.getPostById(res.body.at(-1).id);
-
     expect(res.body.length).toBe(1);
-    expect(res.body).toEqual([post]);
+    expect(res.body).toEqual([
+      {
+        blogId: blogId.toString(),
+        blogName: blog!.name,
+        content: 'Content',
+        createdAt,
+        id: postId.toString(),
+        shortDescription: 'ShortDescription',
+        title: 'Title',
+      },
+    ]);
   });
 });
 
 describe(`Endpoint (GET) by ID - ${PATH_URL.POSTS}${PATH_URL.ID}`, () => {
+  let req: TestAgent<Test>;
+  let mongoServer: MongoMemoryServer;
+
   beforeEach(async () => {
-    db.clearDB();
+    mongoServer = await MongoMemoryServer.create();
+    await connectToDb(mongoServer.getUri());
+
+    req = agent(app);
+
+    await blogsCollection.deleteMany();
+    await postsCollection.deleteMany();
+  });
+
+  afterAll(async () => {
+    await mongoServer.stop();
   });
 
   it('Should get a post', async () => {
-    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
+    const insertOneResultBlog = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
 
-    const postId = await db.addPost({ ...data.dataSetNewPost, blogId });
+    const { insertedId: blogId } = insertOneResultBlog;
+
+    const blog = await mongoDB.getById<BlogDbType>(blogsCollection, blogId.toString());
+
+    const createdAt = new Date().toISOString();
+
+    const insertOneResultPost = await mongoDB.add<PostDbType>(postsCollection, {
+      ...data.dataSetNewPost,
+      blogId: blogId.toString(),
+      blogName: blog!.name,
+      createdAt,
+    });
+
+    const { insertedId: postId } = insertOneResultPost;
 
     const res = await req.get(`${PATH_URL.POSTS}/${postId}`).expect(HTTP_STATUSES.OK_200);
 
-    expect(res.body).toEqual(expect.objectContaining({ ...data.dataSetNewPost, id: postId, blogId }));
+    expect(res.body).toEqual(
+      expect.objectContaining({
+        blogId: blogId.toString(),
+        blogName: blog!.name,
+        content: 'Content',
+        createdAt,
+        id: postId.toString(),
+        shortDescription: 'ShortDescription',
+        title: 'Title',
+      })
+    );
   });
 
   it(`Should get status ${HTTP_STATUSES.NOT_FOUND_404}`, async () => {
-    const postId = await db.addPost({ ...data.dataSetNewPost, blogId: '1' });
+    const insertOneResultBlog = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
+
+    const { insertedId: blogId } = insertOneResultBlog;
+
+    const blog = await mongoDB.getById<BlogDbType>(blogsCollection, blogId.toString());
+
+    const createdAt = new Date().toISOString();
+
+    const insertOneResultPost = await mongoDB.add<PostDbType>(postsCollection, {
+      ...data.dataSetNewPost,
+      blogId: blogId.toString(),
+      blogName: blog!.name,
+      createdAt,
+    });
+
+    const { insertedId: postId } = insertOneResultPost;
 
     if (!Number(postId)) {
-      await req.get(`${PATH_URL.POSTS}/1`).expect(HTTP_STATUSES.NOT_FOUND_404);
+      await req.get(`${PATH_URL.POSTS}/${ID}`).expect(HTTP_STATUSES.NOT_FOUND_404);
     }
   });
 });
 
 describe(`Endpoint (POST) - ${PATH_URL.POSTS}`, () => {
+  let req: TestAgent<Test>;
+  let mongoServer: MongoMemoryServer;
+
   beforeEach(async () => {
-    db.clearDB();
+    mongoServer = await MongoMemoryServer.create();
+    await connectToDb(mongoServer.getUri());
+
+    req = agent(app);
+
+    await blogsCollection.deleteMany();
+    await postsCollection.deleteMany();
+  });
+
+  afterAll(async () => {
+    await mongoServer.stop();
   });
 
   it('Should add post', async () => {
-    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
-    const blog = await mongoDB.getById<BlogDbType>(blogsCollection, blogId);
+    const insertOneResultBlog = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
+
+    const { insertedId: blogId } = insertOneResultBlog;
+
+    const blog = await mongoDB.getById<BlogDbType>(blogsCollection, blogId.toString());
 
     const res = await req
       .post(PATH_URL.POSTS)
       .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
-      .send({ ...data.dataSetNewPost, blogId })
+      .send({ ...data.dataSetNewPost0, blogId })
       .expect(HTTP_STATUSES.CREATED_201);
 
-    expect(res.body).toEqual(expect.objectContaining({ ...data.dataSetNewPost, blogId, blogName: blog!.name }));
-
-    const post = await db.getPostById(res.body.id);
-
-    expect(post).toEqual(expect.objectContaining({ ...data.dataSetNewPost, blogId }));
+    expect(res.body).toEqual(
+      expect.objectContaining({ ...data.dataSetNewPost0, blogId: blogId.toString(), blogName: blog!.name })
+    );
   });
 
   it('Should get Error while field "title" is too long', async () => {
-    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
+    const insertOneResultBlog = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
+
+    const { insertedId: blogId } = insertOneResultBlog;
 
     const res = await req
       .post(PATH_URL.POSTS)
       .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
-      .send({ ...data.dataSetNewPost1, blogId })
+      .send({ ...data.dataSetNewPost1, blogId: blogId.toString() })
       .expect(HTTP_STATUSES.BAD_REQUEST_400);
 
     expect(res.body).toEqual(data.errorDataSet1);
   });
 
   it('Should get Error while field "title" is not a string', async () => {
-    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
+    const insertOneResultBlog = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
+
+    const { insertedId: blogId } = insertOneResultBlog;
 
     const res = await req
       .post(PATH_URL.POSTS)
       .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
-      .send({ ...data.dataSetNewPost2, blogId })
+      .send({ ...data.dataSetNewPost2, blogId: blogId.toString() })
       .expect(HTTP_STATUSES.BAD_REQUEST_400);
 
     expect(res.body).toEqual(data.errorDataSet2);
   });
 
   it('Should get Error while field "title" is empty', async () => {
-    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
+    const insertOneResultBlog = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
+
+    const { insertedId: blogId } = insertOneResultBlog;
 
     const res = await req
       .post(PATH_URL.POSTS)
       .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
-      .send({ ...data.dataSetNewPost3, blogId })
+      .send({ ...data.dataSetNewPost3, blogId: blogId.toString() })
       .expect(HTTP_STATUSES.BAD_REQUEST_400);
 
     expect(res.body).toEqual(data.errorDataSet3);
   });
 
   it('Should get Error while field "shortDescription" is too long', async () => {
-    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
+    const insertOneResultBlog = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
+
+    const { insertedId: blogId } = insertOneResultBlog;
 
     const res = await req
       .post(PATH_URL.POSTS)
       .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
-      .send({ ...data.dataSetNewPost4, blogId })
+      .send({ ...data.dataSetNewPost4, blogId: blogId.toString() })
       .expect(HTTP_STATUSES.BAD_REQUEST_400);
 
     expect(res.body).toEqual(data.errorDataSet4);
   });
 
   it('Should get Error while field "shortDescription" is not a string', async () => {
-    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
+    const insertOneResultBlog = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
+
+    const { insertedId: blogId } = insertOneResultBlog;
 
     const res = await req
       .post(PATH_URL.POSTS)
       .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
-      .send({ ...data.dataSetNewPost5, blogId })
+      .send({ ...data.dataSetNewPost5, blogId: blogId.toString() })
       .expect(HTTP_STATUSES.BAD_REQUEST_400);
 
     expect(res.body).toEqual(data.errorDataSet5);
   });
 
   it('Should get Error while field "description" is empty', async () => {
-    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
+    const insertOneResultBlog = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
+
+    const { insertedId: blogId } = insertOneResultBlog;
 
     const res = await req
       .post(PATH_URL.POSTS)
       .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
-      .send({ ...data.dataSetNewPost6, blogId })
+      .send({ ...data.dataSetNewPost6, blogId: blogId.toString() })
       .expect(HTTP_STATUSES.BAD_REQUEST_400);
 
     expect(res.body).toEqual(data.errorDataSet6);
   });
 
   it('Should get Error while field "content" is too long', async () => {
-    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
+    const insertOneResultBlog = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
+
+    const { insertedId: blogId } = insertOneResultBlog;
 
     const res = await req
       .post(PATH_URL.POSTS)
       .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
-      .send({ ...data.dataSetNewPost7, blogId })
+      .send({ ...data.dataSetNewPost7, blogId: blogId.toString() })
       .expect(HTTP_STATUSES.BAD_REQUEST_400);
 
     expect(res.body).toEqual(data.errorDataSet7);
   });
 
   it('Should get Error while field "content" is not a string', async () => {
-    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
+    const insertOneResultBlog = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
+
+    const { insertedId: blogId } = insertOneResultBlog;
 
     const res = await req
       .post(PATH_URL.POSTS)
       .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
-      .send({ ...data.dataSetNewPost8, blogId })
+      .send({ ...data.dataSetNewPost8, blogId: blogId.toString() })
       .expect(HTTP_STATUSES.BAD_REQUEST_400);
 
     expect(res.body).toEqual(data.errorDataSet8);
   });
 
   it.skip('Should get Error while field "content" is empty', async () => {
-    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
+    const insertOneResultBlog = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
+
+    const { insertedId: blogId } = insertOneResultBlog;
 
     const res = await req
       .post(PATH_URL.POSTS)
       .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
-      .send({ ...data.dataSetNewPost9, blogId })
+      .send({ ...data.dataSetNewPost9, blogId: blogId.toString() })
       .expect(HTTP_STATUSES.BAD_REQUEST_400);
 
     expect(res.body).toEqual(data.errorDataSet9);
@@ -185,12 +310,14 @@ describe(`Endpoint (POST) - ${PATH_URL.POSTS}`, () => {
 
   //skip for tests
   it.skip('Should get Error while we add too many fields specified', async () => {
-    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
+    const insertOneResultBlog = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
+
+    const { insertedId: blogId } = insertOneResultBlog;
 
     const res = await req
       .post(PATH_URL.POSTS)
       .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
-      .send({ ...data.dataSetNewPost10, blogId })
+      .send({ ...data.dataSetNewPost10, blogId: blogId.toString() })
       .expect(HTTP_STATUSES.BAD_REQUEST_400);
 
     expect(res.body).toEqual(data.errorDataSet10);
@@ -198,28 +325,71 @@ describe(`Endpoint (POST) - ${PATH_URL.POSTS}`, () => {
 });
 
 describe(`Endpoint (PUT) - ${PATH_URL.POSTS}${PATH_URL.ID}`, () => {
+  let req: TestAgent<Test>;
+  let mongoServer: MongoMemoryServer;
+
   beforeEach(async () => {
-    db.clearDB();
+    mongoServer = await MongoMemoryServer.create();
+    await connectToDb(mongoServer.getUri());
+
+    req = agent(app);
+
+    await blogsCollection.deleteMany();
+    await postsCollection.deleteMany();
+  });
+
+  afterAll(async () => {
+    await mongoServer.stop();
   });
 
   it('Should update post', async () => {
-    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
-    const postId = await db.addPost({ ...data.dataSetNewPost, blogId });
+    const insertOneResultBlog = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
+
+    const { insertedId: blogId } = insertOneResultBlog;
+
+    const blog = await mongoDB.getById<BlogDbType>(blogsCollection, blogId.toString());
+
+    const createdAt = new Date().toISOString();
+
+    const insertOneResultPost = await mongoDB.add<PostDbType>(postsCollection, {
+      ...data.dataSetNewPost,
+      blogId: blogId.toString(),
+      blogName: blog!.name,
+      createdAt,
+    });
+
+    const { insertedId: postId } = insertOneResultPost;
 
     await req
-      .put(`${PATH_URL.POSTS}/${postId}`)
+      .put(`${PATH_URL.POSTS}/${postId.toString()}`)
       .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
-      .send({ ...data.dataSetUpdatePost, blogId })
+      .send({ ...data.dataSetUpdatePost, blogId: blogId.toString() })
       .expect(HTTP_STATUSES.NO_CONTENT_204);
 
-    const post = await db.getPostById(postId);
+    const post = await mongoDB.getById<PostDbType>(postsCollection, postId.toString());
 
-    expect(post).toEqual(expect.objectContaining({ ...data.dataSetUpdatePost, blogId }));
+    expect(post).toEqual(
+      expect.objectContaining({ ...data.dataSetUpdatePost, blogId: blogId.toString(), blogName: blog!.name })
+    );
   });
 
   it('Should get Error while field "title" is too long', async () => {
-    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
-    const postId = await db.addPost({ ...data.dataSetNewPost, blogId });
+    const insertOneResultBlog = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
+
+    const { insertedId: blogId } = insertOneResultBlog;
+
+    const blog = await mongoDB.getById<BlogDbType>(blogsCollection, blogId.toString());
+
+    const createdAt = new Date().toISOString();
+
+    const insertOneResultPost = await mongoDB.add<PostDbType>(postsCollection, {
+      ...data.dataSetNewPost,
+      blogId: blogId.toString(),
+      blogName: blog!.name,
+      createdAt,
+    });
+
+    const { insertedId: postId } = insertOneResultPost;
 
     const res = await req
       .put(`${PATH_URL.POSTS}/${postId}`)
@@ -228,15 +398,25 @@ describe(`Endpoint (PUT) - ${PATH_URL.POSTS}${PATH_URL.ID}`, () => {
       .expect(HTTP_STATUSES.BAD_REQUEST_400);
 
     expect(res.body).toEqual(data.errorDataSet1);
-
-    const post = await db.getPostById(postId);
-
-    expect(post).toEqual(expect.objectContaining({ ...data.dataSetNewPost, blogId }));
   });
 
   it('Should get Error while field "title" is not a string', async () => {
-    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
-    const postId = await db.addPost({ ...data.dataSetNewPost, blogId });
+    const insertOneResultBlog = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
+
+    const { insertedId: blogId } = insertOneResultBlog;
+
+    const blog = await mongoDB.getById<BlogDbType>(blogsCollection, blogId.toString());
+
+    const createdAt = new Date().toISOString();
+
+    const insertOneResultPost = await mongoDB.add<PostDbType>(postsCollection, {
+      ...data.dataSetNewPost,
+      blogId: blogId.toString(),
+      blogName: blog!.name,
+      createdAt,
+    });
+
+    const { insertedId: postId } = insertOneResultPost;
 
     const res = await req
       .put(`${PATH_URL.POSTS}/${postId}`)
@@ -245,16 +425,25 @@ describe(`Endpoint (PUT) - ${PATH_URL.POSTS}${PATH_URL.ID}`, () => {
       .expect(HTTP_STATUSES.BAD_REQUEST_400);
 
     expect(res.body).toEqual(data.errorDataSet2);
-
-    const post = await db.getPostById(postId);
-
-    expect(post).toEqual(expect.objectContaining({ ...data.dataSetNewPost, blogId }));
   });
 
   it('Should get Error while field "title" is empty', async () => {
-    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
-    const postId = await db.addPost({ ...data.dataSetNewPost, blogId });
+    const insertOneResultBlog = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
 
+    const { insertedId: blogId } = insertOneResultBlog;
+
+    const blog = await mongoDB.getById<BlogDbType>(blogsCollection, blogId.toString());
+
+    const createdAt = new Date().toISOString();
+
+    const insertOneResultPost = await mongoDB.add<PostDbType>(postsCollection, {
+      ...data.dataSetNewPost,
+      blogId: blogId.toString(),
+      blogName: blog!.name,
+      createdAt,
+    });
+
+    const { insertedId: postId } = insertOneResultPost;
     const res = await req
       .put(`${PATH_URL.POSTS}/${postId}`)
       .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
@@ -262,15 +451,25 @@ describe(`Endpoint (PUT) - ${PATH_URL.POSTS}${PATH_URL.ID}`, () => {
       .expect(HTTP_STATUSES.BAD_REQUEST_400);
 
     expect(res.body).toEqual(data.errorDataSet3);
-
-    const post = await db.getPostById(postId);
-
-    expect(post).toEqual(expect.objectContaining({ ...data.dataSetNewPost, blogId }));
   });
 
   it('Should get Error while field "shortDescription" is too long', async () => {
-    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
-    const postId = await db.addPost({ ...data.dataSetNewPost, blogId });
+    const insertOneResultBlog = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
+
+    const { insertedId: blogId } = insertOneResultBlog;
+
+    const blog = await mongoDB.getById<BlogDbType>(blogsCollection, blogId.toString());
+
+    const createdAt = new Date().toISOString();
+
+    const insertOneResultPost = await mongoDB.add<PostDbType>(postsCollection, {
+      ...data.dataSetNewPost,
+      blogId: blogId.toString(),
+      blogName: blog!.name,
+      createdAt,
+    });
+
+    const { insertedId: postId } = insertOneResultPost;
 
     const res = await req
       .put(`${PATH_URL.POSTS}/${postId}`)
@@ -279,15 +478,25 @@ describe(`Endpoint (PUT) - ${PATH_URL.POSTS}${PATH_URL.ID}`, () => {
       .expect(HTTP_STATUSES.BAD_REQUEST_400);
 
     expect(res.body).toEqual(data.errorDataSet4);
-
-    const post = await db.getPostById(postId);
-
-    expect(post).toEqual(expect.objectContaining({ ...data.dataSetNewPost, blogId }));
   });
 
   it('Should get Error while field "shortDescription" is not a string', async () => {
-    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
-    const postId = await db.addPost({ ...data.dataSetNewPost, blogId });
+    const insertOneResultBlog = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
+
+    const { insertedId: blogId } = insertOneResultBlog;
+
+    const blog = await mongoDB.getById<BlogDbType>(blogsCollection, blogId.toString());
+
+    const createdAt = new Date().toISOString();
+
+    const insertOneResultPost = await mongoDB.add<PostDbType>(postsCollection, {
+      ...data.dataSetNewPost,
+      blogId: blogId.toString(),
+      blogName: blog!.name,
+      createdAt,
+    });
+
+    const { insertedId: postId } = insertOneResultPost;
 
     const res = await req
       .put(`${PATH_URL.POSTS}/${postId}`)
@@ -296,15 +505,25 @@ describe(`Endpoint (PUT) - ${PATH_URL.POSTS}${PATH_URL.ID}`, () => {
       .expect(HTTP_STATUSES.BAD_REQUEST_400);
 
     expect(res.body).toEqual(data.errorDataSet5);
-
-    const post = await db.getPostById(postId);
-
-    expect(post).toEqual(expect.objectContaining({ ...data.dataSetNewPost, blogId }));
   });
 
   it('Should get Error while field "description" is empty', async () => {
-    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
-    const postId = await db.addPost({ ...data.dataSetNewPost, blogId });
+    const insertOneResultBlog = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
+
+    const { insertedId: blogId } = insertOneResultBlog;
+
+    const blog = await mongoDB.getById<BlogDbType>(blogsCollection, blogId.toString());
+
+    const createdAt = new Date().toISOString();
+
+    const insertOneResultPost = await mongoDB.add<PostDbType>(postsCollection, {
+      ...data.dataSetNewPost,
+      blogId: blogId.toString(),
+      blogName: blog!.name,
+      createdAt,
+    });
+
+    const { insertedId: postId } = insertOneResultPost;
 
     const res = await req
       .put(`${PATH_URL.POSTS}/${postId}`)
@@ -313,15 +532,25 @@ describe(`Endpoint (PUT) - ${PATH_URL.POSTS}${PATH_URL.ID}`, () => {
       .expect(HTTP_STATUSES.BAD_REQUEST_400);
 
     expect(res.body).toEqual(data.errorDataSet6);
-
-    const post = await db.getPostById(postId);
-
-    expect(post).toEqual(expect.objectContaining({ ...data.dataSetNewPost, blogId }));
   });
 
   it('Should get Error while field "content" is too long', async () => {
-    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
-    const postId = await db.addPost({ ...data.dataSetNewPost, blogId });
+    const insertOneResultBlog = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
+
+    const { insertedId: blogId } = insertOneResultBlog;
+
+    const blog = await mongoDB.getById<BlogDbType>(blogsCollection, blogId.toString());
+
+    const createdAt = new Date().toISOString();
+
+    const insertOneResultPost = await mongoDB.add<PostDbType>(postsCollection, {
+      ...data.dataSetNewPost,
+      blogId: blogId.toString(),
+      blogName: blog!.name,
+      createdAt,
+    });
+
+    const { insertedId: postId } = insertOneResultPost;
 
     const res = await req
       .put(`${PATH_URL.POSTS}/${postId}`)
@@ -330,15 +559,25 @@ describe(`Endpoint (PUT) - ${PATH_URL.POSTS}${PATH_URL.ID}`, () => {
       .expect(HTTP_STATUSES.BAD_REQUEST_400);
 
     expect(res.body).toEqual(data.errorDataSet7);
-
-    const post = await db.getPostById(postId);
-
-    expect(post).toEqual(expect.objectContaining({ ...data.dataSetNewPost, blogId }));
   });
 
   it('Should get Error while field "content" is not a string', async () => {
-    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
-    const postId = await db.addPost({ ...data.dataSetNewPost, blogId });
+    const insertOneResultBlog = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
+
+    const { insertedId: blogId } = insertOneResultBlog;
+
+    const blog = await mongoDB.getById<BlogDbType>(blogsCollection, blogId.toString());
+
+    const createdAt = new Date().toISOString();
+
+    const insertOneResultPost = await mongoDB.add<PostDbType>(postsCollection, {
+      ...data.dataSetNewPost,
+      blogId: blogId.toString(),
+      blogName: blog!.name,
+      createdAt,
+    });
+
+    const { insertedId: postId } = insertOneResultPost;
 
     const res = await req
       .put(`${PATH_URL.POSTS}/${postId}`)
@@ -347,15 +586,25 @@ describe(`Endpoint (PUT) - ${PATH_URL.POSTS}${PATH_URL.ID}`, () => {
       .expect(HTTP_STATUSES.BAD_REQUEST_400);
 
     expect(res.body).toEqual(data.errorDataSet8);
-
-    const post = await db.getPostById(postId);
-
-    expect(post).toEqual(expect.objectContaining({ ...data.dataSetNewPost, blogId }));
   });
 
   it.skip('Should get Error while field "content" is empty', async () => {
-    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
-    const postId = await db.addPost({ ...data.dataSetNewPost, blogId });
+    const insertOneResultBlog = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
+
+    const { insertedId: blogId } = insertOneResultBlog;
+
+    const blog = await mongoDB.getById<BlogDbType>(blogsCollection, blogId.toString());
+
+    const createdAt = new Date().toISOString();
+
+    const insertOneResultPost = await mongoDB.add<PostDbType>(postsCollection, {
+      ...data.dataSetNewPost,
+      blogId: blogId.toString(),
+      blogName: blog!.name,
+      createdAt,
+    });
+
+    const { insertedId: postId } = insertOneResultPost;
 
     const res = await req
       .put(`${PATH_URL.POSTS}/${postId}`)
@@ -364,15 +613,25 @@ describe(`Endpoint (PUT) - ${PATH_URL.POSTS}${PATH_URL.ID}`, () => {
       .expect(HTTP_STATUSES.BAD_REQUEST_400);
 
     expect(res.body).toEqual(data.errorDataSet9);
-
-    const post = await db.getPostById(postId);
-
-    expect(post).toEqual(expect.objectContaining({ ...data.dataSetNewPost, blogId }));
   });
 
   it('Should get Error while we add too many fields specified', async () => {
-    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
-    const postId = await db.addPost({ ...data.dataSetNewPost, blogId });
+    const insertOneResultBlog = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
+
+    const { insertedId: blogId } = insertOneResultBlog;
+
+    const blog = await mongoDB.getById<BlogDbType>(blogsCollection, blogId.toString());
+
+    const createdAt = new Date().toISOString();
+
+    const insertOneResultPost = await mongoDB.add<PostDbType>(postsCollection, {
+      ...data.dataSetNewPost,
+      blogId: blogId.toString(),
+      blogName: blog!.name,
+      createdAt,
+    });
+
+    const { insertedId: postId } = insertOneResultPost;
 
     const res = await req
       .put(`${PATH_URL.POSTS}/${postId}`)
@@ -381,41 +640,79 @@ describe(`Endpoint (PUT) - ${PATH_URL.POSTS}${PATH_URL.ID}`, () => {
       .expect(HTTP_STATUSES.BAD_REQUEST_400);
 
     expect(res.body).toEqual(data.errorDataSet10);
-
-    const post = await db.getPostById(postId);
-
-    expect(post).toEqual(expect.objectContaining({ ...data.dataSetNewPost, blogId }));
   });
 });
 
 describe(`Endpoint (DELETE) - ${PATH_URL.POSTS}${PATH_URL.ID}`, () => {
+  let req: TestAgent<Test>;
+  let mongoServer: MongoMemoryServer;
+
   beforeEach(async () => {
-    db.clearDB();
+    mongoServer = await MongoMemoryServer.create();
+    await connectToDb(mongoServer.getUri());
+
+    req = agent(app);
+
+    await blogsCollection.deleteMany();
+    await postsCollection.deleteMany();
+  });
+
+  afterAll(async () => {
+    await mongoServer.stop();
   });
 
   it('Should delete post', async () => {
-    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
-    const postId = await db.addPost({ ...data.dataSetNewPost, blogId });
+    const insertOneResultBlog = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
+
+    const { insertedId: blogId } = insertOneResultBlog;
+
+    const blog = await mongoDB.getById<BlogDbType>(blogsCollection, blogId.toString());
+
+    const createdAt = new Date().toISOString();
+
+    const insertOneResultPost = await mongoDB.add<PostDbType>(postsCollection, {
+      ...data.dataSetNewPost,
+      blogId: blogId.toString(),
+      blogName: blog!.name,
+      createdAt,
+    });
+
+    const { insertedId: postId } = insertOneResultPost;
 
     await req
       .delete(`${PATH_URL.POSTS}/${postId}`)
       .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
       .expect(HTTP_STATUSES.NO_CONTENT_204);
 
-    const post = await db.getPostById(postId);
+    const post = await mongoDB.getById<PostDbType>(postsCollection, postId.toString());
+
     expect(post).toBe(null);
   });
 
   it(`Should get error ${HTTP_STATUSES.NOT_FOUND_404}`, async () => {
-    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
-    const postId = await db.addPost({ ...data.dataSetNewPost, blogId });
+    const insertOneResultBlog = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
+
+    const { insertedId: blogId } = insertOneResultBlog;
+
+    const blog = await mongoDB.getById<BlogDbType>(blogsCollection, blogId.toString());
+
+    const createdAt = new Date().toISOString();
+
+    const insertOneResultPost = await mongoDB.add<PostDbType>(postsCollection, {
+      ...data.dataSetNewPost,
+      blogId: blogId.toString(),
+      blogName: blog!.name,
+      createdAt,
+    });
+
+    const { insertedId: postId } = insertOneResultPost;
 
     await req
-      .delete(`${PATH_URL.POSTS}/1`)
+      .delete(`${PATH_URL.POSTS}/${ID}`)
       .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
       .expect(HTTP_STATUSES.NOT_FOUND_404);
 
-    const post = await db.getPostById(postId);
+    const post = await mongoDB.getById<PostDbType>(postsCollection, postId.toString());
     expect(Boolean(post)).toBe(true);
   });
 });

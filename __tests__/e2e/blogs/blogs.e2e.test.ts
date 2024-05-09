@@ -4,11 +4,12 @@ import * as data from './datasets';
 import { SETTINGS } from '../../../src/utils/settings';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { agent, Test } from 'supertest';
-import TestAgent = require('supertest/lib/agent');
+import TestAgent from 'supertest/lib/agent';
 import { app } from '../../../src/app';
 import { blogsCollection, connectToDb, postsCollection } from '../../../src/db';
 import { mongoDB } from '../../../src/db/database';
 import { BlogDbType } from '../../../src/types/blog_types';
+import { ID } from './datasets';
 
 describe(`Endpoint (GET) - ${PATH_URL.BLOGS}`, () => {
   let req: TestAgent<Test>;
@@ -85,7 +86,7 @@ describe(`Endpoint (GET) by ID - ${PATH_URL.BLOGS}${PATH_URL.ID}`, () => {
   it(`Should get status ${HTTP_STATUSES.NOT_FOUND_404}`, async () => {
     await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog1);
 
-    await req.get(`${PATH_URL.BLOGS}/1A2B3C4D5E6F7A8B9C0D1E2F`).expect(HTTP_STATUSES.NOT_FOUND_404);
+    await req.get(`${PATH_URL.BLOGS}/${ID}`).expect(HTTP_STATUSES.NOT_FOUND_404);
   });
 });
 
@@ -258,7 +259,7 @@ describe(`Endpoint (PUT) - ${PATH_URL.BLOGS}${PATH_URL.ID}`, () => {
 
   it(`Should get error ${HTTP_STATUSES.NOT_FOUND_404}`, async () => {
     await req
-      .put(`${PATH_URL.BLOGS}/1A2B3C4D5E6F7A8B9C0D1E2F`)
+      .put(`${PATH_URL.BLOGS}/${ID}`)
       .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
       .send(data.dataSetUpdateBlog)
       .expect(HTTP_STATUSES.NOT_FOUND_404);
@@ -410,7 +411,7 @@ describe(`Endpoint (DELETE) - ${PATH_URL.BLOGS}${PATH_URL.ID}`, () => {
 
   it(`Should get error ${HTTP_STATUSES.NOT_FOUND_404}`, async () => {
     await req
-      .delete(`${PATH_URL.BLOGS}/1A2B3C4D5E6F7A8B9C0D1E2F`)
+      .delete(`${PATH_URL.BLOGS}/${ID}`)
       .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
       .expect(HTTP_STATUSES.NOT_FOUND_404);
   });

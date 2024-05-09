@@ -16,7 +16,7 @@ describe(`Endpoint (GET) - ${PATH_URL.POSTS}`, () => {
   });
 
   it('Should get not empty array', async () => {
-    const blogId = await db.addBlog(data.dataSetNewBlog);
+    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
 
     await db.addPost({ ...data.dataSetNewPost, blogId });
 
@@ -35,7 +35,7 @@ describe(`Endpoint (GET) by ID - ${PATH_URL.POSTS}${PATH_URL.ID}`, () => {
   });
 
   it('Should get a post', async () => {
-    const blogId = await db.addBlog(data.dataSetNewBlog);
+    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
 
     const postId = await db.addPost({ ...data.dataSetNewPost, blogId });
 
@@ -59,12 +59,14 @@ describe(`Endpoint (POST) - ${PATH_URL.POSTS}`, () => {
   });
 
   it('Should add post', async () => {
-    const blogId = await db.addBlog(data.dataSetNewBlog);
-    const blog = await db.getBlogById(blogId);
+    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
+    const blog = await mongoDB.getById<BlogDbType>(blogsCollection, blogId);
 
-    const res = await req.post(PATH_URL.POSTS)
+    const res = await req
+      .post(PATH_URL.POSTS)
       .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
-      .send({ ...data.dataSetNewPost, blogId }).expect(HTTP_STATUSES.CREATED_201);
+      .send({ ...data.dataSetNewPost, blogId })
+      .expect(HTTP_STATUSES.CREATED_201);
 
     expect(res.body).toEqual(expect.objectContaining({ ...data.dataSetNewPost, blogId, blogName: blog!.name }));
 
@@ -74,102 +76,122 @@ describe(`Endpoint (POST) - ${PATH_URL.POSTS}`, () => {
   });
 
   it('Should get Error while field "title" is too long', async () => {
-    const blogId = await db.addBlog(data.dataSetNewBlog);
+    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
 
-    const res = await req.post(PATH_URL.POSTS)
+    const res = await req
+      .post(PATH_URL.POSTS)
       .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
-      .send({ ...data.dataSetNewPost1, blogId }).expect(HTTP_STATUSES.BAD_REQUEST_400);
+      .send({ ...data.dataSetNewPost1, blogId })
+      .expect(HTTP_STATUSES.BAD_REQUEST_400);
 
     expect(res.body).toEqual(data.errorDataSet1);
   });
 
   it('Should get Error while field "title" is not a string', async () => {
-    const blogId = await db.addBlog(data.dataSetNewBlog);
+    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
 
-    const res = await req.post(PATH_URL.POSTS)
+    const res = await req
+      .post(PATH_URL.POSTS)
       .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
-      .send({ ...data.dataSetNewPost2, blogId }).expect(HTTP_STATUSES.BAD_REQUEST_400);
+      .send({ ...data.dataSetNewPost2, blogId })
+      .expect(HTTP_STATUSES.BAD_REQUEST_400);
 
     expect(res.body).toEqual(data.errorDataSet2);
   });
 
   it('Should get Error while field "title" is empty', async () => {
-    const blogId = await db.addBlog(data.dataSetNewBlog);
+    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
 
-    const res = await req.post(PATH_URL.POSTS)
+    const res = await req
+      .post(PATH_URL.POSTS)
       .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
-      .send({ ...data.dataSetNewPost3, blogId }).expect(HTTP_STATUSES.BAD_REQUEST_400);
+      .send({ ...data.dataSetNewPost3, blogId })
+      .expect(HTTP_STATUSES.BAD_REQUEST_400);
 
     expect(res.body).toEqual(data.errorDataSet3);
   });
 
   it('Should get Error while field "shortDescription" is too long', async () => {
-    const blogId = await db.addBlog(data.dataSetNewBlog);
+    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
 
-    const res = await req.post(PATH_URL.POSTS)
+    const res = await req
+      .post(PATH_URL.POSTS)
       .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
-      .send({ ...data.dataSetNewPost4, blogId }).expect(HTTP_STATUSES.BAD_REQUEST_400);
+      .send({ ...data.dataSetNewPost4, blogId })
+      .expect(HTTP_STATUSES.BAD_REQUEST_400);
 
     expect(res.body).toEqual(data.errorDataSet4);
   });
 
   it('Should get Error while field "shortDescription" is not a string', async () => {
-    const blogId = await db.addBlog(data.dataSetNewBlog);
+    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
 
-    const res = await req.post(PATH_URL.POSTS)
+    const res = await req
+      .post(PATH_URL.POSTS)
       .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
-      .send({ ...data.dataSetNewPost5, blogId }).expect(HTTP_STATUSES.BAD_REQUEST_400);
+      .send({ ...data.dataSetNewPost5, blogId })
+      .expect(HTTP_STATUSES.BAD_REQUEST_400);
 
     expect(res.body).toEqual(data.errorDataSet5);
   });
 
   it('Should get Error while field "description" is empty', async () => {
-    const blogId = await db.addBlog(data.dataSetNewBlog);
+    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
 
-    const res = await req.post(PATH_URL.POSTS)
+    const res = await req
+      .post(PATH_URL.POSTS)
       .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
-      .send({ ...data.dataSetNewPost6, blogId }).expect(HTTP_STATUSES.BAD_REQUEST_400);
+      .send({ ...data.dataSetNewPost6, blogId })
+      .expect(HTTP_STATUSES.BAD_REQUEST_400);
 
     expect(res.body).toEqual(data.errorDataSet6);
   });
 
   it('Should get Error while field "content" is too long', async () => {
-    const blogId = await db.addBlog(data.dataSetNewBlog);
+    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
 
-    const res = await req.post(PATH_URL.POSTS)
+    const res = await req
+      .post(PATH_URL.POSTS)
       .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
-      .send({ ...data.dataSetNewPost7, blogId }).expect(HTTP_STATUSES.BAD_REQUEST_400);
+      .send({ ...data.dataSetNewPost7, blogId })
+      .expect(HTTP_STATUSES.BAD_REQUEST_400);
 
     expect(res.body).toEqual(data.errorDataSet7);
   });
 
   it('Should get Error while field "content" is not a string', async () => {
-    const blogId = await db.addBlog(data.dataSetNewBlog);
+    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
 
-    const res = await req.post(PATH_URL.POSTS)
+    const res = await req
+      .post(PATH_URL.POSTS)
       .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
-      .send({ ...data.dataSetNewPost8, blogId }).expect(HTTP_STATUSES.BAD_REQUEST_400);
+      .send({ ...data.dataSetNewPost8, blogId })
+      .expect(HTTP_STATUSES.BAD_REQUEST_400);
 
     expect(res.body).toEqual(data.errorDataSet8);
   });
 
   it.skip('Should get Error while field "content" is empty', async () => {
-    const blogId = await db.addBlog(data.dataSetNewBlog);
+    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
 
-    const res = await req.post(PATH_URL.POSTS)
+    const res = await req
+      .post(PATH_URL.POSTS)
       .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
-      .send({ ...data.dataSetNewPost9, blogId }).expect(HTTP_STATUSES.BAD_REQUEST_400);
+      .send({ ...data.dataSetNewPost9, blogId })
+      .expect(HTTP_STATUSES.BAD_REQUEST_400);
 
     expect(res.body).toEqual(data.errorDataSet9);
   });
 
-//skip for tests
+  //skip for tests
   it.skip('Should get Error while we add too many fields specified', async () => {
-    const blogId = await db.addBlog(data.dataSetNewBlog);
+    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
 
-    const res = await req.post(PATH_URL.POSTS)
+    const res = await req
+      .post(PATH_URL.POSTS)
       .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
-      .send({ ...data.dataSetNewPost10, blogId }).expect(HTTP_STATUSES.BAD_REQUEST_400);
+      .send({ ...data.dataSetNewPost10, blogId })
+      .expect(HTTP_STATUSES.BAD_REQUEST_400);
 
     expect(res.body).toEqual(data.errorDataSet10);
   });
@@ -181,12 +203,14 @@ describe(`Endpoint (PUT) - ${PATH_URL.POSTS}${PATH_URL.ID}`, () => {
   });
 
   it('Should update post', async () => {
-    const blogId = await db.addBlog(data.dataSetNewBlog);
+    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
     const postId = await db.addPost({ ...data.dataSetNewPost, blogId });
 
-    await req.put(`${PATH_URL.POSTS}/${postId}`)
+    await req
+      .put(`${PATH_URL.POSTS}/${postId}`)
       .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
-      .send({ ...data.dataSetUpdatePost, blogId }).expect(HTTP_STATUSES.NO_CONTENT_204);
+      .send({ ...data.dataSetUpdatePost, blogId })
+      .expect(HTTP_STATUSES.NO_CONTENT_204);
 
     const post = await db.getPostById(postId);
 
@@ -194,12 +218,14 @@ describe(`Endpoint (PUT) - ${PATH_URL.POSTS}${PATH_URL.ID}`, () => {
   });
 
   it('Should get Error while field "title" is too long', async () => {
-    const blogId = await db.addBlog(data.dataSetNewBlog);
+    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
     const postId = await db.addPost({ ...data.dataSetNewPost, blogId });
 
-    const res = await req.put(`${PATH_URL.POSTS}/${postId}`)
+    const res = await req
+      .put(`${PATH_URL.POSTS}/${postId}`)
       .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
-      .send({ ...data.dataSetNewPost1, blogId }).expect(HTTP_STATUSES.BAD_REQUEST_400);
+      .send({ ...data.dataSetNewPost1, blogId })
+      .expect(HTTP_STATUSES.BAD_REQUEST_400);
 
     expect(res.body).toEqual(data.errorDataSet1);
 
@@ -209,12 +235,14 @@ describe(`Endpoint (PUT) - ${PATH_URL.POSTS}${PATH_URL.ID}`, () => {
   });
 
   it('Should get Error while field "title" is not a string', async () => {
-    const blogId = await db.addBlog(data.dataSetNewBlog);
+    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
     const postId = await db.addPost({ ...data.dataSetNewPost, blogId });
 
-    const res = await req.put(`${PATH_URL.POSTS}/${postId}`)
+    const res = await req
+      .put(`${PATH_URL.POSTS}/${postId}`)
       .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
-      .send({ ...data.dataSetNewPost2, blogId }).expect(HTTP_STATUSES.BAD_REQUEST_400);
+      .send({ ...data.dataSetNewPost2, blogId })
+      .expect(HTTP_STATUSES.BAD_REQUEST_400);
 
     expect(res.body).toEqual(data.errorDataSet2);
 
@@ -224,12 +252,14 @@ describe(`Endpoint (PUT) - ${PATH_URL.POSTS}${PATH_URL.ID}`, () => {
   });
 
   it('Should get Error while field "title" is empty', async () => {
-    const blogId = await db.addBlog(data.dataSetNewBlog);
+    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
     const postId = await db.addPost({ ...data.dataSetNewPost, blogId });
 
-    const res = await req.put(`${PATH_URL.POSTS}/${postId}`)
+    const res = await req
+      .put(`${PATH_URL.POSTS}/${postId}`)
       .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
-      .send({ ...data.dataSetNewPost3, blogId }).expect(HTTP_STATUSES.BAD_REQUEST_400);
+      .send({ ...data.dataSetNewPost3, blogId })
+      .expect(HTTP_STATUSES.BAD_REQUEST_400);
 
     expect(res.body).toEqual(data.errorDataSet3);
 
@@ -239,12 +269,14 @@ describe(`Endpoint (PUT) - ${PATH_URL.POSTS}${PATH_URL.ID}`, () => {
   });
 
   it('Should get Error while field "shortDescription" is too long', async () => {
-    const blogId = await db.addBlog(data.dataSetNewBlog);
+    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
     const postId = await db.addPost({ ...data.dataSetNewPost, blogId });
 
-    const res = await req.put(`${PATH_URL.POSTS}/${postId}`)
+    const res = await req
+      .put(`${PATH_URL.POSTS}/${postId}`)
       .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
-      .send({ ...data.dataSetNewPost4, blogId }).expect(HTTP_STATUSES.BAD_REQUEST_400);
+      .send({ ...data.dataSetNewPost4, blogId })
+      .expect(HTTP_STATUSES.BAD_REQUEST_400);
 
     expect(res.body).toEqual(data.errorDataSet4);
 
@@ -254,12 +286,14 @@ describe(`Endpoint (PUT) - ${PATH_URL.POSTS}${PATH_URL.ID}`, () => {
   });
 
   it('Should get Error while field "shortDescription" is not a string', async () => {
-    const blogId = await db.addBlog(data.dataSetNewBlog);
+    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
     const postId = await db.addPost({ ...data.dataSetNewPost, blogId });
 
-    const res = await req.put(`${PATH_URL.POSTS}/${postId}`)
+    const res = await req
+      .put(`${PATH_URL.POSTS}/${postId}`)
       .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
-      .send({ ...data.dataSetNewPost5, blogId }).expect(HTTP_STATUSES.BAD_REQUEST_400);
+      .send({ ...data.dataSetNewPost5, blogId })
+      .expect(HTTP_STATUSES.BAD_REQUEST_400);
 
     expect(res.body).toEqual(data.errorDataSet5);
 
@@ -269,12 +303,14 @@ describe(`Endpoint (PUT) - ${PATH_URL.POSTS}${PATH_URL.ID}`, () => {
   });
 
   it('Should get Error while field "description" is empty', async () => {
-    const blogId = await db.addBlog(data.dataSetNewBlog);
+    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
     const postId = await db.addPost({ ...data.dataSetNewPost, blogId });
 
-    const res = await req.put(`${PATH_URL.POSTS}/${postId}`)
+    const res = await req
+      .put(`${PATH_URL.POSTS}/${postId}`)
       .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
-      .send({ ...data.dataSetNewPost6, blogId }).expect(HTTP_STATUSES.BAD_REQUEST_400);
+      .send({ ...data.dataSetNewPost6, blogId })
+      .expect(HTTP_STATUSES.BAD_REQUEST_400);
 
     expect(res.body).toEqual(data.errorDataSet6);
 
@@ -284,12 +320,14 @@ describe(`Endpoint (PUT) - ${PATH_URL.POSTS}${PATH_URL.ID}`, () => {
   });
 
   it('Should get Error while field "content" is too long', async () => {
-    const blogId = await db.addBlog(data.dataSetNewBlog);
+    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
     const postId = await db.addPost({ ...data.dataSetNewPost, blogId });
 
-    const res = await req.put(`${PATH_URL.POSTS}/${postId}`)
+    const res = await req
+      .put(`${PATH_URL.POSTS}/${postId}`)
       .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
-      .send({ ...data.dataSetNewPost7, blogId }).expect(HTTP_STATUSES.BAD_REQUEST_400);
+      .send({ ...data.dataSetNewPost7, blogId })
+      .expect(HTTP_STATUSES.BAD_REQUEST_400);
 
     expect(res.body).toEqual(data.errorDataSet7);
 
@@ -299,12 +337,14 @@ describe(`Endpoint (PUT) - ${PATH_URL.POSTS}${PATH_URL.ID}`, () => {
   });
 
   it('Should get Error while field "content" is not a string', async () => {
-    const blogId = await db.addBlog(data.dataSetNewBlog);
+    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
     const postId = await db.addPost({ ...data.dataSetNewPost, blogId });
 
-    const res = await req.put(`${PATH_URL.POSTS}/${postId}`)
+    const res = await req
+      .put(`${PATH_URL.POSTS}/${postId}`)
       .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
-      .send({ ...data.dataSetNewPost8, blogId }).expect(HTTP_STATUSES.BAD_REQUEST_400);
+      .send({ ...data.dataSetNewPost8, blogId })
+      .expect(HTTP_STATUSES.BAD_REQUEST_400);
 
     expect(res.body).toEqual(data.errorDataSet8);
 
@@ -314,12 +354,14 @@ describe(`Endpoint (PUT) - ${PATH_URL.POSTS}${PATH_URL.ID}`, () => {
   });
 
   it.skip('Should get Error while field "content" is empty', async () => {
-    const blogId = await db.addBlog(data.dataSetNewBlog);
+    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
     const postId = await db.addPost({ ...data.dataSetNewPost, blogId });
 
-    const res = await req.put(`${PATH_URL.POSTS}/${postId}`)
+    const res = await req
+      .put(`${PATH_URL.POSTS}/${postId}`)
       .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
-      .send({ ...data.dataSetNewPost9, blogId }).expect(HTTP_STATUSES.BAD_REQUEST_400);
+      .send({ ...data.dataSetNewPost9, blogId })
+      .expect(HTTP_STATUSES.BAD_REQUEST_400);
 
     expect(res.body).toEqual(data.errorDataSet9);
 
@@ -329,12 +371,14 @@ describe(`Endpoint (PUT) - ${PATH_URL.POSTS}${PATH_URL.ID}`, () => {
   });
 
   it('Should get Error while we add too many fields specified', async () => {
-    const blogId = await db.addBlog(data.dataSetNewBlog);
+    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
     const postId = await db.addPost({ ...data.dataSetNewPost, blogId });
 
-    const res = await req.put(`${PATH_URL.POSTS}/${postId}`)
+    const res = await req
+      .put(`${PATH_URL.POSTS}/${postId}`)
       .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
-      .send({ ...data.dataSetNewPost10, blogId }).expect(HTTP_STATUSES.BAD_REQUEST_400);
+      .send({ ...data.dataSetNewPost10, blogId })
+      .expect(HTTP_STATUSES.BAD_REQUEST_400);
 
     expect(res.body).toEqual(data.errorDataSet10);
 
@@ -350,10 +394,11 @@ describe(`Endpoint (DELETE) - ${PATH_URL.POSTS}${PATH_URL.ID}`, () => {
   });
 
   it('Should delete post', async () => {
-    const blogId = await db.addBlog(data.dataSetNewBlog);
+    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
     const postId = await db.addPost({ ...data.dataSetNewPost, blogId });
 
-    await req.delete(`${PATH_URL.POSTS}/${postId}`)
+    await req
+      .delete(`${PATH_URL.POSTS}/${postId}`)
       .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
       .expect(HTTP_STATUSES.NO_CONTENT_204);
 
@@ -362,11 +407,11 @@ describe(`Endpoint (DELETE) - ${PATH_URL.POSTS}${PATH_URL.ID}`, () => {
   });
 
   it(`Should get error ${HTTP_STATUSES.NOT_FOUND_404}`, async () => {
-
-    const blogId = await db.addBlog(data.dataSetNewBlog);
+    const blogId = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
     const postId = await db.addPost({ ...data.dataSetNewPost, blogId });
 
-    await req.delete(`${PATH_URL.POSTS}/1`)
+    await req
+      .delete(`${PATH_URL.POSTS}/1`)
       .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
       .expect(HTTP_STATUSES.NOT_FOUND_404);
 

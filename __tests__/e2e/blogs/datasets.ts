@@ -47,7 +47,6 @@ export const dataSetNewBlog3 = {
   websiteUrl: 'https://string.com',
 };
 
-
 export const errorDataSet3 = {
   errorsMessages: [
     {
@@ -59,7 +58,8 @@ export const errorDataSet3 = {
 
 export const dataSetNewBlog4 = {
   name: 'Test name',
-  description: 'Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world',
+  description:
+    'Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world',
   websiteUrl: 'https://string.com',
 };
 

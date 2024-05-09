@@ -3,8 +3,8 @@ import { BlogDbType } from '../types/blog_types';
 import { SETTINGS } from '../utils/settings';
 import { PostDbType } from '../types/post-types';
 
-let client: MongoClient = {} as MongoClient;
-export let db: Db = {} as Db;
+let client: MongoClient;
+export let db: Db;
 
 export let blogsCollection: Collection<BlogDbType>;
 export let postsCollection: Collection<PostDbType>;

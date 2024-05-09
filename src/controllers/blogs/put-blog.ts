@@ -1,16 +1,17 @@
-import { db } from '../../db/db';
 import { Response } from 'express';
 import { HTTP_STATUSES } from '../../utils/consts';
 import { UpdateBlogSchema } from '../../models';
-import { RequestWithPramsAndBody } from '../../types/request-types';
+import { RequestWithParamsAndBody } from '../../types/request-types';
+import { mongoDB } from '../../db/database';
+import { blogsCollection } from '../../db';
 
-type RequestType = RequestWithPramsAndBody<UpdateBlogSchema, { id: string }>;
+type RequestType = RequestWithParamsAndBody<UpdateBlogSchema, { id: string }>;
 
 export const putBlogController = async (req: RequestType, res: Response) => {
   try {
-    const isUpdated = await db.updateBlog(req.params.id, req.body);
+    const updateResult = await mongoDB.update<UpdateBlogSchema>(blogsCollection, req.params.id, req.body);
 
-    if (isUpdated) {
+    if (updateResult.modifiedCount === 1) {
       res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
     } else {
       res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);

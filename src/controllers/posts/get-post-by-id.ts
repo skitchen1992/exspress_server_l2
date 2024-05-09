@@ -1,18 +1,22 @@
-import { db } from '../../db/db';
 import { Response } from 'express';
 import { HTTP_STATUSES } from '../../utils/consts';
-import { CreatePostSchemaResponse, ResponseErrorSchema } from '../../models';
-import { RequestWithPrams } from '../../types/request-types';
+import { GetPostSchema, ResponseErrorSchema } from '../../models';
+import { RequestWithParams } from '../../types/request-types';
+import { mongoDB } from '../../db/database';
+import { postsCollection } from '../../db';
+import { mapIdField } from '../../utils/helpers';
+import { PostDbType } from '../../types/post-types';
 
-type ResponseType = CreatePostSchemaResponse | ResponseErrorSchema;
+type ResponseType = GetPostSchema | ResponseErrorSchema;
 
-export const getPostByIdController = async (req: RequestWithPrams<{ id: string }>, res: Response<ResponseType>) => {
+export const getPostByIdController = async (req: RequestWithParams<{ id: string }>, res: Response<ResponseType>) => {
   try {
-    const id = req.params.id;
-    const post = await db.getPostById(id);
+    const post = await mongoDB.getById<PostDbType>(postsCollection, req.params.id);
 
     if (post) {
-      res.status(HTTP_STATUSES.OK_200).json(post);
+      const mapBlogs = mapIdField<GetPostSchema>(post);
+
+      res.status(HTTP_STATUSES.OK_200).json(mapBlogs);
     } else {
       res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
     }

@@ -1,5 +1,6 @@
 import { CreateBlogSchema } from '../../../src/models';
 
+export const ID = '1A2B3C4D5E6F7A8B9C0D1E2F';
 export const dataSetNewBlog: CreateBlogSchema = {
   name: 'Test',
   description: 'Test description',
@@ -47,7 +48,6 @@ export const dataSetNewBlog3 = {
   websiteUrl: 'https://string.com',
 };
 
-
 export const errorDataSet3 = {
   errorsMessages: [
     {
@@ -59,7 +59,8 @@ export const errorDataSet3 = {
 
 export const dataSetNewBlog4 = {
   name: 'Test name',
-  description: 'Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world',
+  description:
+    'Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world Test very long string in the world',
   websiteUrl: 'https://string.com',
 };
 

@@ -1,16 +1,17 @@
-import { db } from '../../db/db';
 import { Response } from 'express';
 import { HTTP_STATUSES } from '../../utils/consts';
 import { UpdatePostSchema } from '../../models';
-import { RequestWithPramsAndBody } from '../../types/request-types';
+import { RequestWithParamsAndBody } from '../../types/request-types';
+import { mongoDB } from '../../db/database';
+import { postsCollection } from '../../db';
 
-type RequestType = RequestWithPramsAndBody<UpdatePostSchema, { id: string }>;
+type RequestType = RequestWithParamsAndBody<UpdatePostSchema, { id: string }>;
 
 export const putPostController = async (req: RequestType, res: Response) => {
   try {
-    const isUpdated = await db.updatePost(req.params.id, req.body);
+    const updateResult = await mongoDB.update(postsCollection, req.params.id, req.body);
 
-    if (isUpdated) {
+    if (updateResult.modifiedCount === 1) {
       res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
     } else {
       res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);

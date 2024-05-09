@@ -1,11 +1,13 @@
 import { body } from 'express-validator';
-import { db } from '../../db/db';
+import { mongoDB } from '../../db/database';
+import { BlogDbType } from '../../types/blog_types';
+import { blogsCollection } from '../../db';
 
 export const checkBlogExistsMiddleware = () => {
   return body('blogId').custom(async (value) => {
-    const blog = await db.getBlogById(value);
+    const blog = await mongoDB.getById<BlogDbType>(blogsCollection, value);
 
-    if (!Number(blog?.id)) {
+    if (!blog?._id) {
       throw new Error('Blog is not founded');
     }
   });

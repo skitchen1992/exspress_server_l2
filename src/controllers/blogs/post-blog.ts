@@ -15,7 +15,7 @@ export const postBlogController = async (req: RequestWithBody<CreateBlogSchema>,
     const newBlog: BlogDbType = {
       ...req.body,
       createdAt: new Date().toISOString(),
-      isMembership: true,
+      isMembership: false,
     };
     const result = await mongoDB.add<BlogDbType>(blogsCollection, newBlog);
     const blog = await mongoDB.getById<BlogDbType>(blogsCollection, result.insertedId.toString());

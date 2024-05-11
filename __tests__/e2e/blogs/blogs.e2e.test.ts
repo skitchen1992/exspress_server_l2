@@ -7,7 +7,7 @@ import { agent, Test } from 'supertest';
 import TestAgent from 'supertest/lib/agent';
 import { app } from '../../../src/app';
 import { blogsCollection, connectToDb, postsCollection } from '../../../src/db';
-import { mongoDB } from '../../../src/db/database';
+import { mongoDB } from '../../../src/repositories/db-repository';
 import { BlogDbType } from '../../../src/types/blog_types';
 import { ID } from './datasets';
 

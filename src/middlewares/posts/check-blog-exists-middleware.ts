@@ -1,5 +1,5 @@
 import { body } from 'express-validator';
-import { mongoDB } from '../../db/database';
+import { mongoDB } from '../../repositories/db-repository';
 import { BlogDbType } from '../../types/blog_types';
 import { blogsCollection } from '../../db';
 

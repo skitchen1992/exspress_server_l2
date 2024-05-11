@@ -7,7 +7,7 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import { blogsCollection, connectToDb, postsCollection } from '../../../src/db';
 import { app } from '../../../src/app';
 import TestAgent from 'supertest/lib/agent';
-import { mongoDB } from '../../../src/db/database';
+import { mongoDB } from '../../../src/repositories/db-repository';
 import { BlogDbType } from '../../../src/types/blog_types';
 import { PostDbType } from '../../../src/types/post-types';
 import { ID } from './datasets';
@@ -180,6 +180,23 @@ describe(`Endpoint (POST) - ${PATH_URL.POSTS}`, () => {
     expect(res.body).toEqual(
       expect.objectContaining({ ...data.dataSetNewPost0, blogId: blogId.toString(), blogName: blog!.name })
     );
+  });
+
+  it('Should get error while blog not found', async () => {
+    const res = await req
+      .post(PATH_URL.POSTS)
+      .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
+      .send({ ...data.dataSetNewPost0, blogId: ID })
+      .expect(HTTP_STATUSES.BAD_REQUEST_400);
+
+    expect(res.body).toEqual({
+      errorsMessages: [
+        {
+          message: 'Blog is not founded',
+          field: 'blogId',
+        },
+      ],
+    });
   });
 
   it('Should get Error while field "title" is too long', async () => {

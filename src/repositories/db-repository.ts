@@ -11,7 +11,7 @@ import {
 } from 'mongodb';
 import { Document } from 'bson';
 
-abstract class Database {
+abstract class DbRepository {
   abstract get<T extends Document>(collection: Collection<T>): Promise<WithId<T>[]>;
 
   abstract getById<T extends Document>(collection: Collection<T>, id: string): Promise<WithId<T> | null>;
@@ -30,7 +30,7 @@ abstract class Database {
   abstract delete<T extends Document>(collection: Collection<T>, id: string): Promise<DeleteResult>;
 }
 
-export class MongoDB extends Database {
+export class MongoDB extends DbRepository {
   public async get<T extends Document>(collection: Collection<T>, params = {}): Promise<WithId<T>[]> {
     return collection.find(params).toArray();
   }

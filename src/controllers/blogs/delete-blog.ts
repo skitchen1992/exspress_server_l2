@@ -1,8 +1,7 @@
 import { Response } from 'express';
 import { HTTP_STATUSES } from '../../utils/consts';
 import { RequestWithParams } from '../../types/request-types';
-import { mongoDB } from '../../db/database';
-import { UpdateBlogSchema } from '../../models';
+import { mongoDB } from '../../repositories/db-repository';
 import { blogsCollection } from '../../db';
 
 type RequestType = RequestWithParams<{ id: string }>;

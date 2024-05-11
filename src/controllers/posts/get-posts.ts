@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { GetPostListSchema, GetPostSchema } from '../../models';
 import { HTTP_STATUSES } from '../../utils/consts';
-import { mongoDB } from '../../db/database';
+import { mongoDB } from '../../repositories/db-repository';
 import { postsCollection } from '../../db';
 import { PostDbType } from '../../types/post-types';
 import { mapIdFieldInArray } from '../../utils/helpers';

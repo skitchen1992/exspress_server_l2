@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { HTTP_STATUSES } from '../../utils/consts';
 import { GetBlogListSchema, GetBlogSchema } from '../../models';
 import { blogsCollection } from '../../db';
-import { mongoDB } from '../../db/database';
+import { mongoDB } from '../../repositories/db-repository';
 import { BlogDbType } from '../../types/blog_types';
 import { mapIdFieldInArray } from '../../utils/helpers';
 import { WithId } from 'mongodb';

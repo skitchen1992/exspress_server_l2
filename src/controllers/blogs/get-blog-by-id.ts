@@ -3,7 +3,7 @@ import { HTTP_STATUSES } from '../../utils/consts';
 import { GetBlogSchema, ResponseErrorSchema } from '../../models';
 import { RequestWithParams } from '../../types/request-types';
 import { mongoDB } from '../../repositories/db-repository';
-import { BlogDbType } from '../../types/blog_types';
+import { BlogDbType } from '../../types/blog-types';
 import { blogsCollection } from '../../db';
 import { mapIdField } from '../../utils/helpers';
 

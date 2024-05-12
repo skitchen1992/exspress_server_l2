@@ -1,6 +1,6 @@
 import { body } from 'express-validator';
 import { mongoDB } from '../../repositories/db-repository';
-import { BlogDbType } from '../../types/blog_types';
+import { BlogDbType } from '../../types/blog-types';
 import { blogsCollection } from '../../db';
 
 export const checkBlogExistsMiddleware = () => {

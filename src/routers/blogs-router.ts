@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { PATH_URL } from '../utils/consts';
+import { getBlogsQueryParams, PATH_URL } from '../utils/consts';
 import * as controllers from '../controllers';
 import { validateBlogPostSchema, validateBlogPutSchema } from '../middlewares/blogs';
 import { errorHandlingMiddleware } from '../middlewares/error-handling-middleware';
@@ -10,7 +10,12 @@ import { CreateBlogSchema, UpdateBlogSchema } from '../models';
 
 export const blogsRouter = Router();
 
-blogsRouter.get(PATH_URL.ROOT, sanitizerQueryMiddleware(), errorHandlingMiddleware, controllers.getBlogsController);
+blogsRouter.get(
+  PATH_URL.ROOT,
+  sanitizerQueryMiddleware(getBlogsQueryParams),
+  errorHandlingMiddleware,
+  controllers.getBlogsController
+);
 
 blogsRouter.get(PATH_URL.ID, sanitizerQueryMiddleware(), errorHandlingMiddleware, controllers.getBlogByIdController);
 

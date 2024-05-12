@@ -1,5 +1,5 @@
 import { query } from 'express-validator';
 
 export const sanitizerQueryMiddleware = (fields?: string | string[]) => {
-  return query(fields).notEmpty().escape();
+  return query(fields).escape();
 };

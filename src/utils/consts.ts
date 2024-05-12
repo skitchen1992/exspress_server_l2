@@ -1,3 +1,6 @@
+import { GetBlogsQuery } from '../types/blog-types';
+import { GetPostsQuery } from '../types/post-types';
+
 export const HTTP_STATUSES = {
   OK_200: 200,
   CREATED_201: 201,
@@ -23,3 +26,15 @@ export const PATH_URL = {
     ALL_DATA: '/all-data',
   },
 };
+
+type GetBlogsQueryKeys = keyof GetBlogsQuery;
+export const getBlogsQueryParams: GetBlogsQueryKeys[] = [
+  'searchNameTerm',
+  'sortBy',
+  'sortDirection',
+  'pageNumber',
+  'pageSize',
+];
+
+type GetPostsQueryKeys = keyof GetPostsQuery;
+export const getPostsQueryParams: GetPostsQueryKeys[] = ['sortBy', 'sortDirection', 'pageNumber', 'pageSize'];

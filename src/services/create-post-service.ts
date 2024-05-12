@@ -1,7 +1,7 @@
 import { RequestWithBody } from '../types/request-types';
 import { CreatePostSchema, GetPostSchema } from '../models';
 import { mongoDB } from '../repositories/db-repository';
-import { BlogDbType } from '../types/blog_types';
+import { BlogDbType } from '../types/blog-types';
 import { blogsCollection, postsCollection } from '../db';
 import { PostDbType } from '../types/post-types';
 import { mapIdField } from '../utils/helpers';

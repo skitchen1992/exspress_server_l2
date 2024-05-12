@@ -1,19 +1,15 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { HTTP_STATUSES } from '../../utils/consts';
-import { GetBlogListSchema, GetBlogSchema } from '../../models';
-import { blogsCollection } from '../../db';
-import { mongoDB } from '../../repositories/db-repository';
-import { BlogDbType } from '../../types/blog_types';
-import { mapIdFieldInArray } from '../../utils/helpers';
-import { WithId } from 'mongodb';
+import { GetBlogListSchema } from '../../models';
+import { getBlogsService } from '../../services/get-blogs-service';
+import { RequestWithQuery } from '../../types/request-types';
+import { GetBlogsQuery } from '../../types/blog-types';
 
-export const getBlogsController = async (req: Request, res: Response<GetBlogListSchema>) => {
+export const getBlogsController = async (req: RequestWithQuery<GetBlogsQuery>, res: Response<GetBlogListSchema>) => {
   try {
-    const blogs = await mongoDB.get<BlogDbType>(blogsCollection);
+    const blogs = await getBlogsService(req);
 
-    const mapBlogs = mapIdFieldInArray<GetBlogSchema, WithId<BlogDbType>>(blogs);
-
-    res.status(HTTP_STATUSES.OK_200).json(mapBlogs);
+    res.status(HTTP_STATUSES.OK_200).json(blogs);
   } catch (e) {
     console.log(e);
   }

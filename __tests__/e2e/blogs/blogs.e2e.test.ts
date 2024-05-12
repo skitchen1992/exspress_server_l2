@@ -6,15 +6,15 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import { agent, Test } from 'supertest';
 import TestAgent from 'supertest/lib/agent';
 import { app } from '../../../src/app';
-import { blogsCollection, connectToDb, postsCollection } from '../../../src/db';
+import { blogsCollection, connectToDb, db, postsCollection } from '../../../src/db';
 import { mongoDB } from '../../../src/repositories/db-repository';
-import { BlogDbType } from '../../../src/types/blog_types';
+import { BlogDbType } from '../../../src/types/blog-types';
 import { ID } from './datasets';
 
 describe(`Endpoint (GET) - ${PATH_URL.BLOGS}`, () => {
   let req: TestAgent<Test>;
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     const server = await MongoMemoryServer.create();
     await connectToDb(server.getUri());
 
@@ -45,6 +45,70 @@ describe(`Endpoint (GET) - ${PATH_URL.BLOGS}`, () => {
     expect(res.body).toEqual([
       expect.objectContaining({
         name: 'Test',
+        description: 'Test description',
+        websiteUrl: 'https://string.com',
+      }),
+    ]);
+  });
+
+  it('Should get filtered array', async () => {
+    await blogsCollection.insertMany([
+      {
+        name: 'Nikita',
+        description: 'Test description',
+        websiteUrl: 'https://string.com',
+      },
+      {
+        name: 'Sacha',
+        description: 'Test description',
+        websiteUrl: 'https://string.com',
+      },
+      {
+        name: 'Mascha',
+        description: 'Test description',
+        websiteUrl: 'https://string.com',
+      },
+    ]);
+
+    const res = await req.get(`${PATH_URL.BLOGS}/?searchNameTerm=Nikita`).expect(HTTP_STATUSES.OK_200);
+
+    expect(res.body.length).toBe(1);
+
+    expect(res.body).toEqual([
+      expect.objectContaining({
+        name: 'Nikita',
+        description: 'Test description',
+        websiteUrl: 'https://string.com',
+      }),
+    ]);
+  });
+
+  it('Should get second page', async () => {
+    await blogsCollection.insertMany([
+      {
+        name: 'Nikita',
+        description: 'Test description',
+        websiteUrl: 'https://string.com',
+      },
+      {
+        name: 'Sacha',
+        description: 'Test description',
+        websiteUrl: 'https://string.com',
+      },
+      {
+        name: 'Mascha',
+        description: 'Test description',
+        websiteUrl: 'https://string.com',
+      },
+    ]);
+
+    const res = await req.get(`${PATH_URL.BLOGS}/?pageNumber=2&pageSize=2`).expect(HTTP_STATUSES.OK_200);
+
+    expect(res.body.length).toBe(1);
+
+    expect(res.body).toEqual([
+      expect.objectContaining({
+        name: 'Mascha',
         description: 'Test description',
         websiteUrl: 'https://string.com',
       }),

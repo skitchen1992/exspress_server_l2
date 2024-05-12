@@ -16,7 +16,7 @@ describe(`Endpoint (GET) - ${PATH_URL.POSTS}`, () => {
   let req: TestAgent<Test>;
   let mongoServer: MongoMemoryServer;
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     mongoServer = await MongoMemoryServer.create();
     await connectToDb(mongoServer.getUri());
 
@@ -26,7 +26,7 @@ describe(`Endpoint (GET) - ${PATH_URL.POSTS}`, () => {
     await postsCollection.deleteMany();
   });
 
-  afterAll(async () => {
+  afterEach(async () => {
     await mongoServer.stop();
   });
 

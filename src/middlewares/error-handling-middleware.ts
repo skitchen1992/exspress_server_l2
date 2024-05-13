@@ -16,13 +16,20 @@ export const errorHandlingMiddleware = <T>(
   if (errorsResult.isEmpty()) {
     next();
   } else {
+    let locationsIsParams = false;
     const errorsMessages: ErrorMessageSchema[] = errorsResult.array().map((error) => {
+      if (error.location === 'params') {
+        locationsIsParams = true;
+      }
+      console.log();
       return {
         message: error.msg,
         field: error.path || error.type,
       };
     });
 
-    res.status(HTTP_STATUSES.BAD_REQUEST_400).json({ errorsMessages });
+    res
+      .status(locationsIsParams ? HTTP_STATUSES.NOT_FOUND_404 : HTTP_STATUSES.BAD_REQUEST_400)
+      .json({ errorsMessages });
   }
 };

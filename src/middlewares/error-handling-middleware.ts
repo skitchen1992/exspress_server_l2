@@ -21,7 +21,6 @@ export const errorHandlingMiddleware = <T>(
       if (error.location === 'params') {
         locationsIsParams = true;
       }
-      console.log();
       return {
         message: error.msg,
         field: error.path || error.type,

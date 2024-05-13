@@ -4,7 +4,7 @@ import * as controllers from '../controllers';
 import { sanitizerQueryMiddleware } from '../middlewares/sanitizer-query-middleware';
 import { errorHandlingMiddleware } from '../middlewares/error-handling-middleware';
 import { checkExactMiddleware } from '../middlewares/check-exact-middleware';
-import { validatePostsPostSchema, validatePostsPutSchema } from '../middlewares/posts';
+import { validateCreatePostSchema, validateUpdatePostSchema } from '../middlewares/posts';
 import { CreatePostSchema, UpdatePostSchema } from '../models';
 import { checkBlogExistsMiddleware } from '../middlewares/posts/check-blog-exists-middleware';
 import { basicAuthMiddleware } from '../middlewares/basic-auth-middleware';
@@ -24,7 +24,7 @@ postsRouter.post(
   PATH_URL.ROOT,
   basicAuthMiddleware,
   sanitizerQueryMiddleware(),
-  checkExactMiddleware(validatePostsPostSchema),
+  checkExactMiddleware(validateCreatePostSchema),
   checkBlogExistsMiddleware.body('blogId'),
   errorHandlingMiddleware<CreatePostSchema>,
   controllers.createPostController
@@ -34,10 +34,10 @@ postsRouter.put(
   PATH_URL.ID,
   basicAuthMiddleware,
   sanitizerQueryMiddleware(),
-  checkExactMiddleware(validatePostsPutSchema),
+  checkExactMiddleware(validateUpdatePostSchema),
   checkBlogExistsMiddleware.body('blogId'),
   errorHandlingMiddleware<UpdatePostSchema>,
-  controllers.createPostController
+  controllers.updatePostController
 );
 
 postsRouter.delete(

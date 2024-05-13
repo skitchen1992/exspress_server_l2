@@ -10,6 +10,7 @@ import { blogsCollection, connectToDb, postsCollection } from '../../../src/db';
 import { mongoDB } from '../../../src/repositories/db-repository';
 import { BlogDbType } from '../../../src/types/blog-types';
 import { ID } from './datasets';
+import { PostDbType } from '../../../src/types/post-types';
 
 describe(`Endpoint (GET) - ${PATH_URL.BLOGS}`, () => {
   let req: TestAgent<Test>;
@@ -370,6 +371,60 @@ describe(`Endpoint (POST) - ${PATH_URL.BLOGS}`, () => {
       .expect(HTTP_STATUSES.BAD_REQUEST_400);
 
     expect(res.body).toEqual(data.errorDataSet8);
+  });
+});
+
+describe(`Endpoint (POST) - ${PATH_URL.POSTS_FOR_BLOG}`, () => {
+  let req: TestAgent<Test>;
+
+  beforeAll(async () => {
+    const server = await MongoMemoryServer.create();
+    await connectToDb(server.getUri());
+
+    req = agent(app);
+
+    await blogsCollection.deleteMany();
+    await postsCollection.deleteMany();
+  });
+
+  it('Should add post for blog', async () => {
+    const insertOneResult = await blogsCollection.insertOne({
+      name: 'Nikita',
+      description: 'Test description',
+      websiteUrl: 'https://string.com',
+    });
+
+    const blogId = insertOneResult.insertedId.toString();
+
+    const res = await req
+      .post(`${PATH_URL.BLOGS}/${blogId}/posts`)
+      .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
+      .send({
+        title: 'New title',
+        shortDescription: 'New shortDescription',
+        content: 'New content',
+      })
+      .expect(HTTP_STATUSES.CREATED_201);
+
+    expect(res.body).toEqual(
+      expect.objectContaining({
+        title: 'New title',
+        shortDescription: 'New shortDescription',
+        content: 'New content',
+        blogId,
+      })
+    );
+
+    const dbRes = await mongoDB.getById<PostDbType>(postsCollection, res.body.id);
+
+    expect(dbRes).toEqual(
+      expect.objectContaining({
+        title: 'New title',
+        shortDescription: 'New shortDescription',
+        content: 'New content',
+        blogId,
+      })
+    );
   });
 });
 

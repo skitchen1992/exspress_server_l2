@@ -6,7 +6,7 @@ import { createPostService } from '../../services/create-post-service';
 
 type ResponseType = CreatePostSchemaResponse | ResponseErrorSchema;
 
-export const postPostController = async (req: RequestWithBody<CreatePostSchema>, res: Response<ResponseType>) => {
+export const createPostController = async (req: RequestWithBody<CreatePostSchema>, res: Response<ResponseType>) => {
   try {
     const post = await createPostService(req);
 

@@ -6,7 +6,7 @@ import { createBlogService } from '../../services/create-blog-service';
 
 type ResponseType = CreateBlogSchemaResponse | ResponseErrorSchema;
 
-export const postBlogController = async (req: RequestWithBody<CreateBlogSchema>, res: Response<ResponseType>) => {
+export const createBlogController = async (req: RequestWithBody<CreateBlogSchema>, res: Response<ResponseType>) => {
   try {
     const blog = await createBlogService(req);
 

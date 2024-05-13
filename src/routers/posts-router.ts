@@ -27,7 +27,7 @@ postsRouter.post(
   checkExactMiddleware(validatePostsPostSchema),
   checkBlogExistsMiddleware.body('blogId'),
   errorHandlingMiddleware<CreatePostSchema>,
-  controllers.postPostController
+  controllers.createPostController
 );
 
 postsRouter.put(
@@ -37,7 +37,7 @@ postsRouter.put(
   checkExactMiddleware(validatePostsPutSchema),
   checkBlogExistsMiddleware.body('blogId'),
   errorHandlingMiddleware<UpdatePostSchema>,
-  controllers.putPostController
+  controllers.createPostController
 );
 
 postsRouter.delete(

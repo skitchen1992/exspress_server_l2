@@ -1,15 +1,15 @@
 import { Response } from 'express';
 import { HTTP_STATUSES } from '../../utils/consts';
-import { UpdatePostSchema } from '../../models';
+import { UpdateBlogSchema } from '../../models';
 import { RequestWithParamsAndBody } from '../../types/request-types';
 import { mongoDB } from '../../repositories/db-repository';
-import { postsCollection } from '../../db';
+import { blogsCollection } from '../../db';
 
-type RequestType = RequestWithParamsAndBody<UpdatePostSchema, { id: string }>;
+type RequestType = RequestWithParamsAndBody<UpdateBlogSchema, { id: string }>;
 
-export const putPostController = async (req: RequestType, res: Response) => {
+export const updateBlogController = async (req: RequestType, res: Response) => {
   try {
-    const updateResult = await mongoDB.update(postsCollection, req.params.id, req.body);
+    const updateResult = await mongoDB.update<UpdateBlogSchema>(blogsCollection, req.params.id, req.body);
 
     if (updateResult.modifiedCount === 1) {
       res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);

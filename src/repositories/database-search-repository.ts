@@ -1,8 +1,8 @@
-import { RequestWithQuery } from '../types/request-types';
+import { RequestWithQuery, RequestWithQueryAndParams } from '../types/request-types';
 import { GetBlogsQuery } from '../types/blog-types';
 import { GetPostsQuery } from '../types/post-types';
 
-export const queryParamsRepository = {
+export const databaseSearchRepository = {
   getBlogs: (req: RequestWithQuery<GetBlogsQuery>) => {
     const { searchNameTerm, sortBy, sortDirection, pageNumber, pageSize } = req.query;
 
@@ -24,8 +24,14 @@ export const queryParamsRepository = {
     return { query, sort, skip, pageSize: defaultPageSize };
   },
 
-  getPosts: (req: RequestWithQuery<GetPostsQuery>) => {
+  getPosts: (req: RequestWithQueryAndParams<GetPostsQuery, { blogId?: string }>) => {
     const { sortBy, sortDirection, pageNumber, pageSize } = req.query;
+    const { blogId } = req.params;
+
+    let query: any = {};
+    if (blogId) {
+      query.blogId = blogId;
+    }
 
     let sort: any = {};
     if (sortBy) {
@@ -37,6 +43,6 @@ export const queryParamsRepository = {
 
     const skip = (defaultPageNumber - 1) * defaultPageSize;
 
-    return { sort, skip, pageSize: defaultPageSize };
+    return { query, sort, skip, pageSize: defaultPageSize };
   },
 };

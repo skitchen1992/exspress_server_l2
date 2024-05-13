@@ -5,10 +5,10 @@ import { BlogDbType, GetBlogsQuery } from '../types/blog-types';
 import { blogsCollection } from '../db';
 import { mapIdFieldInArray } from '../utils/helpers';
 import { WithId } from 'mongodb';
-import { queryParamsRepository } from '../repositories/query-repository';
+import { databaseSearchRepository } from '../repositories/database-search-repository';
 
 export const getBlogsService = async (req: RequestWithQuery<GetBlogsQuery>) => {
-  const settings = queryParamsRepository.getBlogs(req);
+  const settings = databaseSearchRepository.getBlogs(req);
 
   const blogs = await mongoDB.get<BlogDbType>(blogsCollection, settings);
 

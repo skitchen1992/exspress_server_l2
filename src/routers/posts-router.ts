@@ -25,7 +25,7 @@ postsRouter.post(
   basicAuthMiddleware,
   sanitizerQueryMiddleware(),
   checkExactMiddleware(validatePostsPostSchema),
-  checkBlogExistsMiddleware(),
+  checkBlogExistsMiddleware.body('blogId'),
   errorHandlingMiddleware<CreatePostSchema>,
   controllers.postPostController
 );
@@ -35,7 +35,7 @@ postsRouter.put(
   basicAuthMiddleware,
   sanitizerQueryMiddleware(),
   checkExactMiddleware(validatePostsPutSchema),
-  checkBlogExistsMiddleware(),
+  checkBlogExistsMiddleware.body('blogId'),
   errorHandlingMiddleware<UpdatePostSchema>,
   controllers.putPostController
 );

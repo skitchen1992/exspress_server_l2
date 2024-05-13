@@ -9,3 +9,4 @@ export { getPostByIdController } from './posts/get-post-by-id';
 export { postPostController } from './posts/post-post';
 export { putPostController } from './posts/put-post';
 export { deletePostController } from './posts/delete-post';
+export { getPostsForBlogController } from './blogs/get-posts-for-blog';

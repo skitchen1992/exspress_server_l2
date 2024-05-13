@@ -20,6 +20,7 @@ export const PATH_URL = {
   ROOT: '/',
   ID: '/:id',
   BLOGS: '/blogs',
+  POSTS_FOR_BLOG: '/:blogId/posts',
   POSTS: '/posts',
   TESTING: {
     ROOT: '/testing',

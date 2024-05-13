@@ -5,10 +5,10 @@ import { postsCollection } from '../db';
 import { mapIdFieldInArray } from '../utils/helpers';
 import { WithId } from 'mongodb';
 import { GetPostsQuery, PostDbType } from '../types/post-types';
-import { queryParamsRepository } from '../repositories/query-repository';
+import { databaseSearchRepository } from '../repositories/database-search-repository';
 
 export const getPostsService = async (req: RequestWithQuery<GetPostsQuery>) => {
-  const settings = queryParamsRepository.getPosts(req);
+  const settings = databaseSearchRepository.getPosts(req);
 
   const posts = await mongoDB.get<PostDbType>(postsCollection, settings);
 

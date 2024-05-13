@@ -6,7 +6,7 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import { agent, Test } from 'supertest';
 import TestAgent from 'supertest/lib/agent';
 import { app } from '../../../src/app';
-import { blogsCollection, connectToDb, db, postsCollection } from '../../../src/db';
+import { blogsCollection, connectToDb, postsCollection } from '../../../src/db';
 import { mongoDB } from '../../../src/repositories/db-repository';
 import { BlogDbType } from '../../../src/types/blog-types';
 import { ID } from './datasets';
@@ -111,6 +111,101 @@ describe(`Endpoint (GET) - ${PATH_URL.BLOGS}`, () => {
         name: 'Mascha',
         description: 'Test description',
         websiteUrl: 'https://string.com',
+      }),
+    ]);
+  });
+});
+
+describe(`Endpoint (GET) - ${PATH_URL.POSTS_FOR_BLOG}`, () => {
+  let req: TestAgent<Test>;
+
+  beforeEach(async () => {
+    const server = await MongoMemoryServer.create();
+    await connectToDb(server.getUri());
+
+    req = agent(app);
+
+    await blogsCollection.deleteMany();
+    await postsCollection.deleteMany();
+  });
+
+  it('Should get filtered array', async () => {
+    const insertManyResult = await blogsCollection.insertMany([
+      {
+        name: 'Nikita',
+        description: 'Test description',
+        websiteUrl: 'https://string.com',
+      },
+      {
+        name: 'Sacha',
+        description: 'Test description',
+        websiteUrl: 'https://string.com',
+      },
+      {
+        name: 'Mascha',
+        description: 'Test description',
+        websiteUrl: 'https://string.com',
+      },
+    ]);
+
+    const blogId = insertManyResult.insertedIds[0].toString();
+
+    const createdAt = new Date().toISOString();
+    await postsCollection.insertMany([
+      {
+        title: 'Nikita',
+        shortDescription: 'ShortDescription',
+        content: 'Content',
+        blogId,
+        blogName: 'Blog name',
+        createdAt,
+      },
+      {
+        title: 'Dasha',
+        shortDescription: 'ShortDescription',
+        content: 'Content',
+        blogId,
+        blogName: 'Blog name',
+        createdAt,
+      },
+      {
+        title: 'Tatiana',
+        shortDescription: 'ShortDescription',
+        content: 'Content',
+        blogId,
+        blogName: 'Blog name',
+        createdAt,
+      },
+    ]);
+
+    const res = await req.get(`${PATH_URL.BLOGS}/${blogId}/posts`).expect(HTTP_STATUSES.OK_200);
+
+    expect(res.body.length).toBe(3);
+
+    expect(res.body).toEqual([
+      expect.objectContaining({
+        title: 'Nikita',
+        shortDescription: 'ShortDescription',
+        content: 'Content',
+        blogId,
+        blogName: 'Blog name',
+        createdAt,
+      }),
+      expect.objectContaining({
+        title: 'Dasha',
+        shortDescription: 'ShortDescription',
+        content: 'Content',
+        blogId,
+        blogName: 'Blog name',
+        createdAt,
+      }),
+      expect.objectContaining({
+        title: 'Tatiana',
+        shortDescription: 'ShortDescription',
+        content: 'Content',
+        blogId,
+        blogName: 'Blog name',
+        createdAt,
       }),
     ]);
   });

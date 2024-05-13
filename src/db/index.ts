@@ -1,5 +1,5 @@
 import { Collection, Db, MongoClient } from 'mongodb';
-import { BlogDbType } from '../types/blog_types';
+import { BlogDbType } from '../types/blog-types';
 import { SETTINGS } from '../utils/settings';
 import { PostDbType } from '../types/post-types';
 

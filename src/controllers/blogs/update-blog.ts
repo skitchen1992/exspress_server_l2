@@ -2,12 +2,12 @@ import { Response } from 'express';
 import { HTTP_STATUSES } from '../../utils/consts';
 import { UpdateBlogSchema } from '../../models';
 import { RequestWithParamsAndBody } from '../../types/request-types';
-import { mongoDB } from '../../db/database';
+import { mongoDB } from '../../repositories/db-repository';
 import { blogsCollection } from '../../db';
 
 type RequestType = RequestWithParamsAndBody<UpdateBlogSchema, { id: string }>;
 
-export const putBlogController = async (req: RequestType, res: Response) => {
+export const updateBlogController = async (req: RequestType, res: Response) => {
   try {
     const updateResult = await mongoDB.update<UpdateBlogSchema>(blogsCollection, req.params.id, req.body);
 

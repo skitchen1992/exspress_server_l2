@@ -7,14 +7,15 @@ import { agent, Test } from 'supertest';
 import TestAgent from 'supertest/lib/agent';
 import { app } from '../../../src/app';
 import { blogsCollection, connectToDb, postsCollection } from '../../../src/db';
-import { mongoDB } from '../../../src/db/database';
-import { BlogDbType } from '../../../src/types/blog_types';
+import { mongoDB } from '../../../src/repositories/db-repository';
+import { BlogDbType } from '../../../src/types/blog-types';
 import { ID } from './datasets';
+import { PostDbType } from '../../../src/types/post-types';
 
 describe(`Endpoint (GET) - ${PATH_URL.BLOGS}`, () => {
   let req: TestAgent<Test>;
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     const server = await MongoMemoryServer.create();
     await connectToDb(server.getUri());
 
@@ -47,6 +48,165 @@ describe(`Endpoint (GET) - ${PATH_URL.BLOGS}`, () => {
         name: 'Test',
         description: 'Test description',
         websiteUrl: 'https://string.com',
+      }),
+    ]);
+  });
+
+  it('Should get filtered array', async () => {
+    await blogsCollection.insertMany([
+      {
+        name: 'Nikita',
+        description: 'Test description',
+        websiteUrl: 'https://string.com',
+      },
+      {
+        name: 'Sacha',
+        description: 'Test description',
+        websiteUrl: 'https://string.com',
+      },
+      {
+        name: 'Mascha',
+        description: 'Test description',
+        websiteUrl: 'https://string.com',
+      },
+    ]);
+
+    const res = await req.get(`${PATH_URL.BLOGS}/?searchNameTerm=Nikita`).expect(HTTP_STATUSES.OK_200);
+
+    expect(res.body.length).toBe(1);
+
+    expect(res.body).toEqual([
+      expect.objectContaining({
+        name: 'Nikita',
+        description: 'Test description',
+        websiteUrl: 'https://string.com',
+      }),
+    ]);
+  });
+
+  it('Should get second page', async () => {
+    await blogsCollection.insertMany([
+      {
+        name: 'Nikita',
+        description: 'Test description',
+        websiteUrl: 'https://string.com',
+      },
+      {
+        name: 'Sacha',
+        description: 'Test description',
+        websiteUrl: 'https://string.com',
+      },
+      {
+        name: 'Mascha',
+        description: 'Test description',
+        websiteUrl: 'https://string.com',
+      },
+    ]);
+
+    const res = await req.get(`${PATH_URL.BLOGS}/?pageNumber=2&pageSize=2`).expect(HTTP_STATUSES.OK_200);
+
+    expect(res.body.length).toBe(1);
+
+    expect(res.body).toEqual([
+      expect.objectContaining({
+        name: 'Mascha',
+        description: 'Test description',
+        websiteUrl: 'https://string.com',
+      }),
+    ]);
+  });
+});
+
+describe(`Endpoint (GET) - ${PATH_URL.POSTS_FOR_BLOG}`, () => {
+  let req: TestAgent<Test>;
+
+  beforeEach(async () => {
+    const server = await MongoMemoryServer.create();
+    await connectToDb(server.getUri());
+
+    req = agent(app);
+
+    await blogsCollection.deleteMany();
+    await postsCollection.deleteMany();
+  });
+
+  it('Should get filtered array', async () => {
+    const insertManyResult = await blogsCollection.insertMany([
+      {
+        name: 'Nikita',
+        description: 'Test description',
+        websiteUrl: 'https://string.com',
+      },
+      {
+        name: 'Sacha',
+        description: 'Test description',
+        websiteUrl: 'https://string.com',
+      },
+      {
+        name: 'Mascha',
+        description: 'Test description',
+        websiteUrl: 'https://string.com',
+      },
+    ]);
+
+    const blogId = insertManyResult.insertedIds[0].toString();
+
+    const createdAt = new Date().toISOString();
+    await postsCollection.insertMany([
+      {
+        title: 'Nikita',
+        shortDescription: 'ShortDescription',
+        content: 'Content',
+        blogId,
+        blogName: 'Blog name',
+        createdAt,
+      },
+      {
+        title: 'Dasha',
+        shortDescription: 'ShortDescription',
+        content: 'Content',
+        blogId,
+        blogName: 'Blog name',
+        createdAt,
+      },
+      {
+        title: 'Tatiana',
+        shortDescription: 'ShortDescription',
+        content: 'Content',
+        blogId,
+        blogName: 'Blog name',
+        createdAt,
+      },
+    ]);
+
+    const res = await req.get(`${PATH_URL.BLOGS}/${blogId}/posts`).expect(HTTP_STATUSES.OK_200);
+
+    expect(res.body.length).toBe(3);
+
+    expect(res.body).toEqual([
+      expect.objectContaining({
+        title: 'Nikita',
+        shortDescription: 'ShortDescription',
+        content: 'Content',
+        blogId,
+        blogName: 'Blog name',
+        createdAt,
+      }),
+      expect.objectContaining({
+        title: 'Dasha',
+        shortDescription: 'ShortDescription',
+        content: 'Content',
+        blogId,
+        blogName: 'Blog name',
+        createdAt,
+      }),
+      expect.objectContaining({
+        title: 'Tatiana',
+        shortDescription: 'ShortDescription',
+        content: 'Content',
+        blogId,
+        blogName: 'Blog name',
+        createdAt,
       }),
     ]);
   });
@@ -211,6 +371,60 @@ describe(`Endpoint (POST) - ${PATH_URL.BLOGS}`, () => {
       .expect(HTTP_STATUSES.BAD_REQUEST_400);
 
     expect(res.body).toEqual(data.errorDataSet8);
+  });
+});
+
+describe(`Endpoint (POST) - ${PATH_URL.POSTS_FOR_BLOG}`, () => {
+  let req: TestAgent<Test>;
+
+  beforeAll(async () => {
+    const server = await MongoMemoryServer.create();
+    await connectToDb(server.getUri());
+
+    req = agent(app);
+
+    await blogsCollection.deleteMany();
+    await postsCollection.deleteMany();
+  });
+
+  it('Should add post for blog', async () => {
+    const insertOneResult = await blogsCollection.insertOne({
+      name: 'Nikita',
+      description: 'Test description',
+      websiteUrl: 'https://string.com',
+    });
+
+    const blogId = insertOneResult.insertedId.toString();
+
+    const res = await req
+      .post(`${PATH_URL.BLOGS}/${blogId}/posts`)
+      .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
+      .send({
+        title: 'New title',
+        shortDescription: 'New shortDescription',
+        content: 'New content',
+      })
+      .expect(HTTP_STATUSES.CREATED_201);
+
+    expect(res.body).toEqual(
+      expect.objectContaining({
+        title: 'New title',
+        shortDescription: 'New shortDescription',
+        content: 'New content',
+        blogId,
+      })
+    );
+
+    const dbRes = await mongoDB.getById<PostDbType>(postsCollection, res.body.id);
+
+    expect(dbRes).toEqual(
+      expect.objectContaining({
+        title: 'New title',
+        shortDescription: 'New shortDescription',
+        content: 'New content',
+        blogId,
+      })
+    );
   });
 });
 

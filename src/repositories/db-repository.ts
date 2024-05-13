@@ -11,8 +11,14 @@ import {
 } from 'mongodb';
 import { Document } from 'bson';
 
-abstract class Database {
-  abstract get<T extends Document>(collection: Collection<T>): Promise<WithId<T>[]>;
+interface GetQuerySettings {
+  query?: any;
+  sort?: any;
+  skip: number;
+  pageSize: number;
+}
+abstract class DbRepository {
+  abstract get<T extends Document>(collection: Collection<T>, settings: GetQuerySettings): Promise<WithId<T>[]>;
 
   abstract getById<T extends Document>(collection: Collection<T>, id: string): Promise<WithId<T> | null>;
 
@@ -30,9 +36,11 @@ abstract class Database {
   abstract delete<T extends Document>(collection: Collection<T>, id: string): Promise<DeleteResult>;
 }
 
-export class MongoDB extends Database {
-  public async get<T extends Document>(collection: Collection<T>, params = {}): Promise<WithId<T>[]> {
-    return collection.find(params).toArray();
+export class MongoDB extends DbRepository {
+  public async get<T extends Document>(collection: Collection<T>, settings: GetQuerySettings): Promise<WithId<T>[]> {
+    const { query, sort, skip, pageSize } = settings;
+
+    return collection.find(query).sort(sort).skip(skip).limit(pageSize).toArray();
   }
 
   public async getById<T extends Document>(collection: Collection<T>, id: string): Promise<WithId<T> | null> {

@@ -1,6 +1,6 @@
 import { checkSchema } from 'express-validator';
 
-export const validatePostsPutSchema = () => {
+export const validateUpdatePostSchema = () => {
   return checkSchema({
     title: {
       exists: {

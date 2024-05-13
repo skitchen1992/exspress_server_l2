@@ -7,8 +7,8 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import { blogsCollection, connectToDb, postsCollection } from '../../../src/db';
 import { app } from '../../../src/app';
 import TestAgent from 'supertest/lib/agent';
-import { mongoDB } from '../../../src/db/database';
-import { BlogDbType } from '../../../src/types/blog_types';
+import { mongoDB } from '../../../src/repositories/db-repository';
+import { BlogDbType } from '../../../src/types/blog-types';
 import { PostDbType } from '../../../src/types/post-types';
 import { ID } from './datasets';
 
@@ -16,7 +16,7 @@ describe(`Endpoint (GET) - ${PATH_URL.POSTS}`, () => {
   let req: TestAgent<Test>;
   let mongoServer: MongoMemoryServer;
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     mongoServer = await MongoMemoryServer.create();
     await connectToDb(mongoServer.getUri());
 
@@ -26,7 +26,7 @@ describe(`Endpoint (GET) - ${PATH_URL.POSTS}`, () => {
     await postsCollection.deleteMany();
   });
 
-  afterAll(async () => {
+  afterEach(async () => {
     await mongoServer.stop();
   });
 
@@ -67,6 +67,58 @@ describe(`Endpoint (GET) - ${PATH_URL.POSTS}`, () => {
         shortDescription: 'ShortDescription',
         title: 'Title',
       },
+    ]);
+  });
+
+  it('Should get second page', async () => {
+    const insertOneResultBlog = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
+
+    const { insertedId: blogId } = insertOneResultBlog;
+
+    const blog = await mongoDB.getById<BlogDbType>(blogsCollection, blogId.toString());
+
+    const createdAt = new Date().toISOString();
+
+    await postsCollection.insertMany([
+      {
+        title: 'Nikita',
+        shortDescription: 'ShortDescription',
+        content: 'Content',
+        blogId: blogId.toString(),
+        blogName: blog!.name,
+        createdAt,
+      },
+      {
+        title: 'Dasha',
+        shortDescription: 'ShortDescription',
+        content: 'Content',
+        blogId: blogId.toString(),
+        blogName: blog!.name,
+        createdAt,
+      },
+      {
+        title: 'Tatiana',
+        shortDescription: 'ShortDescription',
+        content: 'Content',
+        blogId: blogId.toString(),
+        blogName: blog!.name,
+        createdAt,
+      },
+    ]);
+
+    const res = await req.get(`${PATH_URL.POSTS}/?pageNumber=2&pageSize=2`).expect(HTTP_STATUSES.OK_200);
+
+    expect(res.body.length).toBe(1);
+
+    expect(res.body).toEqual([
+      expect.objectContaining({
+        blogId: blogId.toString(),
+        blogName: blog!.name,
+        content: 'Content',
+        createdAt,
+        shortDescription: 'ShortDescription',
+        title: 'Tatiana',
+      }),
     ]);
   });
 });
@@ -180,6 +232,23 @@ describe(`Endpoint (POST) - ${PATH_URL.POSTS}`, () => {
     expect(res.body).toEqual(
       expect.objectContaining({ ...data.dataSetNewPost0, blogId: blogId.toString(), blogName: blog!.name })
     );
+  });
+
+  it('Should get error while blog not found', async () => {
+    const res = await req
+      .post(PATH_URL.POSTS)
+      .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
+      .send({ ...data.dataSetNewPost0, blogId: ID })
+      .expect(HTTP_STATUSES.BAD_REQUEST_400);
+
+    expect(res.body).toEqual({
+      errorsMessages: [
+        {
+          message: 'Blog is not founded',
+          field: 'blogId',
+        },
+      ],
+    });
   });
 
   it('Should get Error while field "title" is too long', async () => {

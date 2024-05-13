@@ -2,12 +2,12 @@ import { Response } from 'express';
 import { HTTP_STATUSES } from '../../utils/consts';
 import { UpdatePostSchema } from '../../models';
 import { RequestWithParamsAndBody } from '../../types/request-types';
-import { mongoDB } from '../../db/database';
+import { mongoDB } from '../../repositories/db-repository';
 import { postsCollection } from '../../db';
 
 type RequestType = RequestWithParamsAndBody<UpdatePostSchema, { id: string }>;
 
-export const putPostController = async (req: RequestType, res: Response) => {
+export const updatePostController = async (req: RequestType, res: Response) => {
   try {
     const updateResult = await mongoDB.update(postsCollection, req.params.id, req.body);
 

@@ -33,7 +33,7 @@ describe(`Endpoint (GET) - ${PATH_URL.POSTS}`, () => {
   it('Should get empty array', async () => {
     const res = await req.get(PATH_URL.POSTS).expect(HTTP_STATUSES.OK_200);
 
-    expect(res.body.length).toBe(0);
+    expect(res.body.items.length).toBe(0);
   });
 
   it('Should get not empty array', async () => {
@@ -56,18 +56,25 @@ describe(`Endpoint (GET) - ${PATH_URL.POSTS}`, () => {
 
     const res = await req.get(PATH_URL.POSTS).expect(HTTP_STATUSES.OK_200);
 
-    expect(res.body.length).toBe(1);
-    expect(res.body).toEqual([
-      {
-        blogId: blogId.toString(),
-        blogName: blog!.name,
-        content: 'Content',
-        createdAt,
-        id: postId.toString(),
-        shortDescription: 'ShortDescription',
-        title: 'Title',
-      },
-    ]);
+    expect(res.body.items.length).toBe(1);
+
+    expect(res.body).toEqual({
+      pagesCount: 1,
+      page: 1,
+      pageSize: 10,
+      totalCount: 1,
+      items: [
+        expect.objectContaining({
+          blogId: blogId.toString(),
+          blogName: blog!.name,
+          content: 'Content',
+          createdAt,
+          id: postId.toString(),
+          shortDescription: 'ShortDescription',
+          title: 'Title',
+        }),
+      ],
+    });
   });
 
   it('Should get second page', async () => {
@@ -108,18 +115,24 @@ describe(`Endpoint (GET) - ${PATH_URL.POSTS}`, () => {
 
     const res = await req.get(`${PATH_URL.POSTS}/?pageNumber=2&pageSize=2`).expect(HTTP_STATUSES.OK_200);
 
-    expect(res.body.length).toBe(1);
+    expect(res.body.items.length).toBe(1);
 
-    expect(res.body).toEqual([
-      expect.objectContaining({
-        blogId: blogId.toString(),
-        blogName: blog!.name,
-        content: 'Content',
-        createdAt,
-        shortDescription: 'ShortDescription',
-        title: 'Tatiana',
-      }),
-    ]);
+    expect(res.body).toEqual({
+      pagesCount: 2,
+      page: 2,
+      pageSize: 2,
+      totalCount: 3,
+      items: [
+        expect.objectContaining({
+          blogId: blogId.toString(),
+          blogName: blog!.name,
+          content: 'Content',
+          createdAt,
+          shortDescription: 'ShortDescription',
+          title: 'Tatiana',
+        }),
+      ],
+    });
   });
 });
 

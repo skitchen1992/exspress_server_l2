@@ -11,3 +11,7 @@ export const mapIdField = <R>(object: WithId<Record<string, unknown>>): R => {
 export const mapIdFieldInArray = <R, I extends WithId<Record<string, unknown>>>(array: I[]): R[] => {
   return array.map((object) => mapIdField<R>(object));
 };
+
+export const getPageCount = (totalCount: number, pageSize: number) => {
+  return Math.ceil(totalCount / pageSize);
+};

@@ -3,7 +3,7 @@ import { GetBlogListSchema, GetBlogSchema } from '../models';
 import { mongoDB } from '../repositories/db-repository';
 import { BlogDbType, GetBlogsQuery } from '../types/blog-types';
 import { blogsCollection } from '../db';
-import { mapIdFieldInArray } from '../utils/helpers';
+import { getPageCount, mapIdFieldInArray } from '../utils/helpers';
 import { WithId } from 'mongodb';
 import { databaseSearchRepository } from '../repositories/database-search-repository';
 
@@ -15,7 +15,7 @@ export const getBlogsService = async (req: RequestWithQuery<GetBlogsQuery>) => {
   const totalCount = await mongoDB.getTotalCount(blogsCollection);
 
   const blogs: GetBlogListSchema = {
-    pagesCount: Math.ceil(totalCount / filters.pageSize),
+    pagesCount: getPageCount(totalCount, filters.pageSize),
     page: filters.page,
     pageSize: filters.pageSize,
     totalCount,

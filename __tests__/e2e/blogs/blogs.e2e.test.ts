@@ -11,7 +11,6 @@ import { mongoDB } from '../../../src/repositories/db-repository';
 import { BlogDbType } from '../../../src/types/blog-types';
 import { ID } from './datasets';
 import { PostDbType } from '../../../src/types/post-types';
-import { GetBlogListSchema } from '../../../src/models';
 
 describe(`Endpoint (GET) - ${PATH_URL.BLOGS}`, () => {
   let req: TestAgent<Test>;
@@ -200,34 +199,40 @@ describe(`Endpoint (GET) - ${PATH_URL.POSTS_FOR_BLOG}`, () => {
 
     const res = await req.get(`${PATH_URL.BLOGS}/${blogId}/posts`).expect(HTTP_STATUSES.OK_200);
 
-    expect(res.body.length).toBe(3);
+    expect(res.body.items.length).toBe(3);
 
-    expect(res.body).toEqual([
-      expect.objectContaining({
-        title: 'Nikita',
-        shortDescription: 'ShortDescription',
-        content: 'Content',
-        blogId,
-        blogName: 'Blog name',
-        createdAt,
-      }),
-      expect.objectContaining({
-        title: 'Dasha',
-        shortDescription: 'ShortDescription',
-        content: 'Content',
-        blogId,
-        blogName: 'Blog name',
-        createdAt,
-      }),
-      expect.objectContaining({
-        title: 'Tatiana',
-        shortDescription: 'ShortDescription',
-        content: 'Content',
-        blogId,
-        blogName: 'Blog name',
-        createdAt,
-      }),
-    ]);
+    expect(res.body).toEqual({
+      pagesCount: 1,
+      page: 1,
+      pageSize: 10,
+      totalCount: 3,
+      items: [
+        expect.objectContaining({
+          title: 'Nikita',
+          shortDescription: 'ShortDescription',
+          content: 'Content',
+          blogId,
+          blogName: 'Blog name',
+          createdAt,
+        }),
+        expect.objectContaining({
+          title: 'Dasha',
+          shortDescription: 'ShortDescription',
+          content: 'Content',
+          blogId,
+          blogName: 'Blog name',
+          createdAt,
+        }),
+        expect.objectContaining({
+          title: 'Tatiana',
+          shortDescription: 'ShortDescription',
+          content: 'Content',
+          blogId,
+          blogName: 'Blog name',
+          createdAt,
+        }),
+      ],
+    });
   });
 });
 

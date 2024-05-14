@@ -1,16 +1,26 @@
 import { RequestWithQuery } from '../types/request-types';
-import { GetPostSchema } from '../models';
+import { GetPostListSchema, GetPostSchema } from '../models';
 import { mongoDB } from '../repositories/db-repository';
 import { postsCollection } from '../db';
-import { mapIdFieldInArray } from '../utils/helpers';
+import { getPageCount, mapIdFieldInArray } from '../utils/helpers';
 import { WithId } from 'mongodb';
 import { GetPostsQuery, PostDbType } from '../types/post-types';
 import { databaseSearchRepository } from '../repositories/database-search-repository';
 
 export const getPostsService = async (req: RequestWithQuery<GetPostsQuery>) => {
-  const settings = databaseSearchRepository.getPosts(req);
+  const filters = databaseSearchRepository.getPosts(req);
 
-  const posts = await mongoDB.get<PostDbType>(postsCollection, settings);
+  const postsFromDb = await mongoDB.get<PostDbType>(postsCollection, filters);
 
-  return mapIdFieldInArray<GetPostSchema, WithId<PostDbType>>(posts);
+  const totalCount = await mongoDB.getTotalCount(postsCollection);
+
+  const posts: GetPostListSchema = {
+    pagesCount: getPageCount(totalCount, filters.pageSize),
+    page: filters.page,
+    pageSize: filters.pageSize,
+    totalCount,
+    items: mapIdFieldInArray<GetPostSchema, WithId<PostDbType>>(postsFromDb),
+  };
+
+  return posts;
 };

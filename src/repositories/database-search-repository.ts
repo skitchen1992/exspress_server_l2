@@ -2,25 +2,27 @@ import { RequestWithQuery, RequestWithQueryAndParams } from '../types/request-ty
 import { GetBlogsQuery } from '../types/blog-types';
 import { GetPostsQuery } from '../types/post-types';
 import { mongoDB } from './db-repository';
-import { postsCollection } from '../db';
+import { blogsCollection, postsCollection } from '../db';
 
 export const databaseSearchRepository = {
   getBlogs: (req: RequestWithQuery<GetBlogsQuery>) => {
-    const { searchNameTerm, sortBy = 'createdAt', sortDirection, pageNumber, pageSize } = req.query;
+    const { searchNameTerm, sortBy, sortDirection, pageNumber, pageSize } = req.query;
 
     let query: any = {};
     if (searchNameTerm) {
-      //query.name = { $regex: searchNameTerm, $options: 'i' };
-      query.name = { $regex: new RegExp(`.*${searchNameTerm}.*`, 'i') };
+      query.name = { $regex: searchNameTerm };
+      //query.name = { $regex: new RegExp(`.*${searchNameTerm}.*`, 'i') };
     }
 
     let sort: any = {};
     if (sortBy) {
       sort[sortBy] = sortDirection || 'desc';
+    } else {
+      sort.createdAt = sortDirection || 'desc';
     }
 
     const defaultPageNumber = Number(pageNumber) || 1;
-    const defaultPageSize = Number(pageSize) || 12;
+    const defaultPageSize = Number(pageSize) || 10;
 
     const skip = (defaultPageNumber - 1) * defaultPageSize;
 
@@ -39,10 +41,12 @@ export const databaseSearchRepository = {
     let sort: any = {};
     if (sortBy) {
       sort[sortBy] = sortDirection || 'desc';
+    } else {
+      sort.createdAt = sortDirection || 'desc';
     }
 
     const defaultPageNumber = Number(pageNumber) || 1;
-    const defaultPageSize = Number(pageSize) || 12;
+    const defaultPageSize = Number(pageSize) || 10;
 
     const skip = (defaultPageNumber - 1) * defaultPageSize;
 

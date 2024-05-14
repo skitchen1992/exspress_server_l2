@@ -58,7 +58,7 @@ describe(`Endpoint (GET) - ${PATH_URL.BLOGS}`, () => {
     });
   });
 
-  it('Should get filtered array', async () => {
+  it('Should get filtered array by searchNameTerm=Nikita', async () => {
     await blogsCollection.insertMany([
       {
         name: 'Nikita',
@@ -129,6 +129,131 @@ describe(`Endpoint (GET) - ${PATH_URL.BLOGS}`, () => {
           name: 'Mascha',
           description: 'Test description',
           websiteUrl: 'https://string.com',
+        }),
+      ],
+    });
+  });
+
+  it('Should get filtered array', async () => {
+    const a = await blogsCollection.insertMany([
+      {
+        name: 'Tim',
+        websiteUrl: 'https://someurl.com',
+        description: 'description',
+      },
+      {
+        name: 'timm',
+        websiteUrl: 'https://someurl.com',
+        description: 'description',
+      },
+      {
+        name: 'Dima',
+        websiteUrl: 'https://someurl.com',
+        description: 'description',
+      },
+      {
+        name: 'Mima',
+        websiteUrl: 'https://someurl.com',
+        description: 'description',
+      },
+      {
+        name: 'Gggrrttt',
+        websiteUrl: 'https://someurl.com',
+        description: 'description',
+      },
+      {
+        name: 'John',
+        websiteUrl: 'https://someurl.com',
+        description: 'description',
+      },
+      {
+        name: 'Don',
+        websiteUrl: 'https://someurl.com',
+        description: 'description',
+      },
+      {
+        name: 'Andrey',
+        websiteUrl: 'https://someurl.com',
+        description: 'description',
+      },
+      {
+        name: 'Alexey',
+        websiteUrl: 'https://someurl.com',
+        description: 'description',
+      },
+      {
+        name: 'Alex',
+        websiteUrl: 'https://someurl.com',
+        description: 'description',
+      },
+      {
+        name: 'Tima',
+        websiteUrl: 'https://someurl.com',
+        description: 'description',
+      },
+      {
+        name: 'Timma',
+        websiteUrl: 'https://someurl.com',
+        description: 'description',
+      },
+    ]);
+
+    console.log('AAAAA', a);
+
+    const res = await req.get(`${PATH_URL.BLOGS}`).expect(HTTP_STATUSES.OK_200);
+
+    expect(res.body.items.length).toBe(10);
+
+    expect(res.body).toEqual({
+      pagesCount: 2,
+      page: 1,
+      pageSize: 10,
+      totalCount: 12,
+      items: [
+        expect.objectContaining({
+          name: 'Timma',
+          description: 'description',
+          websiteUrl: 'https://someurl.com',
+        }),
+        expect.objectContaining({
+          name: 'Tima',
+          description: 'description',
+          websiteUrl: 'https://someurl.com',
+        }),
+        expect.objectContaining({
+          name: 'Alex',
+          description: 'description',
+          websiteUrl: 'https://someurl.com',
+        }),
+        expect.objectContaining({
+          name: 'Alexey',
+          description: 'description',
+          websiteUrl: 'https://someurl.com',
+        }),
+        expect.objectContaining({
+          name: 'Andrey',
+          description: 'description',
+          websiteUrl: 'https://someurl.com',
+        }),
+        expect.objectContaining({
+          name: 'Don',
+          description: 'description',
+          websiteUrl: 'https://someurl.com',
+        }),
+        expect.objectContaining({
+          name: 'John',
+          description: 'description',
+          websiteUrl: 'https://someurl.com',
+        }),
+        expect.objectContaining({
+          name: 'Mima',
+          description: 'description',
+          websiteUrl: 'https://someurl.com',
+        }),
+        expect.objectContaining({
+          name: 'Dima',
+          description: 'description',
+          websiteUrl: 'https://someurl.com',
         }),
       ],
     });

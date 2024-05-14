@@ -38,11 +38,11 @@ export const databaseSearchRepository = {
 
     let sort: any = {};
     if (sortBy) {
-      sort[sortBy] = sortDirection || 'asc';
+      sort[sortBy] = sortDirection || 'desc';
     }
 
     const defaultPageNumber = Number(pageNumber) || 1;
-    const defaultPageSize = Number(pageSize) || 10;
+    const defaultPageSize = Number(pageSize) || 12;
 
     const skip = (defaultPageNumber - 1) * defaultPageSize;
 

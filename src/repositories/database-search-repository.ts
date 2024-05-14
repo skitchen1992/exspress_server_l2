@@ -1,8 +1,6 @@
 import { RequestWithQuery, RequestWithQueryAndParams } from '../types/request-types';
 import { GetBlogsQuery } from '../types/blog-types';
 import { GetPostsQuery } from '../types/post-types';
-import { mongoDB } from './db-repository';
-import { blogsCollection, postsCollection } from '../db';
 
 export const databaseSearchRepository = {
   getBlogs: (req: RequestWithQuery<GetBlogsQuery>) => {
@@ -10,7 +8,6 @@ export const databaseSearchRepository = {
 
     let query: any = {};
     if (searchNameTerm) {
-      // query.name = { $regex: searchNameTerm };
       query.name = { $regex: new RegExp(`.*${searchNameTerm}.*`, 'i') };
     }
 

@@ -70,8 +70,8 @@ export class MongoDB extends DbRepository {
     return await collection.deleteOne(filter);
   }
 
-  public async getTotalCount<T extends Document>(collection: Collection<T>): Promise<number> {
-    return await collection.countDocuments();
+  public async getTotalCount<T extends Document>(collection: Collection<T>, filters?: Filter<T>): Promise<number> {
+    return await collection.countDocuments(filters);
   }
 }
 

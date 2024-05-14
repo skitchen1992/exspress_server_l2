@@ -12,7 +12,7 @@ export const getPostsService = async (req: RequestWithQuery<GetPostsQuery>) => {
 
   const postsFromDb = await mongoDB.get<PostDbType>(postsCollection, filters);
 
-  const totalCount = await mongoDB.getTotalCount(postsCollection);
+  const totalCount = await mongoDB.getTotalCount(postsCollection, filters.query);
 
   const posts: GetPostListSchema = {
     pagesCount: getPageCount(totalCount, filters.pageSize),

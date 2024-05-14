@@ -1,6 +1,8 @@
 import { RequestWithQuery, RequestWithQueryAndParams } from '../types/request-types';
 import { GetBlogsQuery } from '../types/blog-types';
 import { GetPostsQuery } from '../types/post-types';
+import { mongoDB } from './db-repository';
+import { postsCollection } from '../db';
 
 export const databaseSearchRepository = {
   getBlogs: (req: RequestWithQuery<GetBlogsQuery>) => {
@@ -14,7 +16,7 @@ export const databaseSearchRepository = {
 
     let sort: any = {};
     if (sortBy) {
-      sort[sortBy] = sortDirection === 'asc' ? 'asc' : 'desc';
+      sort[sortBy] = sortDirection || 'desc';
     }
 
     const defaultPageNumber = Number(pageNumber) || 1;

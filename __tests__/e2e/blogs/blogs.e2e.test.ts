@@ -85,7 +85,7 @@ describe(`Endpoint (GET) - ${PATH_URL.BLOGS}`, () => {
       pagesCount: 1,
       page: 1,
       pageSize: 10,
-      totalCount: 3,
+      totalCount: 1,
       items: [
         expect.objectContaining({
           name: 'Nikita',

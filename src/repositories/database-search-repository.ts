@@ -20,7 +20,7 @@ export const databaseSearchRepository = {
     }
 
     const defaultPageNumber = Number(pageNumber) || 1;
-    const defaultPageSize = Number(pageSize) || 10;
+    const defaultPageSize = Number(pageSize) || 12;
 
     const skip = (defaultPageNumber - 1) * defaultPageSize;
 

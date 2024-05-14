@@ -10,8 +10,8 @@ export const databaseSearchRepository = {
 
     let query: any = {};
     if (searchNameTerm) {
-      query.name = { $regex: searchNameTerm };
-      //query.name = { $regex: new RegExp(`.*${searchNameTerm}.*`, 'i') };
+      // query.name = { $regex: searchNameTerm };
+      query.name = { $regex: new RegExp(`.*${searchNameTerm}.*`, 'i') };
     }
 
     let sort: any = {};

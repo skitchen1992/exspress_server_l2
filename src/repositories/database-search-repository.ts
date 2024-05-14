@@ -14,7 +14,7 @@ export const databaseSearchRepository = {
 
     let sort: any = {};
     if (sortBy) {
-      sort[sortBy] = sortDirection || 'desc';
+      sort[sortBy] = sortDirection === 'asc' ? 'asc' : 'desc';
     }
 
     const defaultPageNumber = Number(pageNumber) || 1;

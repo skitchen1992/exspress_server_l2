@@ -18,7 +18,7 @@ export type GetBlogsQuery = {
   /**
    * Default value: desc
    */
-  sortDirection?: 'asc' | 'desk';
+  sortDirection?: 'asc' | 'desc';
   /**
    * pageNumber is number of portions that should be returned
    */

@@ -11,7 +11,7 @@ export const getPostsForBlogController = async (
 ) => {
   try {
     const posts = await getPostsService(req);
-
+    //@ts-ignore
     res.status(HTTP_STATUSES.OK_200).json(posts);
   } catch (e) {
     console.log(e);

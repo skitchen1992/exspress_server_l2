@@ -11,6 +11,7 @@ import { mongoDB } from '../../../src/repositories/db-repository';
 import { BlogDbType } from '../../../src/types/blog-types';
 import { ID } from './datasets';
 import { PostDbType } from '../../../src/types/post-types';
+import { GetBlogListSchema } from '../../../src/models';
 
 describe(`Endpoint (GET) - ${PATH_URL.BLOGS}`, () => {
   let req: TestAgent<Test>;
@@ -28,7 +29,7 @@ describe(`Endpoint (GET) - ${PATH_URL.BLOGS}`, () => {
   it('Should get empty array', async () => {
     const res = await req.get(PATH_URL.BLOGS).expect(HTTP_STATUSES.OK_200);
 
-    expect(res.body.length).toBe(0);
+    expect(res.body.items.length).toBe(0);
     expect(1).toBe(1);
   });
 
@@ -41,15 +42,21 @@ describe(`Endpoint (GET) - ${PATH_URL.BLOGS}`, () => {
 
     const res = await req.get(PATH_URL.BLOGS).expect(HTTP_STATUSES.OK_200);
 
-    expect(res.body.length).toBe(1);
+    expect(res.body.items.length).toBe(1);
 
-    expect(res.body).toEqual([
-      expect.objectContaining({
-        name: 'Test',
-        description: 'Test description',
-        websiteUrl: 'https://string.com',
-      }),
-    ]);
+    expect(res.body).toEqual({
+      pagesCount: 1,
+      page: 1,
+      pageSize: 10,
+      totalCount: 1,
+      items: [
+        expect.objectContaining({
+          name: 'Test',
+          description: 'Test description',
+          websiteUrl: 'https://string.com',
+        }),
+      ],
+    });
   });
 
   it('Should get filtered array', async () => {
@@ -73,15 +80,21 @@ describe(`Endpoint (GET) - ${PATH_URL.BLOGS}`, () => {
 
     const res = await req.get(`${PATH_URL.BLOGS}/?searchNameTerm=Nikita`).expect(HTTP_STATUSES.OK_200);
 
-    expect(res.body.length).toBe(1);
+    expect(res.body.items.length).toBe(1);
 
-    expect(res.body).toEqual([
-      expect.objectContaining({
-        name: 'Nikita',
-        description: 'Test description',
-        websiteUrl: 'https://string.com',
-      }),
-    ]);
+    expect(res.body).toEqual({
+      pagesCount: 1,
+      page: 1,
+      pageSize: 10,
+      totalCount: 3,
+      items: [
+        expect.objectContaining({
+          name: 'Nikita',
+          description: 'Test description',
+          websiteUrl: 'https://string.com',
+        }),
+      ],
+    });
   });
 
   it('Should get second page', async () => {
@@ -105,15 +118,21 @@ describe(`Endpoint (GET) - ${PATH_URL.BLOGS}`, () => {
 
     const res = await req.get(`${PATH_URL.BLOGS}/?pageNumber=2&pageSize=2`).expect(HTTP_STATUSES.OK_200);
 
-    expect(res.body.length).toBe(1);
+    expect(res.body.items.length).toBe(1);
 
-    expect(res.body).toEqual([
-      expect.objectContaining({
-        name: 'Mascha',
-        description: 'Test description',
-        websiteUrl: 'https://string.com',
-      }),
-    ]);
+    expect(res.body).toEqual({
+      pagesCount: 2,
+      page: 2,
+      pageSize: 2,
+      totalCount: 3,
+      items: [
+        expect.objectContaining({
+          name: 'Mascha',
+          description: 'Test description',
+          websiteUrl: 'https://string.com',
+        }),
+      ],
+    });
   });
 });
 

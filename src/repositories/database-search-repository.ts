@@ -4,7 +4,7 @@ import { GetPostsQuery } from '../types/post-types';
 
 export const databaseSearchRepository = {
   getBlogs: (req: RequestWithQuery<GetBlogsQuery>) => {
-    const { searchNameTerm, sortBy, sortDirection, pageNumber, pageSize } = req.query;
+    const { searchNameTerm, sortBy = 'createdAt', sortDirection, pageNumber, pageSize } = req.query;
 
     let query: any = {};
     if (searchNameTerm) {
@@ -21,7 +21,7 @@ export const databaseSearchRepository = {
 
     const skip = (defaultPageNumber - 1) * defaultPageSize;
 
-    return { query, sort, skip, pageSize: defaultPageSize };
+    return { query, sort, skip, pageSize: defaultPageSize, page: defaultPageNumber };
   },
 
   getPosts: (req: RequestWithQueryAndParams<GetPostsQuery, { blogId?: string }>) => {
@@ -43,6 +43,6 @@ export const databaseSearchRepository = {
 
     const skip = (defaultPageNumber - 1) * defaultPageSize;
 
-    return { query, sort, skip, pageSize: defaultPageSize };
+    return { query, sort, skip, pageSize: defaultPageSize, page: defaultPageNumber };
   },
 };

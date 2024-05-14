@@ -69,6 +69,10 @@ export class MongoDB extends DbRepository {
     const filter = { _id: new ObjectId(id) } as Filter<T>;
     return await collection.deleteOne(filter);
   }
+
+  public async getTotalCount<T extends Document>(collection: Collection<T>): Promise<number> {
+    return await collection.countDocuments();
+  }
 }
 
 export const mongoDB = new MongoDB();

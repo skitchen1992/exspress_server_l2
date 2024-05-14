@@ -38,7 +38,7 @@ export const databaseSearchRepository = {
 
     let sort: any = {};
     if (sortBy) {
-      sort[sortBy] = sortDirection || 'desc';
+      sort[sortBy] = sortDirection || 'asc';
     }
 
     const defaultPageNumber = Number(pageNumber) || 1;

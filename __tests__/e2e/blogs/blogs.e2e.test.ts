@@ -234,6 +234,83 @@ describe(`Endpoint (GET) - ${PATH_URL.POSTS_FOR_BLOG}`, () => {
       ],
     });
   });
+  //
+  // it('FILTERS', async () => {
+  //   const insertManyResult = await blogsCollection.insertMany([
+  //     {
+  //       name: 'new blog',
+  //       description: 'new description',
+  //       websiteUrl: 'https://newstring.com',
+  //     },
+  //   ]);
+  //
+  //   const blogId = insertManyResult.insertedIds[0].toString();
+  //
+  //   const createdAt = new Date().toISOString();
+  //   await postsCollection.insertMany([
+  //     {
+  //       title: 'Nikita',
+  //       shortDescription: 'description',
+  //       content: 'new post content',
+  //       blogId,
+  //       blogName: 'Blog name',
+  //       createdAt,
+  //     },
+  //     {
+  //       title: 'Dasha',
+  //       shortDescription: 'ShortDescription',
+  //       content: 'Content',
+  //       blogId,
+  //       blogName: 'Blog name',
+  //       createdAt,
+  //     },
+  //     {
+  //       title: 'Tatiana',
+  //       shortDescription: 'ShortDescription',
+  //       content: 'Content',
+  //       blogId,
+  //       blogName: 'Blog name',
+  //       createdAt,
+  //     },
+  //   ]);
+  //
+  //   const res = await req.get(`${PATH_URL.BLOGS}/${blogId}/posts`).expect(HTTP_STATUSES.OK_200);
+  //
+  //   expect(res.body.items.length).toBe(3);
+  //
+  //   expect(res.body).toEqual({
+  //     pagesCount: 1,
+  //     page: 1,
+  //     pageSize: 10,
+  //     totalCount: 3,
+  //     items: [
+  //       expect.objectContaining({
+  //         title: 'Nikita',
+  //         shortDescription: 'ShortDescription',
+  //         content: 'Content',
+  //         blogId,
+  //         blogName: 'Blog name',
+  //         createdAt,
+  //       }),
+  //       expect.objectContaining({
+  //         title: 'Dasha',
+  //         shortDescription: 'ShortDescription',
+  //         content: 'Content',
+  //         blogId,
+  //         blogName: 'Blog name',
+  //         createdAt,
+  //       }),
+  //       expect.objectContaining({
+  //         title: 'Tatiana',
+  //         shortDescription: 'ShortDescription',
+  //         content: 'Content',
+  //         blogId,
+  //         blogName: 'Blog name',
+  //         createdAt,
+  //       }),
+  //     ],
+  //   });
+  // });
 });
 
 describe(`Endpoint (GET) by ID - ${PATH_URL.BLOGS}${PATH_URL.ID}`, () => {

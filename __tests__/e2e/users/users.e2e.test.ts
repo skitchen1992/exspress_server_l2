@@ -6,6 +6,9 @@ import { blogsCollection, connectToDb, postsCollection, usersCollection } from '
 import { app } from '../../../src/app';
 import { mongoDBRepository } from '../../../src/repositories/db-repository';
 import { UserDbType } from '../../../src/types/users-types';
+import { createAuthorizationHeader } from '../../test-helpers';
+import { SETTINGS } from '../../../src/utils/settings';
+import * as data from '../users/datasets';
 
 describe(`Endpoint (GET) - ${PATH_URL.USERS}`, () => {
   let req: TestAgent<Test>;
@@ -19,6 +22,7 @@ describe(`Endpoint (GET) - ${PATH_URL.USERS}`, () => {
 
     await blogsCollection.deleteMany();
     await postsCollection.deleteMany();
+    await usersCollection.deleteMany();
   });
 
   afterEach(async () => {
@@ -176,5 +180,78 @@ describe(`Endpoint (GET) - ${PATH_URL.USERS}`, () => {
         },
       ],
     });
+  });
+});
+
+describe(`Endpoint (POST) - ${PATH_URL.USERS}`, () => {
+  let req: TestAgent<Test>;
+
+  beforeAll(async () => {
+    const server = await MongoMemoryServer.create();
+    await connectToDb(server.getUri());
+
+    req = agent(app);
+
+    await blogsCollection.deleteMany();
+    await postsCollection.deleteMany();
+    await usersCollection.deleteMany();
+  });
+
+  it('Should add user', async () => {
+    const res = await req
+      .post(PATH_URL.USERS)
+      .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
+      .send({
+        login: 'yqORsIlX-V',
+        password: 'string',
+        email: 'example@example.com',
+      })
+      .expect(HTTP_STATUSES.CREATED_201);
+
+    expect(res.body).toEqual(
+      expect.objectContaining({
+        login: 'yqORsIlX-V',
+        email: 'example@example.com',
+      })
+    );
+
+    const dbRes = await mongoDBRepository.getById<UserDbType>(usersCollection, res.body.id);
+
+    expect(dbRes).toEqual(
+      expect.objectContaining({
+        login: 'yqORsIlX-V',
+        email: 'example@example.com',
+      })
+    );
+  });
+
+  it('Should get Error while field "login" is too long', async () => {
+    const res = await req
+      .post(PATH_URL.USERS)
+      .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
+      .send(data.dataSetNewUser1)
+      .expect(HTTP_STATUSES.BAD_REQUEST_400);
+
+    expect(res.body).toEqual(data.errorDataSet1);
+  });
+
+  it('Should get Error while field "password" is too long', async () => {
+    const res = await req
+      .post(PATH_URL.USERS)
+      .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
+      .send(data.dataSetNewUser2)
+      .expect(HTTP_STATUSES.BAD_REQUEST_400);
+
+    expect(res.body).toEqual(data.errorDataSet2);
+  });
+
+  it('Should get Error while field "email" is not correct', async () => {
+    const res = await req
+      .post(PATH_URL.USERS)
+      .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
+      .send(data.dataSetNewUser3)
+      .expect(HTTP_STATUSES.BAD_REQUEST_400);
+
+    expect(res.body).toEqual(data.errorDataSet3);
   });
 });

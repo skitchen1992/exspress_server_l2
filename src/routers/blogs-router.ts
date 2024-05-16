@@ -6,7 +6,7 @@ import { errorHandlingMiddleware } from '../middlewares/error-handling-middlewar
 import { sanitizerQueryMiddleware } from '../middlewares/sanitizer-query-middleware';
 import { basicAuthMiddleware } from '../middlewares/basic-auth-middleware';
 import { CreateBlogSchema, UpdateBlogSchema } from '../models';
-import { checkBlogExistsMiddleware } from '../middlewares/posts/check-blog-exists-middleware';
+import { checkBlogExistsMiddleware } from '../middlewares/check-blog-exists-middleware';
 import { CreatePostForBlogSchema } from '../models/posts/CreatePostForBlogSchema';
 import { validateCreatePostForBlogSchema } from '../middlewares/posts/validate-schemas/validate-create-post-for-blog-schema';
 
@@ -34,7 +34,7 @@ blogsRouter.post(
   basicAuthMiddleware,
   sanitizerQueryMiddleware(),
   //remove for tests
-  //checkExactMiddleware(validateBlogPostSchema),
+  //checkExactMiddleware(validateUserPostSchema),
   validateBlogPostSchema(),
   errorHandlingMiddleware<CreateBlogSchema>,
   controllers.createBlogController
@@ -45,7 +45,7 @@ blogsRouter.post(
   basicAuthMiddleware,
   sanitizerQueryMiddleware(),
   //remove for tests
-  //checkExactMiddleware(validateBlogPostSchema),
+  //checkExactMiddleware(validateUserPostSchema),
   validateCreatePostForBlogSchema(),
   checkBlogExistsMiddleware.urlParams('blogId'),
   errorHandlingMiddleware<CreatePostForBlogSchema>,

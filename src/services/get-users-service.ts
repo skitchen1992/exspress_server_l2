@@ -10,7 +10,7 @@ import { GetUsersQuery, UserDbType } from '../types/users-types';
 export const getUsersService = async (req: RequestWithQuery<GetUsersQuery>) => {
   const filters = databaseSearchRepository.getUsers(req);
 
-  const userList = await queryRepository.findAndMapUsers<UserDbType, GetUserSchema>(usersCollection, filters);
+  const userList = await queryRepository.findAndMapUserList<UserDbType, GetUserSchema>(usersCollection, filters);
 
   const totalCount = await mongoDBRepository.getTotalCount(usersCollection, filters.query);
 

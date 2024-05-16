@@ -1,7 +1,7 @@
 import { body } from 'express-validator';
-import { mongoDBRepository } from '../../repositories/db-repository';
-import { BlogDbType } from '../../types/blog-types';
-import { blogsCollection } from '../../db';
+import { mongoDBRepository } from '../repositories/db-repository';
+import { BlogDbType } from '../types/blog-types';
+import { blogsCollection } from '../db';
 import { param } from 'express-validator/src/middlewares/validation-chain-builders';
 
 export const checkBlogExistsMiddleware = {

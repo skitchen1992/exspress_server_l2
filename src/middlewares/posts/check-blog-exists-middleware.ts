@@ -1,5 +1,5 @@
 import { body } from 'express-validator';
-import { mongoDB } from '../../repositories/db-repository';
+import { mongoDBRepository } from '../../repositories/db-repository';
 import { BlogDbType } from '../../types/blog-types';
 import { blogsCollection } from '../../db';
 import { param } from 'express-validator/src/middlewares/validation-chain-builders';
@@ -7,7 +7,7 @@ import { param } from 'express-validator/src/middlewares/validation-chain-builde
 export const checkBlogExistsMiddleware = {
   body: (fields?: string | string[]) => {
     return body(fields).custom(async (value) => {
-      const blog = await mongoDB.getById<BlogDbType>(blogsCollection, value);
+      const blog = await mongoDBRepository.getById<BlogDbType>(blogsCollection, value);
 
       if (!blog?._id) {
         throw new Error('Blog is not founded');
@@ -16,7 +16,7 @@ export const checkBlogExistsMiddleware = {
   },
   urlParams: (fields?: string | string[]) => {
     return param(fields).custom(async (value) => {
-      const blog = await mongoDB.getById<BlogDbType>(blogsCollection, value);
+      const blog = await mongoDBRepository.getById<BlogDbType>(blogsCollection, value);
 
       if (!blog?._id) {
         throw new Error('Blog is not founded');

@@ -7,10 +7,10 @@ import { agent, Test } from 'supertest';
 import TestAgent from 'supertest/lib/agent';
 import { app } from '../../../src/app';
 import { blogsCollection, connectToDb, postsCollection } from '../../../src/db';
-import { mongoDB } from '../../../src/repositories/db-repository';
 import { BlogDbType } from '../../../src/types/blog-types';
 import { ID } from './datasets';
 import { PostDbType } from '../../../src/types/post-types';
+import { mongoDBRepository } from '../../../src/repositories/db-repository';
 
 describe(`Endpoint (GET) - ${PATH_URL.BLOGS}`, () => {
   let req: TestAgent<Test>;
@@ -33,7 +33,7 @@ describe(`Endpoint (GET) - ${PATH_URL.BLOGS}`, () => {
   });
 
   it('Should get not empty array', async () => {
-    await mongoDB.add<BlogDbType>(blogsCollection, {
+    await mongoDBRepository.add<BlogDbType>(blogsCollection, {
       name: 'Test',
       description: 'Test description',
       websiteUrl: 'https://string.com',
@@ -250,7 +250,7 @@ describe(`Endpoint (GET) by ID - ${PATH_URL.BLOGS}${PATH_URL.ID}`, () => {
   });
 
   it('Should get blog', async () => {
-    const id = await mongoDB.add<BlogDbType>(blogsCollection, {
+    const id = await mongoDBRepository.add<BlogDbType>(blogsCollection, {
       name: 'Test',
       description: 'Test description',
       websiteUrl: 'https://string.com',
@@ -268,7 +268,7 @@ describe(`Endpoint (GET) by ID - ${PATH_URL.BLOGS}${PATH_URL.ID}`, () => {
   });
 
   it(`Should get status ${HTTP_STATUSES.NOT_FOUND_404}`, async () => {
-    await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog1);
+    await mongoDBRepository.add<BlogDbType>(blogsCollection, data.dataSetNewBlog1);
 
     await req.get(`${PATH_URL.BLOGS}/${ID}`).expect(HTTP_STATUSES.NOT_FOUND_404);
   });
@@ -306,7 +306,7 @@ describe(`Endpoint (POST) - ${PATH_URL.BLOGS}`, () => {
       })
     );
 
-    const dbRes = await mongoDB.getById<BlogDbType>(blogsCollection, res.body.id);
+    const dbRes = await mongoDBRepository.getById<BlogDbType>(blogsCollection, res.body.id);
 
     expect(dbRes).toEqual(
       expect.objectContaining({
@@ -439,7 +439,7 @@ describe(`Endpoint (POST) - ${PATH_URL.POSTS_FOR_BLOG}`, () => {
       })
     );
 
-    const dbRes = await mongoDB.getById<PostDbType>(postsCollection, res.body.id);
+    const dbRes = await mongoDBRepository.getById<PostDbType>(postsCollection, res.body.id);
 
     expect(dbRes).toEqual(
       expect.objectContaining({
@@ -471,7 +471,7 @@ describe(`Endpoint (PUT) - ${PATH_URL.BLOGS}${PATH_URL.ID}`, () => {
   });
 
   it('Should update blog', async () => {
-    const insertOneResult = await mongoDB.add<BlogDbType>(blogsCollection, {
+    const insertOneResult = await mongoDBRepository.add<BlogDbType>(blogsCollection, {
       name: 'Test',
       description: 'Test description',
       websiteUrl: 'https://string.com',
@@ -484,7 +484,7 @@ describe(`Endpoint (PUT) - ${PATH_URL.BLOGS}${PATH_URL.ID}`, () => {
       .send(data.dataSetUpdateBlog)
       .expect(HTTP_STATUSES.NO_CONTENT_204);
 
-    const blog = await mongoDB.getById<BlogDbType>(blogsCollection, id.toString());
+    const blog = await mongoDBRepository.getById<BlogDbType>(blogsCollection, id.toString());
 
     expect(blog).toEqual(
       expect.objectContaining({
@@ -504,7 +504,7 @@ describe(`Endpoint (PUT) - ${PATH_URL.BLOGS}${PATH_URL.ID}`, () => {
   });
 
   it('Should get Error while field "name" is too long', async () => {
-    const insertOneResult = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
+    const insertOneResult = await mongoDBRepository.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
 
     const { insertedId: id } = insertOneResult;
 
@@ -518,7 +518,7 @@ describe(`Endpoint (PUT) - ${PATH_URL.BLOGS}${PATH_URL.ID}`, () => {
   });
 
   it('Should get Error while field "name" is not a string', async () => {
-    const insertOneResult = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
+    const insertOneResult = await mongoDBRepository.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
 
     const { insertedId: id } = insertOneResult;
 
@@ -532,7 +532,7 @@ describe(`Endpoint (PUT) - ${PATH_URL.BLOGS}${PATH_URL.ID}`, () => {
   });
 
   it('Should get Error while field "name" is empty', async () => {
-    const insertOneResult = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
+    const insertOneResult = await mongoDBRepository.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
 
     const { insertedId: id } = insertOneResult;
 
@@ -546,7 +546,7 @@ describe(`Endpoint (PUT) - ${PATH_URL.BLOGS}${PATH_URL.ID}`, () => {
   });
 
   it('Should get Error while field "description" is too long', async () => {
-    const insertOneResult = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
+    const insertOneResult = await mongoDBRepository.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
 
     const { insertedId: id } = insertOneResult;
 
@@ -560,7 +560,7 @@ describe(`Endpoint (PUT) - ${PATH_URL.BLOGS}${PATH_URL.ID}`, () => {
   });
 
   it('Should get Error while field "description" is not a string', async () => {
-    const insertOneResult = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
+    const insertOneResult = await mongoDBRepository.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
 
     const { insertedId: id } = insertOneResult;
 
@@ -574,7 +574,7 @@ describe(`Endpoint (PUT) - ${PATH_URL.BLOGS}${PATH_URL.ID}`, () => {
   });
 
   it('Should get Error while field "description" is empty', async () => {
-    const insertOneResult = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
+    const insertOneResult = await mongoDBRepository.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
 
     const { insertedId: id } = insertOneResult;
 
@@ -588,7 +588,7 @@ describe(`Endpoint (PUT) - ${PATH_URL.BLOGS}${PATH_URL.ID}`, () => {
   });
 
   it('Should get Error while field "websiteUrl" is not correct', async () => {
-    const insertOneResult = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
+    const insertOneResult = await mongoDBRepository.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
 
     const { insertedId: id } = insertOneResult;
 
@@ -602,7 +602,7 @@ describe(`Endpoint (PUT) - ${PATH_URL.BLOGS}${PATH_URL.ID}`, () => {
   });
   //skip for tests
   it.skip('Should get Error while we add too many fields specified', async () => {
-    const insertOneResult = await mongoDB.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
+    const insertOneResult = await mongoDBRepository.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
 
     const { insertedId: id } = insertOneResult;
     const res = await req
@@ -634,7 +634,7 @@ describe(`Endpoint (DELETE) - ${PATH_URL.BLOGS}${PATH_URL.ID}`, () => {
   });
 
   it('Should delete blog', async () => {
-    const insertOneResult = await mongoDB.add<BlogDbType>(blogsCollection, {
+    const insertOneResult = await mongoDBRepository.add<BlogDbType>(blogsCollection, {
       name: 'Test',
       description: 'Test description',
       websiteUrl: 'https://string.com',

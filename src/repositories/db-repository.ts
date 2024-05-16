@@ -11,7 +11,7 @@ import {
 } from 'mongodb';
 import { Document } from 'bson';
 
-interface GetQuerySettings {
+export interface GetQuerySettings {
   query?: any;
   sort?: any;
   skip: number;
@@ -75,4 +75,4 @@ export class MongoDB extends DbRepository {
   }
 }
 
-export const mongoDB = new MongoDB();
+export const mongoDBRepository = new MongoDB();

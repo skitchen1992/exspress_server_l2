@@ -1,30 +1,40 @@
-import { RequestWithBody, RequestWithParamsAndBody, RequestWithQueryAndParams } from '../types/request-types';
-import { CreatePostSchema, GetPostSchema } from '../models';
-import { mongoDB } from '../repositories/db-repository';
+import { RequestWithParamsAndBody } from '../types/request-types';
+import { GetPostSchema } from '../models';
+import { mongoDBRepository } from '../repositories/db-repository';
 import { BlogDbType } from '../types/blog-types';
 import { blogsCollection, postsCollection } from '../db';
 import { PostDbType } from '../types/post-types';
-import { mapIdField } from '../utils/helpers';
 import { CreatePostForBlogSchema } from '../models/posts/CreatePostForBlogSchema';
+import { queryRepository } from '../repositories/queryRepository';
 
 export const createPostForBlogService = async (
   req: RequestWithParamsAndBody<CreatePostForBlogSchema, { blogId: string }>
 ) => {
-  const blog = await mongoDB.getById<BlogDbType>(blogsCollection, req.params.blogId);
+  const blog = await mongoDBRepository.getById<BlogDbType>(blogsCollection, req.params.blogId);
+
+  if (!blog) {
+    return null;
+  }
 
   const newPost: PostDbType = {
-    ...req.body,
-    blogName: blog!.name,
-    blogId: blog!._id.toString(),
+    title: req.body.title,
+    shortDescription: req.body.shortDescription,
+    content: req.body.content,
+    blogName: blog.name,
+    blogId: blog._id.toString(),
     createdAt: new Date().toISOString(),
   };
 
-  const result = await mongoDB.add<PostDbType>(postsCollection, newPost);
-  const post = await mongoDB.getById<PostDbType>(postsCollection, result.insertedId.toString());
+  const { insertedId } = await mongoDBRepository.add<PostDbType>(postsCollection, newPost);
 
-  if (result.acknowledged && post) {
-    return mapIdField<GetPostSchema>(post);
+  const post = await queryRepository.findEntityAndMapIdField<PostDbType, GetPostSchema>(
+    postsCollection,
+    insertedId.toString()
+  );
+
+  if (post) {
+    return post;
   } else {
-    return undefined;
+    return null;
   }
 };

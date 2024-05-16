@@ -1,24 +1,29 @@
 import { RequestWithBody } from '../types/request-types';
-import { CreateBlogSchema, CreatePostSchema, GetBlogSchema, GetPostSchema } from '../models';
-import { mongoDB } from '../repositories/db-repository';
+import { CreateBlogSchema, GetBlogSchema } from '../models';
+import { mongoDBRepository } from '../repositories/db-repository';
 import { BlogDbType } from '../types/blog-types';
-import { blogsCollection, postsCollection } from '../db';
-import { PostDbType } from '../types/post-types';
-import { mapIdField } from '../utils/helpers';
+import { blogsCollection } from '../db';
+import { queryRepository } from '../repositories/queryRepository';
 
 export const createBlogService = async (req: RequestWithBody<CreateBlogSchema>) => {
   const newBlog: BlogDbType = {
-    ...req.body,
+    name: req.body.name,
+    description: req.body.description,
+    websiteUrl: req.body.websiteUrl,
     createdAt: new Date().toISOString(),
     isMembership: false,
   };
 
-  const result = await mongoDB.add<BlogDbType>(blogsCollection, newBlog);
-  const blog = await mongoDB.getById<BlogDbType>(blogsCollection, result.insertedId.toString());
+  const { insertedId } = await mongoDBRepository.add<BlogDbType>(blogsCollection, newBlog);
 
-  if (result.acknowledged && blog) {
-    return mapIdField<GetBlogSchema>(blog);
+  const blog = await queryRepository.findEntityAndMapIdField<BlogDbType, GetBlogSchema>(
+    blogsCollection,
+    insertedId.toString()
+  );
+
+  if (blog) {
+    return blog;
   } else {
-    return undefined;
+    return null;
   }
 };

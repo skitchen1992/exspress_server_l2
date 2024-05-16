@@ -1,25 +1,28 @@
 import { RequestWithQuery } from '../types/request-types';
 import { GetBlogListSchema, GetBlogSchema } from '../models';
-import { mongoDB } from '../repositories/db-repository';
+import { mongoDBRepository } from '../repositories/db-repository';
 import { BlogDbType, GetBlogsQuery } from '../types/blog-types';
 import { blogsCollection } from '../db';
-import { getPageCount, mapIdFieldInArray } from '../utils/helpers';
-import { WithId } from 'mongodb';
+import { getPageCount } from '../utils/helpers';
 import { databaseSearchRepository } from '../repositories/database-search-repository';
+import { queryRepository } from '../repositories/queryRepository';
 
 export const getBlogsService = async (req: RequestWithQuery<GetBlogsQuery>) => {
   const filters = databaseSearchRepository.getBlogs(req);
 
-  const blogsFromDb = await mongoDB.get<BlogDbType>(blogsCollection, filters);
+  const blogList = await queryRepository.findEntitiesAndMapIdFieldInArray<BlogDbType, GetBlogSchema>(
+    blogsCollection,
+    filters
+  );
 
-  const totalCount = await mongoDB.getTotalCount(blogsCollection, filters.query);
+  const totalCount = await mongoDBRepository.getTotalCount(blogsCollection, filters.query);
 
   const blogs: GetBlogListSchema = {
     pagesCount: getPageCount(totalCount, filters.pageSize),
     page: filters.page,
     pageSize: filters.pageSize,
     totalCount,
-    items: mapIdFieldInArray<GetBlogSchema, WithId<BlogDbType>>(blogsFromDb),
+    items: blogList || [],
   };
 
   return blogs;

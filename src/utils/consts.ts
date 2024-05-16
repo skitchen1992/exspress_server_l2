@@ -39,3 +39,7 @@ export const getBlogsQueryParams: GetBlogsQueryKeys[] = [
 
 type GetPostsQueryKeys = keyof GetPostsQuery;
 export const getPostsQueryParams: GetPostsQueryKeys[] = ['sortBy', 'sortDirection', 'pageNumber', 'pageSize'];
+
+export const DEFAULT_SORT = 'desc';
+export const DEFAULT_PAGE_NUMBER = 1;
+export const DEFAULT_PAGE_SIZE = 10;

@@ -1,6 +1,7 @@
 import { RequestWithQuery, RequestWithQueryAndParams } from '../types/request-types';
 import { GetBlogsQuery } from '../types/blog-types';
 import { GetPostsQuery } from '../types/post-types';
+import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, DEFAULT_SORT } from '../utils/consts';
 
 export const databaseSearchRepository = {
   getBlogs: (req: RequestWithQuery<GetBlogsQuery>) => {
@@ -13,13 +14,13 @@ export const databaseSearchRepository = {
 
     let sort: any = {};
     if (sortBy) {
-      sort[sortBy] = sortDirection || 'desc';
+      sort[sortBy] = sortDirection || DEFAULT_SORT;
     } else {
-      sort.createdAt = sortDirection || 'desc';
+      sort.createdAt = sortDirection || DEFAULT_SORT;
     }
 
-    const defaultPageNumber = Number(pageNumber) || 1;
-    const defaultPageSize = Number(pageSize) || 10;
+    const defaultPageNumber = Number(pageNumber) || DEFAULT_PAGE_NUMBER;
+    const defaultPageSize = Number(pageSize) || DEFAULT_PAGE_SIZE;
 
     const skip = (defaultPageNumber - 1) * defaultPageSize;
 
@@ -37,13 +38,13 @@ export const databaseSearchRepository = {
 
     let sort: any = {};
     if (sortBy) {
-      sort[sortBy] = sortDirection || 'desc';
+      sort[sortBy] = sortDirection || DEFAULT_SORT;
     } else {
-      sort.createdAt = sortDirection || 'desc';
+      sort.createdAt = sortDirection || DEFAULT_SORT;
     }
 
-    const defaultPageNumber = Number(pageNumber) || 1;
-    const defaultPageSize = Number(pageSize) || 10;
+    const defaultPageNumber = Number(pageNumber) || DEFAULT_PAGE_NUMBER;
+    const defaultPageSize = Number(pageSize) || DEFAULT_PAGE_SIZE;
 
     const skip = (defaultPageNumber - 1) * defaultPageSize;
 

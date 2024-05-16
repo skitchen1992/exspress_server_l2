@@ -1,17 +1,15 @@
-export type BlogDbType = {
-  name: string;
-  description: string;
-  websiteUrl: string;
+export type UserDbType = {
+  login: string;
+  email: string;
   createdAt?: string;
-  isMembership?: boolean;
 };
 
-export type GetBlogsQuery = {
+export type GetUsersQuery = {
   /**
-   * Search term for blog Name: Name should contain this term in any position
+   * Search term for user Login: Login should contain this term in any position
    * Default value : null
    */
-  searchNameTerm?: string;
+  searchLoginTerm?: string;
   /**
    * Default value : createdAt
    */
@@ -31,4 +29,9 @@ export type GetBlogsQuery = {
    * Default value : 10
    */
   pageSize?: string;
+  /**
+   * Search term for user Email: Email should contains this term in any position
+   * Default value : null
+   */
+  searchEmailTerm?: string;
 };

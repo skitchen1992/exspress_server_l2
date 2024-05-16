@@ -1,7 +1,8 @@
 export type UserDbType = {
   login: string;
   email: string;
-  createdAt?: string;
+  password: string;
+  createdAt: string;
 };
 
 export type GetUsersQuery = {

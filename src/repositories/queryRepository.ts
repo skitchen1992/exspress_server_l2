@@ -1,7 +1,7 @@
 import { GetQuerySettings, mongoDBRepository } from './db-repository';
 import { Collection } from 'mongodb';
 import { Document } from 'bson';
-import { mapIdField, mapIdFieldInArray } from '../utils/helpers';
+import { mapIdAndPassFieldsField, mapIdAndPassFieldsInArray, mapIdField, mapIdFieldInArray } from '../utils/helpers';
 
 export const queryRepository = {
   findEntityAndMapIdField: async <T extends Document, R>(collection: Collection<T>, id: string): Promise<R | null> => {
@@ -16,5 +16,18 @@ export const queryRepository = {
     const entities = await mongoDBRepository.get<T>(collection, settings);
 
     return entities ? mapIdFieldInArray(entities) : null;
+  },
+  findAndMapUser: async <T extends Document, R>(collection: Collection<T>, id: string): Promise<R | null> => {
+    const user = await mongoDBRepository.getById<T>(collection, id);
+
+    return user ? mapIdAndPassFieldsField(user) : null;
+  },
+  findAndMapUserList: async <T extends Document, R>(
+    collection: Collection<T>,
+    settings: GetQuerySettings
+  ): Promise<R[] | null> => {
+    const users = await mongoDBRepository.get<T>(collection, settings);
+
+    return users ? mapIdAndPassFieldsInArray(users) : null;
   },
 };

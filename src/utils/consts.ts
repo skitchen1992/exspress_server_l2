@@ -1,5 +1,6 @@
 import { GetBlogsQuery } from '../types/blog-types';
 import { GetPostsQuery } from '../types/post-types';
+import { GetUsersQuery } from '../types/users-types';
 
 export const HTTP_STATUSES = {
   OK_200: 200,
@@ -22,14 +23,18 @@ export const PATH_URL = {
   BLOGS: '/blogs',
   POSTS_FOR_BLOG: '/:blogId/posts',
   POSTS: '/posts',
+  USERS: '/users',
   TESTING: {
     ROOT: '/testing',
     ALL_DATA: '/all-data',
   },
+  AUTH: {
+    ROOT: '/auth',
+    LOGIN: '/login',
+  },
 };
 
-type GetBlogsQueryKeys = keyof GetBlogsQuery;
-export const getBlogsQueryParams: GetBlogsQueryKeys[] = [
+export const getBlogsQueryParams: (keyof Required<GetBlogsQuery>)[] = [
   'searchNameTerm',
   'sortBy',
   'sortDirection',
@@ -37,5 +42,22 @@ export const getBlogsQueryParams: GetBlogsQueryKeys[] = [
   'pageSize',
 ];
 
-type GetPostsQueryKeys = keyof GetPostsQuery;
-export const getPostsQueryParams: GetPostsQueryKeys[] = ['sortBy', 'sortDirection', 'pageNumber', 'pageSize'];
+export const getPostsQueryParams: (keyof Required<GetPostsQuery>)[] = [
+  'sortBy',
+  'sortDirection',
+  'pageNumber',
+  'pageSize',
+];
+
+export const getUsersQueryParams: (keyof Required<GetUsersQuery>)[] = [
+  'sortBy',
+  'sortDirection',
+  'pageNumber',
+  'pageSize',
+  'searchLoginTerm',
+  'searchEmailTerm',
+];
+
+export const DEFAULT_SORT = 'desc';
+export const DEFAULT_PAGE_NUMBER = 1;
+export const DEFAULT_PAGE_SIZE = 10;

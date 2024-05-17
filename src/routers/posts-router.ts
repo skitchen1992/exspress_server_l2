@@ -6,7 +6,7 @@ import { errorHandlingMiddleware } from '../middlewares/error-handling-middlewar
 import { checkExactMiddleware } from '../middlewares/check-exact-middleware';
 import { validateCreatePostSchema, validateUpdatePostSchema } from '../middlewares/posts';
 import { CreatePostSchema, UpdatePostSchema } from '../models';
-import { checkBlogExistsMiddleware } from '../middlewares/posts/check-blog-exists-middleware';
+import { checkBlogExistsMiddleware } from '../middlewares/check-blog-exists-middleware';
 import { basicAuthMiddleware } from '../middlewares/basic-auth-middleware';
 
 export const postsRouter = Router();

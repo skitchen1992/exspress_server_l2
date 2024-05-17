@@ -49,6 +49,22 @@ export class MongoDB extends DbRepository {
     return collection.findOne(filter);
   }
 
+  public async getByField<T extends Document>(
+    collection: Collection<T>,
+    fields?: string | string[],
+    value?: string
+  ): Promise<WithId<T> | null> {
+    let filter: Filter<T>;
+
+    if (typeof fields === 'string') {
+      filter = { [fields]: value } as Filter<T>;
+    } else {
+      filter = { $or: fields?.map((field) => ({ [field]: value })) } as Filter<T>;
+    }
+
+    return collection.findOne(filter);
+  }
+
   public async add<T extends Document>(
     collection: Collection<T>,
     data: OptionalUnlessRequiredId<T>

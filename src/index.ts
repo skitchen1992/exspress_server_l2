@@ -6,7 +6,7 @@ const url = SETTINGS.MONGO_DB_URL;
 
 const startApp = async () => {
   if (url) {
-    if (!(await connectToDb(url!))) {
+    if (!(await connectToDb(url))) {
       console.log('Not connected to data base');
       process.exit(1);
     }

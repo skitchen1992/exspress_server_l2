@@ -9,3 +9,7 @@ export type { CreatePostSchema } from './posts/CreatePostSchema';
 export type { CreatePostSchemaResponse } from './posts/CreatePostSchemaResponse';
 export type { UpdatePostSchema } from './posts/UpdatePostSchema';
 export type { ResponseErrorSchema } from './errors/ResponseErrorSchema';
+export type { GetUserSchema } from './users/GetUserSchema';
+export type { GetUserListSchema } from './users/GetUserListSchema';
+export type { CreateUserSchema } from './users/CreateUserSchema';
+export type { CreateUserSchemaResponse } from './users/CreateUserSchemaResponse';

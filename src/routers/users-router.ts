@@ -27,11 +27,11 @@ usersRouter.post(
   errorHandlingMiddleware<CreateUserSchema>,
   controllers.createUserController
 );
-//
-// usersRouter.delete(
-//   PATH_URL.ID,
-//   basicAuthMiddleware,
-//   sanitizerQueryMiddleware(),
-//   errorHandlingMiddleware,
-//   controllers.deleteBlogController
-// );
+
+usersRouter.delete(
+  PATH_URL.ID,
+  basicAuthMiddleware,
+  sanitizerQueryMiddleware(),
+  errorHandlingMiddleware,
+  controllers.deleteUserController
+);

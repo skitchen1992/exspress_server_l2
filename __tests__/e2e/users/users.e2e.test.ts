@@ -9,6 +9,8 @@ import { UserDbType } from '../../../src/types/users-types';
 import { createAuthorizationHeader } from '../../test-helpers';
 import { SETTINGS } from '../../../src/utils/settings';
 import * as data from '../users/datasets';
+import { BlogDbType } from '../../../src/types/blog-types';
+import { ID } from '../blogs/datasets';
 
 describe(`Endpoint (GET) - ${PATH_URL.USERS}`, () => {
   let req: TestAgent<Test>;
@@ -185,16 +187,19 @@ describe(`Endpoint (GET) - ${PATH_URL.USERS}`, () => {
 
 describe(`Endpoint (POST) - ${PATH_URL.USERS}`, () => {
   let req: TestAgent<Test>;
+  let mongoServer: MongoMemoryServer;
 
   beforeAll(async () => {
-    const server = await MongoMemoryServer.create();
-    await connectToDb(server.getUri());
+    mongoServer = await MongoMemoryServer.create();
+    await connectToDb(mongoServer.getUri());
 
     req = agent(app);
 
-    await blogsCollection.deleteMany();
-    await postsCollection.deleteMany();
     await usersCollection.deleteMany();
+  });
+
+  afterEach(async () => {
+    await mongoServer.stop();
   });
 
   it('Should add user', async () => {
@@ -253,5 +258,42 @@ describe(`Endpoint (POST) - ${PATH_URL.USERS}`, () => {
       .expect(HTTP_STATUSES.BAD_REQUEST_400);
 
     expect(res.body).toEqual(data.errorDataSet3);
+  });
+});
+
+describe(`Endpoint (DELETE) - ${PATH_URL.USERS}${PATH_URL.ID}`, () => {
+  let req: TestAgent<Test>;
+  let mongoServer: MongoMemoryServer;
+
+  beforeAll(async () => {
+    mongoServer = await MongoMemoryServer.create();
+    await connectToDb(mongoServer.getUri());
+
+    req = agent(app);
+
+    await usersCollection.deleteMany();
+  });
+
+  it('Should delete user', async () => {
+    const createdAt = new Date().toISOString();
+
+    const { insertedId } = await mongoDBRepository.add<UserDbType>(usersCollection, {
+      login: 'T8ksjEq-LV',
+      password: 'string',
+      email: 'example@example.com',
+      createdAt,
+    });
+
+    await req
+      .delete(`${PATH_URL.USERS}/${insertedId.toString()}`)
+      .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
+      .expect(HTTP_STATUSES.NO_CONTENT_204);
+  });
+
+  it(`Should get error ${HTTP_STATUSES.NOT_FOUND_404}`, async () => {
+    await req
+      .delete(`${PATH_URL.USERS}/${ID}`)
+      .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
+      .expect(HTTP_STATUSES.NOT_FOUND_404);
   });
 });

@@ -13,3 +13,4 @@ export { getPostsForBlogController } from './blogs/get-posts-for-blog-controller
 export { createPostForBlogController } from './blogs/create-post-for-blog-controller';
 export { getUsersController } from './users/get-users-controller';
 export { createUserController } from './users/create-user-controller';
+export { deleteUserController } from './users/delete-user-controller';

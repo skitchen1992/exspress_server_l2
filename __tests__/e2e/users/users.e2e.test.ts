@@ -20,8 +20,6 @@ describe(`Endpoint (GET) - ${PATH_URL.USERS}`, () => {
 
     req = agent(app);
 
-    await blogsCollection.deleteMany();
-    await postsCollection.deleteMany();
     await usersCollection.deleteMany();
   });
 
@@ -84,15 +82,17 @@ describe(`Endpoint (GET) - ${PATH_URL.USERS}`, () => {
       createdAt: secondUserCreatedAt,
     });
 
-    const res = await req.get(`${PATH_URL.USERS}/?pageSize=1&pageNumber=1`).expect(HTTP_STATUSES.OK_200);
+    const res = await req
+      .get(`${PATH_URL.USERS}/?pageSize=1&pageNumber=1&searchLoginTerm=Login Pig`)
+      .expect(HTTP_STATUSES.OK_200);
 
     expect(res.body.items.length).toBe(1);
 
     expect(res.body).toEqual({
-      pagesCount: 2,
+      pagesCount: 1,
       page: 1,
       pageSize: 1,
-      totalCount: 2,
+      totalCount: 1,
       items: [
         {
           id: secondUser.insertedId.toString(),

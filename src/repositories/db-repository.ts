@@ -51,10 +51,16 @@ export class MongoDB extends DbRepository {
 
   public async getByField<T extends Document>(
     collection: Collection<T>,
-    field: string,
-    value: string
+    fields?: string | string[],
+    value?: string
   ): Promise<WithId<T> | null> {
-    const filter = { [field]: value } as Filter<T>;
+    let filter: Filter<T>;
+
+    if (typeof fields === 'string') {
+      filter = { [fields]: value } as Filter<T>;
+    } else {
+      filter = { $or: fields?.map((field) => ({ [field]: value })) } as Filter<T>;
+    }
 
     return collection.findOne(filter);
   }

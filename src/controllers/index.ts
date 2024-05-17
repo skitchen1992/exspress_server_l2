@@ -14,3 +14,4 @@ export { createPostForBlogController } from './blogs/create-post-for-blog-contro
 export { getUsersController } from './users/get-users-controller';
 export { createUserController } from './users/create-user-controller';
 export { deleteUserController } from './users/delete-user-controller';
+export { authController } from './auth/auth-controller';

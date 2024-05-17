@@ -2,15 +2,15 @@ import { HTTP_STATUSES, PATH_URL } from '../../../src/utils/consts';
 import TestAgent from 'supertest/lib/agent';
 import { agent, Test } from 'supertest';
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import { blogsCollection, connectToDb, postsCollection, usersCollection } from '../../../src/db';
+import { connectToDb, usersCollection } from '../../../src/db';
 import { app } from '../../../src/app';
 import { mongoDBRepository } from '../../../src/repositories/db-repository';
 import { UserDbType } from '../../../src/types/users-types';
 import { createAuthorizationHeader } from '../../test-helpers';
 import { SETTINGS } from '../../../src/utils/settings';
 import * as data from '../users/datasets';
-import { BlogDbType } from '../../../src/types/blog-types';
 import { ID } from '../blogs/datasets';
+import { after } from 'node:test';
 
 describe(`Endpoint (GET) - ${PATH_URL.USERS}`, () => {
   let req: TestAgent<Test>;
@@ -26,11 +26,14 @@ describe(`Endpoint (GET) - ${PATH_URL.USERS}`, () => {
   });
 
   afterEach(async () => {
-    await mongoServer.stop();
+    await usersCollection.deleteMany();
   });
 
   it('Should get empty array', async () => {
-    const res = await req.get(PATH_URL.USERS).expect(HTTP_STATUSES.OK_200);
+    const res = await req
+      .get(PATH_URL.USERS)
+      .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
+      .expect(HTTP_STATUSES.OK_200);
 
     expect(res.body.items.length).toBe(0);
   });
@@ -45,7 +48,10 @@ describe(`Endpoint (GET) - ${PATH_URL.USERS}`, () => {
       createdAt,
     });
 
-    const res = await req.get(PATH_URL.USERS).expect(HTTP_STATUSES.OK_200);
+    const res = await req
+      .get(PATH_URL.USERS)
+      .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
+      .expect(HTTP_STATUSES.OK_200);
 
     expect(res.body.items.length).toBe(1);
 
@@ -86,6 +92,7 @@ describe(`Endpoint (GET) - ${PATH_URL.USERS}`, () => {
 
     const res = await req
       .get(`${PATH_URL.USERS}/?pageSize=1&pageNumber=1&searchLoginTerm=Login Pig`)
+      .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
       .expect(HTTP_STATUSES.OK_200);
 
     expect(res.body.items.length).toBe(1);
@@ -125,7 +132,10 @@ describe(`Endpoint (GET) - ${PATH_URL.USERS}`, () => {
       createdAt: secondUserCreatedAt,
     });
 
-    const res = await req.get(`${PATH_URL.USERS}/?searchLoginTerm=Pig`).expect(HTTP_STATUSES.OK_200);
+    const res = await req
+      .get(`${PATH_URL.USERS}/?searchLoginTerm=Pig`)
+      .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
+      .expect(HTTP_STATUSES.OK_200);
 
     expect(res.body.items.length).toBe(1);
 
@@ -164,7 +174,10 @@ describe(`Endpoint (GET) - ${PATH_URL.USERS}`, () => {
       createdAt: secondUserCreatedAt,
     });
 
-    const res = await req.get(`${PATH_URL.USERS}/?searchEmailTerm=unio@example.com`).expect(HTTP_STATUSES.OK_200);
+    const res = await req
+      .get(`${PATH_URL.USERS}/?searchEmailTerm=unio@example.com`)
+      .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
+      .expect(HTTP_STATUSES.OK_200);
 
     expect(res.body.items.length).toBe(1);
 
@@ -198,7 +211,7 @@ describe(`Endpoint (POST) - ${PATH_URL.USERS}`, () => {
     await usersCollection.deleteMany();
   });
 
-  afterEach(async () => {
+  after(async () => {
     await mongoServer.stop();
   });
 

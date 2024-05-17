@@ -28,6 +28,10 @@ export const PATH_URL = {
     ROOT: '/testing',
     ALL_DATA: '/all-data',
   },
+  AUTH: {
+    ROOT: '/auth',
+    LOGIN: '/login',
+  },
 };
 
 export const getBlogsQueryParams: (keyof Required<GetBlogsQuery>)[] = [

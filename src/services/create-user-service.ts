@@ -4,11 +4,14 @@ import { mongoDBRepository } from '../repositories/db-repository';
 import { usersCollection } from '../db';
 import { queryRepository } from '../repositories/queryRepository';
 import { UserDbType } from '../types/users-types';
+import { passwordRepository } from '../repositories/bcrypt-password-repository';
 
 export const createUserService = async (req: RequestWithBody<CreateUserSchema>) => {
+  const passwordHash = await passwordRepository.hashPassword(req.body.password);
+
   const newUser: UserDbType = {
     login: req.body.login,
-    password: req.body.password,
+    password: passwordHash,
     email: req.body.email,
     createdAt: new Date().toISOString(),
   };

@@ -19,7 +19,7 @@ export const connectToDb = async (mongoUrl: string): Promise<boolean> => {
 
     blogsCollection = db.collection<BlogDbType>(SETTINGS.DB.COLLECTION.BLOGS);
     postsCollection = db.collection<PostDbType>(SETTINGS.DB.COLLECTION.POSTS);
-    usersCollection = db.collection<UserDbType>(SETTINGS.DB.COLLECTION.POSTS);
+    usersCollection = db.collection<UserDbType>(SETTINGS.DB.COLLECTION.USERS);
 
     await client.connect();
 

@@ -35,7 +35,7 @@ export const authController = async (req: RequestWithBody<AuthUserSchema>, res: 
       res.status(HTTP_STATUSES.UNAUTHORIZED_401).json({
         errorsMessages: [
           {
-            message: 'Password or login is wrong',
+            message: 'Login or Password  is wrong',
             field: 'User',
           },
         ],

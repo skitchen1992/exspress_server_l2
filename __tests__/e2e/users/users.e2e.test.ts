@@ -196,6 +196,97 @@ describe(`Endpoint (GET) - ${PATH_URL.USERS}`, () => {
       ],
     });
   });
+
+  it('Should get array by filters', async () => {
+    const createdAt = new Date().toISOString();
+
+    await mongoDBRepository.add<UserDbType>(usersCollection, {
+      login: 'loSer',
+      password: 'string',
+      email: 'email2p@gg.om',
+      createdAt,
+    });
+    await mongoDBRepository.add<UserDbType>(usersCollection, {
+      login: 'log01',
+      password: 'string',
+      email: 'emai@gg.com',
+      createdAt,
+    });
+    await mongoDBRepository.add<UserDbType>(usersCollection, {
+      login: 'log02',
+      password: 'string',
+      email: 'email2p@g.com',
+      createdAt,
+    });
+
+    await mongoDBRepository.add<UserDbType>(usersCollection, {
+      login: 'uer15',
+      password: 'string',
+      email: 'emarrr1@gg.com',
+      createdAt,
+    });
+
+    await mongoDBRepository.add<UserDbType>(usersCollection, {
+      login: 'user01',
+      password: 'string',
+      email: 'email1p@gg.cm',
+      createdAt,
+    });
+
+    await mongoDBRepository.add<UserDbType>(usersCollection, {
+      login: 'user02',
+      password: 'string',
+      email: 'email1p@gg.com',
+      createdAt,
+    });
+
+    await mongoDBRepository.add<UserDbType>(usersCollection, {
+      login: 'user03',
+      password: 'string',
+      email: 'email1p@gg.cou',
+      createdAt,
+    });
+
+    await mongoDBRepository.add<UserDbType>(usersCollection, {
+      login: 'user05',
+      password: 'string',
+      email: 'email1p@gg.coi',
+      createdAt,
+    });
+
+    await mongoDBRepository.add<UserDbType>(usersCollection, {
+      login: 'usr-1-01',
+      password: 'string',
+      email: 'email3@gg.com',
+      createdAt,
+    });
+    const res = await req
+      .get(
+        `${PATH_URL.USERS}/?pageSize=15&pageNumber=1&searchLoginTerm=seR&searchEmailTerm=.com&sortDirection=asc&sortBy=login`
+      )
+      .set(createAuthorizationHeader(SETTINGS.ADMIN_AUTH_USERNAME, SETTINGS.ADMIN_AUTH_PASSWORD))
+      .expect(HTTP_STATUSES.OK_200);
+
+    expect(res.body.items.length).toBe(9);
+
+    expect(res.body).toEqual({
+      pagesCount: 1,
+      page: 1,
+      pageSize: 15,
+      totalCount: 9,
+      items: [
+        expect.objectContaining({ login: 'loSer', email: 'email2p@gg.om' }),
+        expect.objectContaining({ login: 'log01', email: 'emai@gg.com' }),
+        expect.objectContaining({ login: 'log02', email: 'email2p@g.com' }),
+        expect.objectContaining({ login: 'uer15', email: 'emarrr1@gg.com' }),
+        expect.objectContaining({ login: 'user01', email: 'email1p@gg.cm' }),
+        expect.objectContaining({ login: 'user02', email: 'email1p@gg.com' }),
+        expect.objectContaining({ login: 'user03', email: 'email1p@gg.cou' }),
+        expect.objectContaining({ login: 'user05', email: 'email1p@gg.coi' }),
+        expect.objectContaining({ login: 'usr-1-01', email: 'email3@gg.com' }),
+      ],
+    });
+  });
 });
 
 describe(`Endpoint (POST) - ${PATH_URL.USERS}`, () => {

@@ -56,11 +56,18 @@ export const databaseSearchRepository = {
     const { sortBy, sortDirection, pageNumber, pageSize, searchLoginTerm, searchEmailTerm } = req.query;
 
     let query: any = {};
-    if (searchLoginTerm) {
-      query.login = { $regex: new RegExp(`.*${searchLoginTerm}.*`, 'i') };
-    }
-    if (searchEmailTerm) {
-      query.email = { $regex: new RegExp(`.*${searchEmailTerm}.*`, 'i') };
+    if (searchLoginTerm && searchEmailTerm) {
+      query.$or = [
+        { login: { $regex: new RegExp(`.*${searchLoginTerm}.*`, 'i') } },
+        { email: { $regex: new RegExp(`.*${searchEmailTerm}.*`, 'i') } },
+      ];
+    } else {
+      if (searchLoginTerm) {
+        query.login = { $regex: new RegExp(`.*${searchLoginTerm}.*`, 'i') };
+      }
+      if (searchEmailTerm) {
+        query.email = { $regex: new RegExp(`.*${searchEmailTerm}.*`, 'i') };
+      }
     }
 
     let sort: any = {};

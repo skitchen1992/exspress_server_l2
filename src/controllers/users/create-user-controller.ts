@@ -11,19 +11,19 @@ type ResponseType = CreateUserSchemaResponse | ResponseErrorSchema;
 
 export const createUserController = async (req: RequestWithBody<CreateUserSchema>, res: Response<ResponseType>) => {
   try {
-    // const hasLogin = await mongoDBRepository.getByField<UserDbType>(usersCollection, ['login'], req.body.login);
-    // const hasEmail = await mongoDBRepository.getByField<UserDbType>(usersCollection, ['email'], req.body.email);
-    //
-    // if (hasLogin || hasEmail) {
-    //   res.status(HTTP_STATUSES.BAD_REQUEST_400).json({
-    //     errorsMessages: [
-    //       {
-    //         message: 'Email and login should be unique',
-    //         field: 'User',
-    //       },
-    //     ],
-    //   });
-    // }
+    const hasLogin = await mongoDBRepository.getByField<UserDbType>(usersCollection, ['login'], req.body.login);
+    const hasEmail = await mongoDBRepository.getByField<UserDbType>(usersCollection, ['email'], req.body.email);
+
+    if (hasLogin || hasEmail) {
+      res.status(HTTP_STATUSES.BAD_REQUEST_400).json({
+        errorsMessages: [
+          {
+            message: 'Email and login should be unique',
+            field: 'User',
+          },
+        ],
+      });
+    }
 
     const user = await createUserService(req);
 

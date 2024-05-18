@@ -24,7 +24,7 @@ usersRouter.post(
   basicAuthMiddleware,
   sanitizerQueryMiddleware(),
   checkExactMiddleware(validateUserPostSchema),
-  checkUserExistsMiddleware.body('email'),
+  //checkUserExistsMiddleware.body(['email', 'login']),
   errorHandlingMiddleware<CreateUserSchema>,
   controllers.createUserController
 );

@@ -11,6 +11,7 @@ import { mongoDBRepository } from '../../../src/repositories/db-repository';
 import { BlogDbType } from '../../../src/types/blog-types';
 import { PostDbType } from '../../../src/types/post-types';
 import { ID } from './datasets';
+import { getCurrentDate } from '../../../src/utils/helpers';
 
 describe(`Endpoint (GET) - ${PATH_URL.POSTS}`, () => {
   let req: TestAgent<Test>;
@@ -43,7 +44,7 @@ describe(`Endpoint (GET) - ${PATH_URL.POSTS}`, () => {
 
     const blog = await mongoDBRepository.getById<BlogDbType>(blogsCollection, blogId.toString());
 
-    const createdAt = new Date().toISOString();
+    const createdAt = getCurrentDate();
 
     const insertOneResultPost = await mongoDBRepository.add<PostDbType>(postsCollection, {
       ...data.dataSetNewPost,
@@ -84,7 +85,7 @@ describe(`Endpoint (GET) - ${PATH_URL.POSTS}`, () => {
 
     const blog = await mongoDBRepository.getById<BlogDbType>(blogsCollection, blogId.toString());
 
-    const createdAt = new Date().toISOString();
+    const createdAt = getCurrentDate();
 
     await postsCollection.insertMany([
       {
@@ -161,7 +162,7 @@ describe(`Endpoint (GET) by ID - ${PATH_URL.POSTS}${PATH_URL.ID}`, () => {
 
     const blog = await mongoDBRepository.getById<BlogDbType>(blogsCollection, blogId.toString());
 
-    const createdAt = new Date().toISOString();
+    const createdAt = getCurrentDate();
 
     const insertOneResultPost = await mongoDBRepository.add<PostDbType>(postsCollection, {
       ...data.dataSetNewPost,
@@ -194,7 +195,7 @@ describe(`Endpoint (GET) by ID - ${PATH_URL.POSTS}${PATH_URL.ID}`, () => {
 
     const blog = await mongoDBRepository.getById<BlogDbType>(blogsCollection, blogId.toString());
 
-    const createdAt = new Date().toISOString();
+    const createdAt = getCurrentDate();
 
     const insertOneResultPost = await mongoDBRepository.add<PostDbType>(postsCollection, {
       ...data.dataSetNewPost,
@@ -431,7 +432,7 @@ describe(`Endpoint (PUT) - ${PATH_URL.POSTS}${PATH_URL.ID}`, () => {
 
     const blog = await mongoDBRepository.getById<BlogDbType>(blogsCollection, blogId.toString());
 
-    const createdAt = new Date().toISOString();
+    const createdAt = getCurrentDate();
 
     const insertOneResultPost = await mongoDBRepository.add<PostDbType>(postsCollection, {
       ...data.dataSetNewPost,
@@ -462,7 +463,7 @@ describe(`Endpoint (PUT) - ${PATH_URL.POSTS}${PATH_URL.ID}`, () => {
 
     const blog = await mongoDBRepository.getById<BlogDbType>(blogsCollection, blogId.toString());
 
-    const createdAt = new Date().toISOString();
+    const createdAt = getCurrentDate();
 
     const insertOneResultPost = await mongoDBRepository.add<PostDbType>(postsCollection, {
       ...data.dataSetNewPost,
@@ -489,7 +490,7 @@ describe(`Endpoint (PUT) - ${PATH_URL.POSTS}${PATH_URL.ID}`, () => {
 
     const blog = await mongoDBRepository.getById<BlogDbType>(blogsCollection, blogId.toString());
 
-    const createdAt = new Date().toISOString();
+    const createdAt = getCurrentDate();
 
     const insertOneResultPost = await mongoDBRepository.add<PostDbType>(postsCollection, {
       ...data.dataSetNewPost,
@@ -516,7 +517,7 @@ describe(`Endpoint (PUT) - ${PATH_URL.POSTS}${PATH_URL.ID}`, () => {
 
     const blog = await mongoDBRepository.getById<BlogDbType>(blogsCollection, blogId.toString());
 
-    const createdAt = new Date().toISOString();
+    const createdAt = getCurrentDate();
 
     const insertOneResultPost = await mongoDBRepository.add<PostDbType>(postsCollection, {
       ...data.dataSetNewPost,
@@ -542,7 +543,7 @@ describe(`Endpoint (PUT) - ${PATH_URL.POSTS}${PATH_URL.ID}`, () => {
 
     const blog = await mongoDBRepository.getById<BlogDbType>(blogsCollection, blogId.toString());
 
-    const createdAt = new Date().toISOString();
+    const createdAt = getCurrentDate();
 
     const insertOneResultPost = await mongoDBRepository.add<PostDbType>(postsCollection, {
       ...data.dataSetNewPost,
@@ -569,7 +570,7 @@ describe(`Endpoint (PUT) - ${PATH_URL.POSTS}${PATH_URL.ID}`, () => {
 
     const blog = await mongoDBRepository.getById<BlogDbType>(blogsCollection, blogId.toString());
 
-    const createdAt = new Date().toISOString();
+    const createdAt = getCurrentDate();
 
     const insertOneResultPost = await mongoDBRepository.add<PostDbType>(postsCollection, {
       ...data.dataSetNewPost,
@@ -596,7 +597,7 @@ describe(`Endpoint (PUT) - ${PATH_URL.POSTS}${PATH_URL.ID}`, () => {
 
     const blog = await mongoDBRepository.getById<BlogDbType>(blogsCollection, blogId.toString());
 
-    const createdAt = new Date().toISOString();
+    const createdAt = getCurrentDate();
 
     const insertOneResultPost = await mongoDBRepository.add<PostDbType>(postsCollection, {
       ...data.dataSetNewPost,
@@ -623,7 +624,7 @@ describe(`Endpoint (PUT) - ${PATH_URL.POSTS}${PATH_URL.ID}`, () => {
 
     const blog = await mongoDBRepository.getById<BlogDbType>(blogsCollection, blogId.toString());
 
-    const createdAt = new Date().toISOString();
+    const createdAt = getCurrentDate();
 
     const insertOneResultPost = await mongoDBRepository.add<PostDbType>(postsCollection, {
       ...data.dataSetNewPost,
@@ -650,7 +651,7 @@ describe(`Endpoint (PUT) - ${PATH_URL.POSTS}${PATH_URL.ID}`, () => {
 
     const blog = await mongoDBRepository.getById<BlogDbType>(blogsCollection, blogId.toString());
 
-    const createdAt = new Date().toISOString();
+    const createdAt = getCurrentDate();
 
     const insertOneResultPost = await mongoDBRepository.add<PostDbType>(postsCollection, {
       ...data.dataSetNewPost,
@@ -677,7 +678,7 @@ describe(`Endpoint (PUT) - ${PATH_URL.POSTS}${PATH_URL.ID}`, () => {
 
     const blog = await mongoDBRepository.getById<BlogDbType>(blogsCollection, blogId.toString());
 
-    const createdAt = new Date().toISOString();
+    const createdAt = getCurrentDate();
 
     const insertOneResultPost = await mongoDBRepository.add<PostDbType>(postsCollection, {
       ...data.dataSetNewPost,
@@ -704,7 +705,7 @@ describe(`Endpoint (PUT) - ${PATH_URL.POSTS}${PATH_URL.ID}`, () => {
 
     const blog = await mongoDBRepository.getById<BlogDbType>(blogsCollection, blogId.toString());
 
-    const createdAt = new Date().toISOString();
+    const createdAt = getCurrentDate();
 
     const insertOneResultPost = await mongoDBRepository.add<PostDbType>(postsCollection, {
       ...data.dataSetNewPost,
@@ -750,7 +751,7 @@ describe(`Endpoint (DELETE) - ${PATH_URL.POSTS}${PATH_URL.ID}`, () => {
 
     const blog = await mongoDBRepository.getById<BlogDbType>(blogsCollection, blogId.toString());
 
-    const createdAt = new Date().toISOString();
+    const createdAt = getCurrentDate();
 
     const insertOneResultPost = await mongoDBRepository.add<PostDbType>(postsCollection, {
       ...data.dataSetNewPost,
@@ -778,7 +779,7 @@ describe(`Endpoint (DELETE) - ${PATH_URL.POSTS}${PATH_URL.ID}`, () => {
 
     const blog = await mongoDBRepository.getById<BlogDbType>(blogsCollection, blogId.toString());
 
-    const createdAt = new Date().toISOString();
+    const createdAt = getCurrentDate();
 
     const insertOneResultPost = await mongoDBRepository.add<PostDbType>(postsCollection, {
       ...data.dataSetNewPost,

@@ -5,6 +5,7 @@ import { usersCollection } from '../db';
 import { queryRepository } from '../repositories/queryRepository';
 import { UserDbType } from '../types/users-types';
 import { passwordRepository } from '../repositories/bcrypt-password-repository';
+import { getCurrentDate } from '../utils/helpers';
 
 export const createUserService = async (req: RequestWithBody<CreateUserSchema>) => {
   const passwordHash = await passwordRepository.hashPassword(req.body.password);
@@ -13,7 +14,7 @@ export const createUserService = async (req: RequestWithBody<CreateUserSchema>) 
     login: req.body.login,
     password: passwordHash,
     email: req.body.email,
-    createdAt: new Date().toISOString(),
+    createdAt: getCurrentDate(),
   };
 
   const { insertedId } = await mongoDBRepository.add<UserDbType>(usersCollection, newUser);

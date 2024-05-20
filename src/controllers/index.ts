@@ -15,3 +15,4 @@ export { getUsersController } from './users/get-users-controller';
 export { createUserController } from './users/create-user-controller';
 export { deleteUserController } from './users/delete-user-controller';
 export { authController } from './auth/auth-controller';
+export { createCommentController } from './comments/create-comment';

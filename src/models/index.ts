@@ -13,3 +13,5 @@ export type { GetUserSchema } from './users/GetUserSchema';
 export type { GetUserListSchema } from './users/GetUserListSchema';
 export type { CreateUserSchema } from './users/CreateUserSchema';
 export type { CreateUserSchemaResponse } from './users/CreateUserSchemaResponse';
+export type { CreateCommentSchema } from './comments/CreateCommentSchema';
+export type { GetCommentListSchema } from './comments/GetCommentListSchema';

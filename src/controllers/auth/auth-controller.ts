@@ -2,7 +2,7 @@ import { Response } from 'express';
 import { HTTP_STATUSES } from '../../utils/consts';
 import { ResponseErrorSchema } from '../../models';
 import { RequestWithBody } from '../../types/request-types';
-import { AuthUserSchema } from '../../models/Auth/AuthUserSchema';
+import { AuthUserSchema } from '../../models/auth/AuthUserSchema';
 import { mongoDBRepository } from '../../repositories/db-repository';
 import { UserDbType } from '../../types/users-types';
 import { usersCollection } from '../../db';

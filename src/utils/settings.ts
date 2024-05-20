@@ -16,6 +16,7 @@ export const SETTINGS = {
       BLOGS: 'blogs',
       POSTS: 'posts',
       USERS: 'users',
+      COMMENTS: 'comments',
     },
   },
 };

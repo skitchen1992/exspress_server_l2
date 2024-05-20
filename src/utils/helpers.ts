@@ -1,6 +1,4 @@
 import { WithId } from 'mongodb';
-import { GetUserSchema } from '../models';
-import { UserDbType } from '../types/users-types';
 
 export const mapIdField = <R>(object: WithId<Record<string, unknown>>): R => {
   if (object && typeof object === 'object') {
@@ -28,4 +26,8 @@ export const mapIdAndPassFieldsInArray = <R, I extends WithId<Record<string, unk
 
 export const getPageCount = (totalCount: number, pageSize: number) => {
   return Math.ceil(totalCount / pageSize);
+};
+
+export const getCurrentDate = () => {
+  return new Date().toISOString();
 };

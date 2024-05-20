@@ -11,6 +11,7 @@ import { BlogDbType } from '../../../src/types/blog-types';
 import { ID } from './datasets';
 import { PostDbType } from '../../../src/types/post-types';
 import { mongoDBRepository } from '../../../src/repositories/db-repository';
+import { getCurrentDate } from '../../../src/utils/helpers';
 
 describe(`Endpoint (GET) - ${PATH_URL.BLOGS}`, () => {
   let req: TestAgent<Test>;
@@ -169,7 +170,7 @@ describe(`Endpoint (GET) - ${PATH_URL.POSTS_FOR_BLOG}`, () => {
 
     const blogId = insertManyResult.insertedIds[0].toString();
 
-    const createdAt = new Date().toISOString();
+    const createdAt = getCurrentDate();
     await postsCollection.insertMany([
       {
         title: 'Nikita',

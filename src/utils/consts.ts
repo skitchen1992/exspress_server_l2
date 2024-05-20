@@ -22,6 +22,7 @@ export const PATH_URL = {
   ID: '/:id',
   BLOGS: '/blogs',
   POSTS_FOR_BLOG: '/:blogId/posts',
+  COMMENT_FOR_POST: '/:postId/comments',
   POSTS: '/posts',
   USERS: '/users',
   TESTING: {

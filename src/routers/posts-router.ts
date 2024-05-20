@@ -5,9 +5,10 @@ import { sanitizerQueryMiddleware } from '../middlewares/sanitizer-query-middlew
 import { errorHandlingMiddleware } from '../middlewares/error-handling-middleware';
 import { checkExactMiddleware } from '../middlewares/check-exact-middleware';
 import { validateCreatePostSchema, validateUpdatePostSchema } from '../middlewares/posts';
-import { CreatePostSchema, UpdatePostSchema } from '../models';
+import { CreateCommentSchema, CreatePostSchema, UpdatePostSchema } from '../models';
 import { checkBlogExistsMiddleware } from '../middlewares/check-blog-exists-middleware';
 import { basicAuthMiddleware } from '../middlewares/basic-auth-middleware';
+import { validateCreateCommentSchema } from '../middlewares/posts/validate-schemas/validate-create-comment-schema';
 
 export const postsRouter = Router();
 
@@ -28,6 +29,16 @@ postsRouter.post(
   checkBlogExistsMiddleware.body('blogId'),
   errorHandlingMiddleware<CreatePostSchema>,
   controllers.createPostController
+);
+
+postsRouter.post(
+  PATH_URL.COMMENT_FOR_POST,
+  basicAuthMiddleware,
+  sanitizerQueryMiddleware(),
+  checkExactMiddleware(validateCreateCommentSchema),
+  checkBlogExistsMiddleware.body('postId'),
+  errorHandlingMiddleware<CreateCommentSchema>,
+  controllers.createCommentController
 );
 
 postsRouter.put(

@@ -5,6 +5,7 @@ import { BlogDbType } from '../types/blog-types';
 import { blogsCollection, postsCollection } from '../db';
 import { PostDbType } from '../types/post-types';
 import { queryRepository } from '../repositories/queryRepository';
+import { getCurrentDate } from '../utils/helpers';
 
 export const createPostService = async (req: RequestWithBody<CreatePostSchema>) => {
   const blog = await mongoDBRepository.getById<BlogDbType>(blogsCollection, req.body.blogId);
@@ -19,7 +20,7 @@ export const createPostService = async (req: RequestWithBody<CreatePostSchema>) 
     content: req.body.content,
     blogName: blog.name,
     blogId: blog._id.toString(),
-    createdAt: new Date().toISOString(),
+    createdAt: getCurrentDate(),
   };
 
   const { insertedId } = await mongoDBRepository.add<PostDbType>(postsCollection, newPost);

@@ -8,7 +8,7 @@ type ResponseType = CreatePostSchemaResponse | ResponseErrorSchema;
 
 export const createPostController = async (req: RequestWithBody<CreatePostSchema>, res: Response<ResponseType>) => {
   try {
-    const post = await createPostService(req);
+    const post = await createPostService(req.body);
 
     if (post) {
       res.status(HTTP_STATUSES.CREATED_201).json(post);

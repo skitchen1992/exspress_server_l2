@@ -9,6 +9,7 @@ import { CreateCommentSchema, CreatePostSchema, UpdatePostSchema } from '../mode
 import { checkBlogExistsMiddleware } from '../middlewares/check-blog-exists-middleware';
 import { basicAuthMiddleware } from '../middlewares/basic-auth-middleware';
 import { validateCreateCommentSchema } from '../middlewares/posts/validate-schemas/validate-create-comment-schema';
+import { checkPostExistsMiddleware } from '../middlewares/check-post-exists-middleware';
 
 export const postsRouter = Router();
 
@@ -36,7 +37,7 @@ postsRouter.post(
   basicAuthMiddleware,
   sanitizerQueryMiddleware(),
   checkExactMiddleware(validateCreateCommentSchema),
-  checkBlogExistsMiddleware.body('postId'),
+  checkPostExistsMiddleware.urlParams('postId'),
   errorHandlingMiddleware<CreateCommentSchema>,
   controllers.createCommentController
 );

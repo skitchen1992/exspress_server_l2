@@ -5,7 +5,8 @@ import { RequestWithParams } from '../../types/request-types';
 import { mongoDBRepository } from '../../repositories/db-repository';
 import { BlogDbType } from '../../types/blog-types';
 import { blogsCollection } from '../../db';
-import { mapIdField } from '../../utils/helpers';
+
+import { mapIdField } from '../../utils/map';
 
 type ResponseType = GetBlogSchema | ResponseErrorSchema;
 

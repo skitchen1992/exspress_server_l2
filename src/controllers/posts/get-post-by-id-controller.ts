@@ -4,8 +4,8 @@ import { GetPostSchema, ResponseErrorSchema } from '../../models';
 import { RequestWithParams } from '../../types/request-types';
 import { mongoDBRepository } from '../../repositories/db-repository';
 import { postsCollection } from '../../db';
-import { mapIdField } from '../../utils/helpers';
 import { PostDbType } from '../../types/post-types';
+import { mapIdField } from '../../utils/map';
 
 type ResponseType = GetPostSchema | ResponseErrorSchema;
 

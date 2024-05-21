@@ -12,7 +12,7 @@ export const createCommentController = async (
   res: Response<ResponseType>
 ) => {
   try {
-    const comment = await createCommentService(req);
+    const comment = await createCommentService(req.body, req.params);
 
     if (comment) {
       res.status(HTTP_STATUSES.CREATED_201).json(comment);

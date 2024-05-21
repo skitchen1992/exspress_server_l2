@@ -6,7 +6,7 @@ import { AuthUserSchema } from '../../models/auth/AuthUserSchema';
 import { mongoDBRepository } from '../../repositories/db-repository';
 import { UserDbType } from '../../types/users-types';
 import { usersCollection } from '../../db';
-import { passwordRepository } from '../../repositories/bcrypt-password-repository';
+import { passwordBuilder } from '../../utils/helpers';
 
 export const authController = async (req: RequestWithBody<AuthUserSchema>, res: Response<ResponseErrorSchema>) => {
   try {
@@ -17,7 +17,7 @@ export const authController = async (req: RequestWithBody<AuthUserSchema>, res: 
     );
 
     if (user) {
-      const isCorrectPass = await passwordRepository.comparePasswords(req.body.password, user.password);
+      const isCorrectPass = await passwordBuilder.comparePasswords(req.body.password, user.password);
 
       if (isCorrectPass) {
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);

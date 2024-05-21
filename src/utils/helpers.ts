@@ -1,28 +1,8 @@
-import { WithId } from 'mongodb';
-
-export const mapIdField = <R>(object: WithId<Record<string, unknown>>): R => {
-  if (object && typeof object === 'object') {
-    const { _id, ...rest } = object;
-    return { id: _id, ...rest } as R;
-  }
-  return object as R;
-};
-
-export const mapIdFieldInArray = <R, I extends WithId<Record<string, unknown>>>(array: I[]): R[] => {
-  return array.map((object) => mapIdField<R>(object));
-};
-
-export const mapIdAndPassFieldsField = <R>(object: WithId<Record<string, unknown>>): R => {
-  if (object && typeof object === 'object') {
-    const { _id, password, ...rest } = object;
-    return { id: _id, ...rest } as R;
-  }
-  return object as R;
-};
-
-export const mapIdAndPassFieldsInArray = <R, I extends WithId<Record<string, unknown>>>(array: I[]): R[] => {
-  return array.map((object) => mapIdAndPassFieldsField<R>(object));
-};
+import { GetBlogsQuery } from '../types/blog-types';
+import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, DEFAULT_SORT } from './consts';
+import { GetPostsQuery } from '../types/post-types';
+import { GetUsersQuery } from '../types/users-types';
+import { compare, genSalt, hash } from 'bcryptjs';
 
 export const getPageCount = (totalCount: number, pageSize: number) => {
   return Math.ceil(totalCount / pageSize);
@@ -30,4 +10,96 @@ export const getPageCount = (totalCount: number, pageSize: number) => {
 
 export const getCurrentDate = () => {
   return new Date().toISOString();
+};
+
+export const searchQueryBuilder = {
+  getBlogs: (queryParams: GetBlogsQuery) => {
+    const { searchNameTerm, sortBy, sortDirection, pageNumber, pageSize } = queryParams;
+
+    let query: any = {};
+    if (searchNameTerm) {
+      query.name = { $regex: new RegExp(`.*${searchNameTerm}.*`, 'i') };
+    }
+
+    let sort: any = {};
+    if (sortBy) {
+      sort[sortBy] = sortDirection || DEFAULT_SORT;
+    } else {
+      sort.createdAt = sortDirection || DEFAULT_SORT;
+    }
+
+    const defaultPageNumber = Number(pageNumber) || DEFAULT_PAGE_NUMBER;
+    const defaultPageSize = Number(pageSize) || DEFAULT_PAGE_SIZE;
+
+    const skip = (defaultPageNumber - 1) * defaultPageSize;
+
+    return { query, sort, skip, pageSize: defaultPageSize, page: defaultPageNumber };
+  },
+
+  getPosts: (queryParams: GetPostsQuery, params: { blogId?: string }) => {
+    const { sortBy, sortDirection, pageNumber, pageSize } = queryParams;
+    const { blogId } = params;
+
+    let query: any = {};
+    if (blogId) {
+      query.blogId = blogId;
+    }
+
+    let sort: any = {};
+    if (sortBy) {
+      sort[sortBy] = sortDirection || DEFAULT_SORT;
+    } else {
+      sort.createdAt = sortDirection || DEFAULT_SORT;
+    }
+
+    const defaultPageNumber = Number(pageNumber) || DEFAULT_PAGE_NUMBER;
+    const defaultPageSize = Number(pageSize) || DEFAULT_PAGE_SIZE;
+
+    const skip = (defaultPageNumber - 1) * defaultPageSize;
+
+    return { query, sort, skip, pageSize: defaultPageSize, page: defaultPageNumber };
+  },
+
+  getUsers: (queryParams: GetUsersQuery) => {
+    const { sortBy, sortDirection, pageNumber, pageSize, searchLoginTerm, searchEmailTerm } = queryParams;
+
+    let query: any = {};
+    if (searchLoginTerm && searchEmailTerm) {
+      query.$or = [
+        { login: { $regex: new RegExp(`.*${searchLoginTerm}.*`, 'i') } },
+        { email: { $regex: new RegExp(`.*${searchEmailTerm}.*`, 'i') } },
+      ];
+    } else {
+      if (searchLoginTerm) {
+        query.login = { $regex: new RegExp(`.*${searchLoginTerm}.*`, 'i') };
+      }
+      if (searchEmailTerm) {
+        query.email = { $regex: new RegExp(`.*${searchEmailTerm}.*`, 'i') };
+      }
+    }
+
+    let sort: any = {};
+    if (sortBy) {
+      sort[sortBy] = sortDirection || DEFAULT_SORT;
+    } else {
+      sort.createdAt = sortDirection || DEFAULT_SORT;
+    }
+
+    const defaultPageNumber = Number(pageNumber) || DEFAULT_PAGE_NUMBER;
+    const defaultPageSize = Number(pageSize) || DEFAULT_PAGE_SIZE;
+
+    const skip = (defaultPageNumber - 1) * defaultPageSize;
+
+    return { query, sort, skip, pageSize: defaultPageSize, page: defaultPageNumber };
+  },
+};
+
+export const passwordBuilder = {
+  hashPassword: async (password: string, saltRounds = 10) => {
+    const salt = await genSalt(saltRounds);
+    return await hash(password, salt);
+  },
+  comparePasswords: async (password: string, hashedPassword: string) => {
+    return await compare(password, hashedPassword);
+  },
 };

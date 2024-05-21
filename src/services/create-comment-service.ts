@@ -8,8 +8,8 @@ import { getCurrentDate } from '../utils/helpers';
 import { queryRepository } from '../repositories/queryRepository';
 import { GetCommentSchema } from '../models/comments/GetCommentSchema';
 
-export const createCommentService = async (req: RequestWithParamsAndBody<CreateCommentSchema, { postId: string }>) => {
-  const post = await mongoDBRepository.getById<PostDbType>(postsCollection, req.params.postId);
+export const createCommentService = async (body: CreateCommentSchema, params: { postId: string }) => {
+  const post = await mongoDBRepository.getById<PostDbType>(postsCollection, params.postId);
 
   if (!post) {
     return null;
@@ -17,7 +17,7 @@ export const createCommentService = async (req: RequestWithParamsAndBody<CreateC
 
   //TODO: userId and userLogin need to get from Headers
   const newComment: CommentDbType = {
-    content: req.body.content,
+    content: body.content,
     commentatorInfo: {
       userId: 'string',
       userLogin: 'string',

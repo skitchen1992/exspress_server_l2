@@ -12,7 +12,7 @@ export const createPostForBlogController = async (
   res: Response<ResponseType>
 ) => {
   try {
-    const post = await createPostForBlogService(req);
+    const post = await createPostForBlogService(req.body, req.params);
 
     if (post) {
       res.status(HTTP_STATUSES.CREATED_201).json(post);

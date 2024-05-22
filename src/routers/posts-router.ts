@@ -29,15 +29,6 @@ postsRouter.post(
   controllers.createPostController
 );
 
-postsRouter.post(
-  PATH_URL.COMMENT_FOR_POST,
-  basicAuthMiddleware,
-  sanitizerQueryMiddleware(),
-  checkExactMiddleware(validateCreateCommentSchema),
-  errorHandlingMiddleware<CreateCommentSchema>,
-  controllers.createCommentController
-);
-
 postsRouter.put(
   PATH_URL.ID,
   basicAuthMiddleware,
@@ -53,4 +44,20 @@ postsRouter.delete(
   sanitizerQueryMiddleware(),
   errorHandlingMiddleware,
   controllers.deletePostController
+);
+
+postsRouter.post(
+  PATH_URL.COMMENT_FOR_POST,
+  basicAuthMiddleware,
+  sanitizerQueryMiddleware(),
+  checkExactMiddleware(validateCreateCommentSchema),
+  errorHandlingMiddleware<CreateCommentSchema>,
+  controllers.createCommentController
+);
+
+postsRouter.get(
+  PATH_URL.COMMENT_FOR_POST,
+  sanitizerQueryMiddleware(getPostsQueryParams),
+  errorHandlingMiddleware,
+  controllers.getCommentsForPostController
 );

@@ -27,5 +27,6 @@ export const getPostsController = async (req: RequestWithQuery<GetPostsQuery>, r
     res.status(HTTP_STATUSES.OK_200).json(posts);
   } catch (e) {
     console.log(e);
+    res.sendStatus(HTTP_STATUSES.INTERNAL_SERVER_ERROR_500);
   }
 };

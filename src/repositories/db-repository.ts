@@ -46,7 +46,7 @@ export class MongoDB extends DbRepository {
   public async getById<T extends Document>(collection: Collection<T>, id: string): Promise<WithId<T> | null> {
     const filter = { _id: new ObjectId(id) } as Filter<T>;
 
-    return collection.findOne(filter);
+    return await collection.findOne(filter);
   }
 
   public async getByField<T extends Document>(
@@ -62,14 +62,14 @@ export class MongoDB extends DbRepository {
       filter = { $or: fields?.map((field) => ({ [field]: value })) } as Filter<T>;
     }
 
-    return collection.findOne(filter);
+    return await collection.findOne(filter);
   }
 
   public async add<T extends Document>(
     collection: Collection<T>,
     data: OptionalUnlessRequiredId<T>
   ): Promise<InsertOneResult<T>> {
-    return collection.insertOne(data);
+    return await collection.insertOne(data);
   }
 
   public async update<T extends Document>(

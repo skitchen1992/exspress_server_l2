@@ -258,7 +258,7 @@ describe(`Endpoint (POST) - ${PATH_URL.POSTS}`, () => {
     expect(res.body).toEqual({
       errorsMessages: [
         {
-          message: 'Blog is not founded',
+          message: 'Not founded',
           field: 'blogId',
         },
       ],

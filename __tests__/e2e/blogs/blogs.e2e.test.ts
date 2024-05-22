@@ -235,6 +235,10 @@ describe(`Endpoint (GET) - ${PATH_URL.POSTS_FOR_BLOG}`, () => {
       ],
     });
   });
+
+  it(`Should get status ${HTTP_STATUSES.NOT_FOUND_404}`, async () => {
+    await req.get(`${PATH_URL.BLOGS}/${ID}/posts`).expect(HTTP_STATUSES.NOT_FOUND_404);
+  });
 });
 
 describe(`Endpoint (GET) by ID - ${PATH_URL.BLOGS}${PATH_URL.ID}`, () => {

@@ -3,6 +3,7 @@ import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, DEFAULT_SORT } from './consts';
 import { GetPostsQuery } from '../types/post-types';
 import { GetUsersQuery } from '../types/users-types';
 import { compare, genSalt, hash } from 'bcryptjs';
+import { ObjectId } from 'mongodb';
 
 export const getPageCount = (totalCount: number, pageSize: number) => {
   return Math.ceil(totalCount / pageSize);
@@ -10,6 +11,10 @@ export const getPageCount = (totalCount: number, pageSize: number) => {
 
 export const getCurrentDate = () => {
   return new Date().toISOString();
+};
+
+export const isValidObjectId = (id: string): boolean => {
+  return ObjectId.isValid(id);
 };
 
 export const searchQueryBuilder = {

@@ -6,10 +6,8 @@ import { errorHandlingMiddleware } from '../middlewares/error-handling-middlewar
 import { checkExactMiddleware } from '../middlewares/check-exact-middleware';
 import { validateCreatePostSchema, validateUpdatePostSchema } from '../middlewares/posts';
 import { CreateCommentSchema, CreatePostSchema, UpdatePostSchema } from '../models';
-import { checkBlogExistsMiddleware } from '../middlewares/check-blog-exists-middleware';
 import { basicAuthMiddleware } from '../middlewares/basic-auth-middleware';
 import { validateCreateCommentSchema } from '../middlewares/posts/validate-schemas/validate-create-comment-schema';
-import { checkPostExistsMiddleware } from '../middlewares/check-post-exists-middleware';
 
 export const postsRouter = Router();
 
@@ -27,7 +25,6 @@ postsRouter.post(
   basicAuthMiddleware,
   sanitizerQueryMiddleware(),
   checkExactMiddleware(validateCreatePostSchema),
-  checkBlogExistsMiddleware.body('blogId'),
   errorHandlingMiddleware<CreatePostSchema>,
   controllers.createPostController
 );
@@ -37,7 +34,6 @@ postsRouter.post(
   basicAuthMiddleware,
   sanitizerQueryMiddleware(),
   checkExactMiddleware(validateCreateCommentSchema),
-  checkPostExistsMiddleware.urlParams('postId'),
   errorHandlingMiddleware<CreateCommentSchema>,
   controllers.createCommentController
 );
@@ -47,7 +43,6 @@ postsRouter.put(
   basicAuthMiddleware,
   sanitizerQueryMiddleware(),
   checkExactMiddleware(validateUpdatePostSchema),
-  checkBlogExistsMiddleware.body('blogId'),
   errorHandlingMiddleware<UpdatePostSchema>,
   controllers.updatePostController
 );

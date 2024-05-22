@@ -1,18 +1,12 @@
-import { CreatePostSchema, GetPostSchema } from '../models';
+import { CreatePostSchema } from '../models';
 import { mongoDBRepository } from '../repositories/db-repository';
 import { BlogDbType } from '../types/blog-types';
-import { blogsCollection, postsCollection } from '../db';
+import { postsCollection } from '../db';
 import { PostDbType } from '../types/post-types';
-import { queryRepository } from '../repositories/queryRepository';
 import { getCurrentDate } from '../utils/helpers';
+import { WithId } from 'mongodb';
 
-export const createPostService = async (body: CreatePostSchema) => {
-  const blog = await mongoDBRepository.getById<BlogDbType>(blogsCollection, body.blogId);
-
-  if (!blog) {
-    return null;
-  }
-
+export const createPostService = async (body: CreatePostSchema, blog: WithId<BlogDbType>) => {
   const newPost: PostDbType = {
     title: body.title,
     shortDescription: body.shortDescription,
@@ -24,14 +18,5 @@ export const createPostService = async (body: CreatePostSchema) => {
 
   const { insertedId } = await mongoDBRepository.add<PostDbType>(postsCollection, newPost);
 
-  const post = await queryRepository.findEntityAndMapIdField<PostDbType, GetPostSchema>(
-    postsCollection,
-    insertedId.toString()
-  );
-
-  if (post) {
-    return post;
-  } else {
-    return null;
-  }
+  return insertedId;
 };

@@ -8,7 +8,7 @@ import { blogsCollection } from '../../db';
 
 import { mapIdField } from '../../utils/map';
 
-type ResponseType = GetBlogSchema | ResponseErrorSchema;
+type ResponseType = GetBlogSchema | null;
 
 export const getBlogByIdController = async (req: RequestWithParams<{ id: string }>, res: Response<ResponseType>) => {
   try {
@@ -23,5 +23,6 @@ export const getBlogByIdController = async (req: RequestWithParams<{ id: string 
     }
   } catch (e) {
     console.log(e);
+    res.sendStatus(HTTP_STATUSES.INTERNAL_SERVER_ERROR_500);
   }
 };

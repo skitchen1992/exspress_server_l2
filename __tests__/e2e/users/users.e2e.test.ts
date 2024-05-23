@@ -2,7 +2,7 @@ import { HTTP_STATUSES, PATH_URL } from '../../../src/utils/consts';
 import TestAgent from 'supertest/lib/agent';
 import { agent, Test } from 'supertest';
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import { connectToDb, usersCollection } from '../../../src/db';
+import { connectToDb, usersCollection } from '../../../src/db/collection';
 import { app } from '../../../src/app';
 import { mongoDBRepository } from '../../../src/repositories/db-repository';
 import { UserDbType } from '../../../src/types/users-types';

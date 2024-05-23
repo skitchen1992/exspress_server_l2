@@ -5,7 +5,7 @@ import { RequestWithQuery } from '../../types/request-types';
 import { GetPostsQuery, PostDbType } from '../../types/post-types';
 import { getPageCount, searchQueryBuilder } from '../../utils/helpers';
 import { queryRepository } from '../../repositories/queryRepository';
-import { postsCollection } from '../../db';
+import { postsCollection } from '../../db/collection';
 
 export const getPostsController = async (req: RequestWithQuery<GetPostsQuery>, res: Response<GetPostListSchema>) => {
   try {

@@ -6,7 +6,7 @@ import { CreatePostForBlogSchema } from '../../models/posts/CreatePostForBlogSch
 import { createPostForBlogService } from '../../services/create-post-for-blog-service';
 import { mongoDBRepository } from '../../repositories/db-repository';
 import { BlogDbType } from '../../types/blog-types';
-import { blogsCollection, postsCollection } from '../../db';
+import { blogsCollection, postsCollection } from '../../db/collection';
 import { PostDbType } from '../../types/post-types';
 import { queryRepository } from '../../repositories/queryRepository';
 import { isValidObjectId } from '../../utils/helpers';

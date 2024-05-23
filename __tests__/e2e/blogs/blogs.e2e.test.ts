@@ -6,7 +6,7 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import { agent, Test } from 'supertest';
 import TestAgent from 'supertest/lib/agent';
 import { app } from '../../../src/app';
-import { blogsCollection, connectToDb, postsCollection } from '../../../src/db';
+import { blogsCollection, connectToDb, postsCollection } from '../../../src/db/collection';
 import { BlogDbType } from '../../../src/types/blog-types';
 import { ID } from './datasets';
 import { PostDbType } from '../../../src/types/post-types';

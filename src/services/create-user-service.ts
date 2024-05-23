@@ -1,6 +1,6 @@
 import { CreateUserSchema, GetUserSchema } from '../models';
 import { mongoDBRepository } from '../repositories/db-repository';
-import { usersCollection } from '../db';
+import { usersCollection } from '../db/collection';
 import { queryRepository } from '../repositories/queryRepository';
 import { UserDbType } from '../types/users-types';
 import { getCurrentDate, passwordBuilder } from '../utils/helpers';

@@ -5,7 +5,7 @@ import { RequestWithBody } from '../../types/request-types';
 import { createBlogService } from '../../services/create-blog-service';
 import { queryRepository } from '../../repositories/queryRepository';
 import { BlogDbType } from '../../types/blog-types';
-import { blogsCollection } from '../../db';
+import { blogsCollection } from '../../db/collection';
 
 type ResponseType = CreateBlogSchemaResponse | ResponseErrorSchema;
 

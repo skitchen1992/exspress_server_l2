@@ -8,6 +8,7 @@ import { validateCreatePostSchema, validateUpdatePostSchema } from '../middlewar
 import { CreateCommentSchema, CreatePostSchema, UpdatePostSchema } from '../models';
 import { basicAuthMiddleware } from '../middlewares/basic-auth-middleware';
 import { validateCreateCommentSchema } from '../middlewares/posts/validate-schemas/validate-create-comment-schema';
+import { bearerTokenAuthMiddleware } from '../middlewares/bearer-token-auth-middleware';
 
 export const postsRouter = Router();
 
@@ -48,7 +49,7 @@ postsRouter.delete(
 
 postsRouter.post(
   PATH_URL.COMMENT_FOR_POST,
-  basicAuthMiddleware,
+  bearerTokenAuthMiddleware,
   sanitizerQueryMiddleware(),
   checkExactMiddleware(validateCreateCommentSchema),
   errorHandlingMiddleware<CreateCommentSchema>,

@@ -3,7 +3,7 @@ import { HTTP_STATUSES } from '../../utils/consts';
 import { UpdateBlogSchema } from '../../models';
 import { RequestWithParamsAndBody } from '../../types/request-types';
 import { mongoDBRepository } from '../../repositories/db-repository';
-import { blogsCollection } from '../../db';
+import { blogsCollection } from '../../db/collection';
 import { BlogDbType } from '../../types/blog-types';
 
 type RequestType = RequestWithParamsAndBody<UpdateBlogSchema, { id: string }>;

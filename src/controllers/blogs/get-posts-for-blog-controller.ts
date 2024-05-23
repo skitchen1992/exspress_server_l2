@@ -5,7 +5,7 @@ import { RequestWithQueryAndParams } from '../../types/request-types';
 import { GetPostsQuery, PostDbType } from '../../types/post-types';
 import { getPageCount, searchQueryBuilder } from '../../utils/helpers';
 import { queryRepository } from '../../repositories/queryRepository';
-import { blogsCollection, postsCollection } from '../../db';
+import { blogsCollection, postsCollection } from '../../db/collection';
 import { mongoDBRepository } from '../../repositories/db-repository';
 import { BlogDbType } from '../../types/blog-types';
 

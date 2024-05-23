@@ -5,7 +5,7 @@ import { RequestWithBody } from '../../types/request-types';
 import { createUserService } from '../../services/create-user-service';
 import { mongoDBRepository } from '../../repositories/db-repository';
 import { UserDbType } from '../../types/users-types';
-import { usersCollection } from '../../db';
+import { usersCollection } from '../../db/collection';
 
 type ResponseType = CreateUserSchemaResponse | ResponseErrorSchema;
 

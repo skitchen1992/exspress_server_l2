@@ -4,7 +4,7 @@ import * as data from './datasets';
 import { SETTINGS } from '../../../src/utils/settings';
 import { agent, Test } from 'supertest';
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import { blogsCollection, connectToDb, postsCollection } from '../../../src/db';
+import { blogsCollection, connectToDb, postsCollection } from '../../../src/db/collection';
 import { app } from '../../../src/app';
 import TestAgent from 'supertest/lib/agent';
 import { mongoDBRepository } from '../../../src/repositories/db-repository';

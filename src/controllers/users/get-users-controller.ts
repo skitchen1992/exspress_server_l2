@@ -5,7 +5,7 @@ import { RequestWithQuery } from '../../types/request-types';
 import { GetUsersQuery, UserDbType } from '../../types/users-types';
 import { getPageCount, searchQueryBuilder } from '../../utils/helpers';
 import { queryRepository } from '../../repositories/queryRepository';
-import { usersCollection } from '../../db';
+import { usersCollection } from '../../db/collection';
 
 export const getUsersController = async (req: RequestWithQuery<GetUsersQuery>, res: Response<GetUserListSchema>) => {
   try {

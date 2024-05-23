@@ -2,7 +2,7 @@ import { Response } from 'express';
 import { HTTP_STATUSES } from '../../utils/consts';
 import { RequestWithParamsAndBody } from '../../types/request-types';
 import { mongoDBRepository } from '../../repositories/db-repository';
-import { commentsCollection } from '../../db';
+import { commentsCollection } from '../../db/collection';
 import { UpdateCommentSchema } from '../../models/comments/UpdateCommentSchema';
 import { CommentDbType } from '../../types/comments-types';
 

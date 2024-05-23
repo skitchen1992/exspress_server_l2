@@ -2,7 +2,7 @@ import { Response } from 'express';
 import { HTTP_STATUSES } from '../../utils/consts';
 import { RequestWithParams } from '../../types/request-types';
 import { mongoDBRepository } from '../../repositories/db-repository';
-import { commentsCollection } from '../../db';
+import { commentsCollection } from '../../db/collection';
 
 type RequestType = RequestWithParams<{ id: string }>;
 

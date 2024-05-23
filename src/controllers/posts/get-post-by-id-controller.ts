@@ -3,7 +3,7 @@ import { HTTP_STATUSES } from '../../utils/consts';
 import { GetPostSchema, ResponseErrorSchema } from '../../models';
 import { RequestWithParams } from '../../types/request-types';
 import { mongoDBRepository } from '../../repositories/db-repository';
-import { postsCollection } from '../../db';
+import { postsCollection } from '../../db/collection';
 import { PostDbType } from '../../types/post-types';
 import { mapIdField } from '../../utils/map';
 

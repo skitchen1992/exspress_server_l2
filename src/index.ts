@@ -1,6 +1,6 @@
 import { SETTINGS } from './utils/settings';
 import { app } from './app';
-import { connectToDb } from './db';
+import { connectToDb } from './db/collection';
 
 const url = SETTINGS.MONGO_DB_URL;
 

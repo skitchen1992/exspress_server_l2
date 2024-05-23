@@ -4,10 +4,14 @@ import { Document } from 'bson';
 import { mapIdAndPassFieldsField, mapIdAndPassFieldsInArray, mapIdField, mapIdFieldInArray } from '../utils/map';
 
 class QueryRepository {
-  async findEntityAndMapIdField<T extends Document, R>(collection: Collection<T>, id: string): Promise<R | null> {
+  async findEntityAndMapIdField<T extends Document, R>(
+    collection: Collection<T>,
+    id: string,
+    fieldsToRemove?: string[]
+  ): Promise<R | null> {
     const entity = await mongoDBRepository.getById(collection, id);
 
-    return entity ? mapIdField(entity) : null;
+    return entity ? mapIdField(entity, fieldsToRemove) : null;
   }
 
   async findEntitiesAndMapIdFieldInArray<T extends Document, R>(

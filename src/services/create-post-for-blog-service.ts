@@ -1,6 +1,6 @@
 import { mongoDBRepository } from '../repositories/db-repository';
 import { BlogDbType } from '../types/blog-types';
-import { blogsCollection, postsCollection } from '../db';
+import { blogsCollection, postsCollection } from '../db/collection';
 import { PostDbType } from '../types/post-types';
 import { CreatePostForBlogSchema } from '../models/posts/CreatePostForBlogSchema';
 import { getCurrentDate } from '../utils/helpers';

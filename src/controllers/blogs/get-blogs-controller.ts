@@ -5,7 +5,7 @@ import { RequestWithQuery } from '../../types/request-types';
 import { BlogDbType, GetBlogsQuery } from '../../types/blog-types';
 import { getPageCount, searchQueryBuilder } from '../../utils/helpers';
 import { queryRepository } from '../../repositories/queryRepository';
-import { blogsCollection } from '../../db';
+import { blogsCollection } from '../../db/collection';
 
 export const getBlogsController = async (req: RequestWithQuery<GetBlogsQuery>, res: Response<GetBlogListSchema>) => {
   try {

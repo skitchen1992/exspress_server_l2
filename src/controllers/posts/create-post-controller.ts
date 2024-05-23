@@ -5,7 +5,7 @@ import { RequestWithBody } from '../../types/request-types';
 import { createPostService } from '../../services/create-post-service';
 import { mongoDBRepository } from '../../repositories/db-repository';
 import { BlogDbType } from '../../types/blog-types';
-import { blogsCollection, postsCollection } from '../../db';
+import { blogsCollection, postsCollection } from '../../db/collection';
 import { isValidObjectId } from '../../utils/helpers';
 import { ErrorMessageSchema } from '../../models/errors/ErrorMessageSchema';
 import { queryRepository } from '../../repositories/queryRepository';

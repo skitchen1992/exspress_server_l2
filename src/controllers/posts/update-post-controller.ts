@@ -3,7 +3,7 @@ import { HTTP_STATUSES } from '../../utils/consts';
 import { UpdatePostSchema } from '../../models';
 import { RequestWithParamsAndBody } from '../../types/request-types';
 import { mongoDBRepository } from '../../repositories/db-repository';
-import { postsCollection } from '../../db';
+import { postsCollection } from '../../db/collection';
 import { isValidObjectId } from '../../utils/helpers';
 import { ErrorMessageSchema } from '../../models/errors/ErrorMessageSchema';
 

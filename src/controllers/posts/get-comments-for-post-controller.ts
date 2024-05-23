@@ -5,7 +5,7 @@ import { RequestWithQuery } from '../../types/request-types';
 import { GetPostsQuery } from '../../types/post-types';
 import { getPageCount, searchQueryBuilder } from '../../utils/helpers';
 import { queryRepository } from '../../repositories/queryRepository';
-import { commentsCollection } from '../../db';
+import { commentsCollection } from '../../db/collection';
 import { GetCommentSchema } from '../../models/comments/GetCommentSchema';
 import { CommentDbType } from '../../types/comments-types';
 

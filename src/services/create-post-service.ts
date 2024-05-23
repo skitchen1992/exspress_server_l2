@@ -1,7 +1,7 @@
 import { CreatePostSchema } from '../models';
 import { mongoDBRepository } from '../repositories/db-repository';
 import { BlogDbType } from '../types/blog-types';
-import { postsCollection } from '../db';
+import { postsCollection } from '../db/collection';
 import { PostDbType } from '../types/post-types';
 import { getCurrentDate } from '../utils/helpers';
 import { WithId } from 'mongodb';

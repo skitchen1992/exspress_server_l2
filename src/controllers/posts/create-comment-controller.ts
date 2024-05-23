@@ -8,7 +8,7 @@ import { isValidObjectId } from '../../utils/helpers';
 import { ErrorMessageSchema } from '../../models/errors/ErrorMessageSchema';
 import { mongoDBRepository } from '../../repositories/db-repository';
 import { PostDbType } from '../../types/post-types';
-import { commentsCollection, postsCollection } from '../../db';
+import { commentsCollection, postsCollection } from '../../db/collection';
 import { queryRepository } from '../../repositories/queryRepository';
 import { CommentDbType } from '../../types/comments-types';
 import { GetCommentSchema } from '../../models/comments/GetCommentSchema';
@@ -47,11 +47,12 @@ export const createCommentController = async (
       return;
     }
 
-    const insertedId = await createCommentService(req.body, req.params);
+    const insertedId = await createCommentService(req.body, req.params, res.locals.user);
 
     const comment = await queryRepository.findEntityAndMapIdField<CommentDbType, GetCommentSchema>(
       commentsCollection,
-      insertedId.toString()
+      insertedId.toString(),
+      ['postId']
     );
 
     if (comment) {

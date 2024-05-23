@@ -14,6 +14,7 @@ export { createPostController } from './posts/create-post-controller';
 export { updatePostController } from './posts/update-post-controller';
 export { deletePostController } from './posts/delete-post-controller';
 export { getCommentsForPostController } from './posts/get-comments-for-post-controller';
+export { createCommentController } from './posts/create-comment-controller';
 
 export { getUsersController } from './users/get-users-controller';
 export { createUserController } from './users/create-user-controller';
@@ -21,6 +22,6 @@ export { deleteUserController } from './users/delete-user-controller';
 
 export { authController } from './auth/auth-controller';
 
-export { createCommentController } from './comments/create-comment-controller';
 export { getCommentByIdController } from './comments/get-comment-by-id-controller';
 export { updateCommentController } from './comments/update-comment-controller';
+export { deleteCommentController } from './comments/delete-comment-controller';

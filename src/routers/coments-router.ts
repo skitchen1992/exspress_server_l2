@@ -24,11 +24,11 @@ commentsRouter.put(
   errorHandlingMiddleware<UpdateCommentSchema>,
   controllers.updateCommentController
 );
-//
-// commentsRouter.delete(
-//   PATH_URL.ID,
-//   basicAuthMiddleware,
-//   sanitizerQueryMiddleware(),
-//   errorHandlingMiddleware,
-//   controllers.deleteUserController
-// );
+
+commentsRouter.delete(
+  PATH_URL.ID,
+  /*  TODO: need JWT Bearer token auth*/
+  sanitizerQueryMiddleware(),
+  errorHandlingMiddleware,
+  controllers.deleteCommentController
+);

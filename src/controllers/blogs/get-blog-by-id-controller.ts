@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import { HTTP_STATUSES } from '../../utils/consts';
-import { GetBlogSchema, ResponseErrorSchema } from '../../models';
+import { GetBlogSchema } from '../../models';
 import { RequestWithParams } from '../../types/request-types';
 import { mongoDBRepository } from '../../repositories/db-repository';
 import { BlogDbType } from '../../types/blog-types';

@@ -2,10 +2,10 @@ import { NextFunction, Request, Response } from 'express';
 import { HTTP_STATUSES } from '../utils/consts';
 import { jwtService } from '../services/jwt-service';
 import { JwtPayload } from 'jsonwebtoken';
-import { mongoDBRepository } from '../repositories/db-repository';
 import { UserDbType } from '../types/users-types';
-import { blogsCollection, usersCollection } from '../db/collection';
-import { BlogDbType } from '../types/blog-types';
+import { usersCollection } from '../db/collection';
+import { queryRepository } from '../repositories/queryRepository';
+import { GetUserSchema } from '../models';
 
 export const bearerTokenAuthMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
@@ -19,10 +19,12 @@ export const bearerTokenAuthMiddleware = async (req: Request, res: Response, nex
 
   const { userId } = jwtService.verifyToken(token) as JwtPayload;
 
-  const userFromDB = await mongoDBRepository.getById<UserDbType>(usersCollection, userId);
+  const user = await queryRepository.findEntityAndMapIdField<UserDbType, GetUserSchema>(usersCollection, userId, [
+    'password',
+  ]);
 
-  if (userFromDB) {
-    res.locals.user = { userId: userFromDB._id.toString(), userLogin: userFromDB.login };
+  if (user) {
+    res.locals.user = user;
     next();
   } else {
     res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);

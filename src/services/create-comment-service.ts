@@ -1,4 +1,4 @@
-import { CreateCommentSchema } from '../models';
+import { CreateCommentSchema, GetUserSchema } from '../models';
 import { mongoDBRepository } from '../repositories/db-repository';
 import { commentsCollection } from '../db/collection';
 import { CommentDbType } from '../types/comments-types';
@@ -7,13 +7,13 @@ import { getCurrentDate } from '../utils/helpers';
 export const createCommentService = async (
   body: CreateCommentSchema,
   params: { postId: string },
-  user: { userId: string; userLogin: string }
+  user: GetUserSchema
 ) => {
   const newComment: CommentDbType = {
     content: body.content,
     commentatorInfo: {
-      userId: user.userId,
-      userLogin: user.userLogin,
+      userId: user.id,
+      userLogin: user.login,
     },
     postId: params.postId,
     createdAt: getCurrentDate(),

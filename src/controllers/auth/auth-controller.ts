@@ -2,13 +2,13 @@ import { Response } from 'express';
 import { HTTP_STATUSES } from '../../utils/consts';
 import { ResponseErrorSchema } from '../../models';
 import { RequestWithBody } from '../../types/request-types';
-import { AuthUserSchema } from '../../models/auth/AuthUserSchema';
+import { AuthUserSchema } from '../../models';
 import { mongoDBRepository } from '../../repositories/db-repository';
 import { UserDbType } from '../../types/users-types';
 import { usersCollection } from '../../db/collection';
 import { passwordBuilder } from '../../utils/helpers';
 import { jwtService } from '../../services/jwt-service';
-import { AuthUserSchemaResponse } from '../../models/auth/AuthUserSchemaResponse';
+import { AuthUserSchemaResponse } from '../../models';
 
 export const authController = async (
   req: RequestWithBody<AuthUserSchema>,

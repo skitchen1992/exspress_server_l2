@@ -33,6 +33,7 @@ export const PATH_URL = {
   AUTH: {
     ROOT: '/auth',
     LOGIN: '/login',
+    ME: '/me',
   },
 };
 

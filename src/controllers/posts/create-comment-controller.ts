@@ -47,7 +47,7 @@ export const createCommentController = async (
       return;
     }
 
-    const insertedId = await createCommentService(req.body, req.params, res.locals.user);
+    const insertedId = await createCommentService(req.body, req.params, res.locals.user!);
 
     const comment = await queryRepository.findEntityAndMapIdField<CommentDbType, GetCommentSchema>(
       commentsCollection,

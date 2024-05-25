@@ -13,7 +13,7 @@ export const updateCommentController = async (req: RequestType, res: Response) =
     const currentUserId = res.locals.user?.id;
     const comment = await mongoDBRepository.getById<CommentDbType>(commentsCollection, req.params.commentId);
 
-    if (currentUserId !== comment?._id.toString()) {
+    if (currentUserId !== comment?.commentatorInfo.userId.toString()) {
       res.sendStatus(HTTP_STATUSES.FORBIDDEN_403);
       return;
     }

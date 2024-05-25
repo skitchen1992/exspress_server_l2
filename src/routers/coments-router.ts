@@ -6,6 +6,7 @@ import { sanitizerQueryMiddleware } from '../middlewares/sanitizer-query-middlew
 import { checkExactMiddleware } from '../middlewares/check-exact-middleware';
 import { validateCommentsPutSchema } from '../middlewares/comments/validate-schemas/validate-comments-put-schema';
 import { UpdateCommentSchema } from '../models/comments/UpdateCommentSchema';
+import { bearerTokenAuthMiddleware } from '../middlewares/bearer-token-auth-middleware';
 
 export const commentsRouter = Router();
 
@@ -18,7 +19,7 @@ commentsRouter.get(
 
 commentsRouter.put(
   PATH_URL.ID,
-  /*  TODO: need JWT Bearer token auth*/
+  bearerTokenAuthMiddleware,
   sanitizerQueryMiddleware(),
   checkExactMiddleware(validateCommentsPutSchema),
   errorHandlingMiddleware<UpdateCommentSchema>,
@@ -27,7 +28,7 @@ commentsRouter.put(
 
 commentsRouter.delete(
   PATH_URL.ID,
-  /*  TODO: need JWT Bearer token auth*/
+  bearerTokenAuthMiddleware,
   sanitizerQueryMiddleware(),
   errorHandlingMiddleware,
   controllers.deleteCommentController

@@ -65,6 +65,30 @@ export const searchQueryBuilder = {
     return { query, sort, skip, pageSize: defaultPageSize, page: defaultPageNumber };
   },
 
+  getComments: (queryParams: GetPostsQuery, params: { postId?: string }) => {
+    const { sortBy, sortDirection, pageNumber, pageSize } = queryParams;
+    const { postId } = params;
+
+    let query: any = {};
+    if (postId) {
+      query.postId = postId;
+    }
+
+    let sort: any = {};
+    if (sortBy) {
+      sort[sortBy] = sortDirection || DEFAULT_SORT;
+    } else {
+      sort.createdAt = sortDirection || DEFAULT_SORT;
+    }
+
+    const defaultPageNumber = Number(pageNumber) || DEFAULT_PAGE_NUMBER;
+    const defaultPageSize = Number(pageSize) || DEFAULT_PAGE_SIZE;
+
+    const skip = (defaultPageNumber - 1) * defaultPageSize;
+
+    return { query, sort, skip, pageSize: defaultPageSize, page: defaultPageNumber };
+  },
+
   getUsers: (queryParams: GetUsersQuery) => {
     const { sortBy, sortDirection, pageNumber, pageSize, searchLoginTerm, searchEmailTerm } = queryParams;
 

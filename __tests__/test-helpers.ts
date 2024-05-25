@@ -5,3 +5,9 @@ export const createAuthorizationHeader = (username?: string, password?: string) 
     Authorization: `Basic ${credentials}`,
   };
 };
+
+export const createBearerAuthorizationHeader = (token?: string) => {
+  return {
+    Authorization: `Bearer ${token}`,
+  };
+};

@@ -16,13 +16,14 @@ class QueryRepository {
 
   async findEntitiesAndMapIdFieldInArray<T extends Document, R>(
     collection: Collection<T>,
-    settings: GetQuerySettings
+    settings: GetQuerySettings,
+    fieldsToRemove?: string[]
   ): Promise<{ entities: R[]; totalCount: number }> {
     const entitiesFromDB = await mongoDBRepository.get<T>(collection, settings);
 
     const totalCount: number = await this.getTotalCount(collection, settings);
 
-    return { entities: mapIdFieldInArray(entitiesFromDB), totalCount };
+    return { entities: mapIdFieldInArray(entitiesFromDB, fieldsToRemove), totalCount };
   }
 
   async findAndMapUser<T extends Document, R>(collection: Collection<T>, id: string): Promise<R | null> {

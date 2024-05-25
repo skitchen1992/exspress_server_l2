@@ -14,8 +14,11 @@ export const mapIdField = <R>(object: WithId<Record<string, unknown>>, fieldsToR
   return object as R;
 };
 
-export const mapIdFieldInArray = <R, I extends WithId<Record<string, unknown>>>(array: I[]): R[] => {
-  return array.map((object) => mapIdField<R>(object));
+export const mapIdFieldInArray = <R, I extends WithId<Record<string, unknown>>>(
+  array: I[],
+  fieldsToRemove?: string[]
+): R[] => {
+  return array.map((object) => mapIdField<R>(object, fieldsToRemove));
 };
 export const mapIdAndPassFieldsField = <R>(object: WithId<Record<string, unknown>>): R => {
   if (object && typeof object === 'object') {

@@ -33,7 +33,7 @@ export const getCommentsForPostController = async (
     const { entities: commentList, totalCount } = await queryRepository.findEntitiesAndMapIdFieldInArray<
       CommentDbType,
       GetCommentSchema
-    >(commentsCollection, filters);
+    >(commentsCollection, filters, ['postId']);
 
     const comments: GetCommentListSchema = {
       pagesCount: getPageCount(totalCount, filters.pageSize),

@@ -23,6 +23,7 @@ export const createUserController = async (req: RequestWithBody<CreateUserSchema
           },
         ],
       });
+      return;
     }
 
     const user = await createUserService(req.body);

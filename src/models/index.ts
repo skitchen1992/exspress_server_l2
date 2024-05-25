@@ -13,3 +13,8 @@ export type { GetUserSchema } from './users/GetUserSchema';
 export type { GetUserListSchema } from './users/GetUserListSchema';
 export type { CreateUserSchema } from './users/CreateUserSchema';
 export type { CreateUserSchemaResponse } from './users/CreateUserSchemaResponse';
+export type { CreateCommentSchema } from './comments/CreateCommentSchema';
+export type { GetCommentListSchema } from './comments/GetCommentListSchema';
+export type { AuthUserInfoSchemaResponse } from './auth/AuthUserInfoSchemaResponse';
+export type { AuthUserSchema } from './auth/AuthUserSchema';
+export type { AuthUserSchemaResponse } from './auth/AuthUserSchemaResponse';

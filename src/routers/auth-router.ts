@@ -4,8 +4,9 @@ import * as controllers from '../controllers';
 import { errorHandlingMiddleware } from '../middlewares/error-handling-middleware';
 import { sanitizerQueryMiddleware } from '../middlewares/sanitizer-query-middleware';
 import { checkExactMiddleware } from '../middlewares/check-exact-middleware';
-import { AuthUserSchema } from '../models/Auth/AuthUserSchema';
 import { validateAuthPostSchema } from '../middlewares/auth';
+import { bearerTokenAuthMiddleware } from '../middlewares/bearer-token-auth-middleware';
+import { AuthUserSchema } from '../models';
 
 export const authRouter = Router();
 
@@ -15,4 +16,12 @@ authRouter.post(
   checkExactMiddleware(validateAuthPostSchema),
   errorHandlingMiddleware<AuthUserSchema>,
   controllers.authController
+);
+
+authRouter.get(
+  PATH_URL.AUTH.ME,
+  bearerTokenAuthMiddleware,
+  sanitizerQueryMiddleware(),
+  errorHandlingMiddleware,
+  controllers.meController
 );

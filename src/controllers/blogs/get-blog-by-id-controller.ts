@@ -1,13 +1,14 @@
 import { Response } from 'express';
 import { HTTP_STATUSES } from '../../utils/consts';
-import { GetBlogSchema, ResponseErrorSchema } from '../../models';
+import { GetBlogSchema } from '../../models';
 import { RequestWithParams } from '../../types/request-types';
 import { mongoDBRepository } from '../../repositories/db-repository';
 import { BlogDbType } from '../../types/blog-types';
-import { blogsCollection } from '../../db';
-import { mapIdField } from '../../utils/helpers';
+import { blogsCollection } from '../../db/collection';
 
-type ResponseType = GetBlogSchema | ResponseErrorSchema;
+import { mapIdField } from '../../utils/map';
+
+type ResponseType = GetBlogSchema | null;
 
 export const getBlogByIdController = async (req: RequestWithParams<{ id: string }>, res: Response<ResponseType>) => {
   try {
@@ -22,5 +23,6 @@ export const getBlogByIdController = async (req: RequestWithParams<{ id: string 
     }
   } catch (e) {
     console.log(e);
+    res.sendStatus(HTTP_STATUSES.INTERNAL_SERVER_ERROR_500);
   }
 };

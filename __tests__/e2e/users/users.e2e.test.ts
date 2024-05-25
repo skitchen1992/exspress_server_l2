@@ -2,7 +2,7 @@ import { HTTP_STATUSES, PATH_URL } from '../../../src/utils/consts';
 import TestAgent from 'supertest/lib/agent';
 import { agent, Test } from 'supertest';
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import { connectToDb, usersCollection } from '../../../src/db';
+import { connectToDb, usersCollection } from '../../../src/db/collection';
 import { app } from '../../../src/app';
 import { mongoDBRepository } from '../../../src/repositories/db-repository';
 import { UserDbType } from '../../../src/types/users-types';
@@ -11,6 +11,7 @@ import { SETTINGS } from '../../../src/utils/settings';
 import * as data from '../users/datasets';
 import { ID } from '../blogs/datasets';
 import { after } from 'node:test';
+import { getCurrentDate } from '../../../src/utils/helpers';
 
 describe(`Endpoint (GET) - ${PATH_URL.USERS}`, () => {
   let req: TestAgent<Test>;
@@ -39,7 +40,7 @@ describe(`Endpoint (GET) - ${PATH_URL.USERS}`, () => {
   });
 
   it('Should get not empty array', async () => {
-    const createdAt = new Date().toISOString();
+    const createdAt = getCurrentDate();
 
     const { insertedId } = await mongoDBRepository.add<UserDbType>(usersCollection, {
       login: 'T8ksjEq-LV',
@@ -72,7 +73,7 @@ describe(`Endpoint (GET) - ${PATH_URL.USERS}`, () => {
   });
 
   it('Should get second page', async () => {
-    const firstUserCreatedAt = new Date().toISOString();
+    const firstUserCreatedAt = getCurrentDate();
 
     await mongoDBRepository.add<UserDbType>(usersCollection, {
       login: 'Login Nik',
@@ -81,7 +82,7 @@ describe(`Endpoint (GET) - ${PATH_URL.USERS}`, () => {
       createdAt: firstUserCreatedAt,
     });
 
-    const secondUserCreatedAt = new Date().toISOString();
+    const secondUserCreatedAt = getCurrentDate();
 
     const secondUser = await mongoDBRepository.add<UserDbType>(usersCollection, {
       login: 'Login Pig',
@@ -114,7 +115,7 @@ describe(`Endpoint (GET) - ${PATH_URL.USERS}`, () => {
   });
 
   it('Should find user by login', async () => {
-    const firstUserCreatedAt = new Date().toISOString();
+    const firstUserCreatedAt = getCurrentDate();
 
     await mongoDBRepository.add<UserDbType>(usersCollection, {
       login: 'Login Nik',
@@ -123,7 +124,7 @@ describe(`Endpoint (GET) - ${PATH_URL.USERS}`, () => {
       createdAt: firstUserCreatedAt,
     });
 
-    const secondUserCreatedAt = new Date().toISOString();
+    const secondUserCreatedAt = getCurrentDate();
 
     const secondUser = await mongoDBRepository.add<UserDbType>(usersCollection, {
       login: 'Login Pig',
@@ -156,7 +157,7 @@ describe(`Endpoint (GET) - ${PATH_URL.USERS}`, () => {
   });
 
   it('Should find user by email', async () => {
-    const firstUserCreatedAt = new Date().toISOString();
+    const firstUserCreatedAt = getCurrentDate();
 
     await mongoDBRepository.add<UserDbType>(usersCollection, {
       login: 'Login Nik',
@@ -165,7 +166,7 @@ describe(`Endpoint (GET) - ${PATH_URL.USERS}`, () => {
       createdAt: firstUserCreatedAt,
     });
 
-    const secondUserCreatedAt = new Date().toISOString();
+    const secondUserCreatedAt = getCurrentDate();
 
     const secondUser = await mongoDBRepository.add<UserDbType>(usersCollection, {
       login: 'Login Pig',
@@ -198,7 +199,7 @@ describe(`Endpoint (GET) - ${PATH_URL.USERS}`, () => {
   });
 
   it('Should get array by filters', async () => {
-    const createdAt = new Date().toISOString();
+    const createdAt = getCurrentDate();
 
     await mongoDBRepository.add<UserDbType>(usersCollection, {
       login: 'loSer',
@@ -379,7 +380,7 @@ describe(`Endpoint (DELETE) - ${PATH_URL.USERS}${PATH_URL.ID}`, () => {
   });
 
   it('Should delete user', async () => {
-    const createdAt = new Date().toISOString();
+    const createdAt = getCurrentDate();
 
     const { insertedId } = await mongoDBRepository.add<UserDbType>(usersCollection, {
       login: 'T8ksjEq-LV',

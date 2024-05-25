@@ -22,6 +22,8 @@ export const PATH_URL = {
   ID: '/:id',
   BLOGS: '/blogs',
   POSTS_FOR_BLOG: '/:blogId/posts',
+  COMMENT_FOR_POST: '/:postId/comments',
+  COMMENTS: '/comments',
   POSTS: '/posts',
   USERS: '/users',
   TESTING: {
@@ -31,6 +33,7 @@ export const PATH_URL = {
   AUTH: {
     ROOT: '/auth',
     LOGIN: '/login',
+    ME: '/me',
   },
 };
 

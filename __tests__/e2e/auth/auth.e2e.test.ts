@@ -2,7 +2,7 @@ import { HTTP_STATUSES, PATH_URL } from '../../../src/utils/consts';
 import TestAgent from 'supertest/lib/agent';
 import { agent, Test } from 'supertest';
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import { connectToDb, usersCollection } from '../../../src/db';
+import { connectToDb, usersCollection } from '../../../src/db/collection';
 import { app } from '../../../src/app';
 import { createAuthorizationHeader } from '../../test-helpers';
 import { SETTINGS } from '../../../src/utils/settings';
@@ -42,7 +42,7 @@ describe(`Endpoint (POST) - ${PATH_URL.AUTH}`, () => {
         loginOrEmail: 'login',
         password: 'password',
       })
-      .expect(HTTP_STATUSES.NO_CONTENT_204);
+      .expect(HTTP_STATUSES.OK_200);
   });
 
   it(`Should get status ${HTTP_STATUSES.UNAUTHORIZED_401}`, async () => {

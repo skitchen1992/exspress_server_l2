@@ -2,13 +2,18 @@ import { Response } from 'express';
 import { HTTP_STATUSES } from '../../utils/consts';
 import { ResponseErrorSchema } from '../../models';
 import { RequestWithBody } from '../../types/request-types';
-import { AuthUserSchema } from '../../models/Auth/AuthUserSchema';
+import { AuthUserSchema } from '../../models';
 import { mongoDBRepository } from '../../repositories/db-repository';
 import { UserDbType } from '../../types/users-types';
-import { usersCollection } from '../../db';
-import { passwordRepository } from '../../repositories/bcrypt-password-repository';
+import { usersCollection } from '../../db/collection';
+import { passwordBuilder } from '../../utils/helpers';
+import { jwtService } from '../../services/jwt-service';
+import { AuthUserSchemaResponse } from '../../models';
 
-export const authController = async (req: RequestWithBody<AuthUserSchema>, res: Response<ResponseErrorSchema>) => {
+export const authController = async (
+  req: RequestWithBody<AuthUserSchema>,
+  res: Response<ResponseErrorSchema | AuthUserSchemaResponse>
+) => {
   try {
     const user = await mongoDBRepository.getByField<UserDbType>(
       usersCollection,
@@ -17,10 +22,14 @@ export const authController = async (req: RequestWithBody<AuthUserSchema>, res: 
     );
 
     if (user) {
-      const isCorrectPass = await passwordRepository.comparePasswords(req.body.password, user.password);
+      const isCorrectPass = await passwordBuilder.comparePasswords(req.body.password, user.password);
+      const token = jwtService.generateToken(
+        { userId: user._id.toString(), userLogin: user.login },
+        { expiresIn: '30 days' }
+      );
 
       if (isCorrectPass) {
-        res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
+        res.status(HTTP_STATUSES.OK_200).json({ accessToken: token });
       } else {
         res.status(HTTP_STATUSES.UNAUTHORIZED_401).json({
           errorsMessages: [

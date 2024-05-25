@@ -5,9 +5,10 @@ import { sanitizerQueryMiddleware } from '../middlewares/sanitizer-query-middlew
 import { errorHandlingMiddleware } from '../middlewares/error-handling-middleware';
 import { checkExactMiddleware } from '../middlewares/check-exact-middleware';
 import { validateCreatePostSchema, validateUpdatePostSchema } from '../middlewares/posts';
-import { CreatePostSchema, UpdatePostSchema } from '../models';
-import { checkBlogExistsMiddleware } from '../middlewares/check-blog-exists-middleware';
+import { CreateCommentSchema, CreatePostSchema, UpdatePostSchema } from '../models';
 import { basicAuthMiddleware } from '../middlewares/basic-auth-middleware';
+import { validateCreateCommentSchema } from '../middlewares/posts/validate-schemas/validate-create-comment-schema';
+import { bearerTokenAuthMiddleware } from '../middlewares/bearer-token-auth-middleware';
 
 export const postsRouter = Router();
 
@@ -25,7 +26,6 @@ postsRouter.post(
   basicAuthMiddleware,
   sanitizerQueryMiddleware(),
   checkExactMiddleware(validateCreatePostSchema),
-  checkBlogExistsMiddleware.body('blogId'),
   errorHandlingMiddleware<CreatePostSchema>,
   controllers.createPostController
 );
@@ -35,7 +35,6 @@ postsRouter.put(
   basicAuthMiddleware,
   sanitizerQueryMiddleware(),
   checkExactMiddleware(validateUpdatePostSchema),
-  checkBlogExistsMiddleware.body('blogId'),
   errorHandlingMiddleware<UpdatePostSchema>,
   controllers.updatePostController
 );
@@ -46,4 +45,20 @@ postsRouter.delete(
   sanitizerQueryMiddleware(),
   errorHandlingMiddleware,
   controllers.deletePostController
+);
+
+postsRouter.post(
+  PATH_URL.COMMENT_FOR_POST,
+  bearerTokenAuthMiddleware,
+  sanitizerQueryMiddleware(),
+  checkExactMiddleware(validateCreateCommentSchema),
+  errorHandlingMiddleware<CreateCommentSchema>,
+  controllers.createCommentController
+);
+
+postsRouter.get(
+  PATH_URL.COMMENT_FOR_POST,
+  sanitizerQueryMiddleware(getPostsQueryParams),
+  errorHandlingMiddleware,
+  controllers.getCommentsForPostController
 );

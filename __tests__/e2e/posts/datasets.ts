@@ -1,3 +1,5 @@
+import { getCurrentDate } from '../../../src/utils/helpers';
+
 export const ID = '1A2B3C4D5E6F7A8B9C0D1E2F';
 
 export const dataSetNewPost = {
@@ -5,7 +7,7 @@ export const dataSetNewPost = {
   shortDescription: 'ShortDescription',
   content: 'Content',
   blogId: '1',
-  createdAt: new Date().toISOString(),
+  createdAt: getCurrentDate(),
 };
 
 export const dataSetNewPost0 = {

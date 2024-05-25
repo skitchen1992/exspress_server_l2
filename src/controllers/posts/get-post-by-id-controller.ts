@@ -24,3 +24,39 @@ export const getPostByIdController = async (req: RequestWithParams<{ id: string 
     console.log(e);
   }
 };
+
+// {
+//   "pagesCount": 1,
+//   "page": 1,
+//   "pageSize": 10,
+//   "totalCount": 3,
+//   "items": [
+//   {
+//     "id": "6651e5cf985708586957bcb4",
+//     "content": "stringstringstringst",
+//     "commentatorInfo": {
+//       "userId": "664f4f086791bd1b92f5e8a5",
+//       "userLogin": "kLNWULRLEs"
+//     },
+//     "createdAt": "2024-05-25T13:21:19.097Z"
+//   },
+//   {
+//     "id": "664f7cf3e693a1d06320e534",
+//     "content": "stringstringstringst",
+//     "commentatorInfo": {
+//       "userId": "664f4f086791bd1b92f5e8a5",
+//       "userLogin": "kLNWULRLEs"
+//     },
+//     "createdAt": "2024-05-23T17:29:23.703Z"
+//   },
+//   {
+//     "id": "664f784b0e6332c263e48b22",
+//     "content": "stringstringstringst",
+//     "commentatorInfo": {
+//       "userId": "664f4f086791bd1b92f5e8a5",
+//       "userLogin": "kLNWULRLEs"
+//     },
+//     "createdAt": "2024-05-23T17:09:31.978Z"
+//   }
+// ]
+// }

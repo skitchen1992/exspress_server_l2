@@ -9,6 +9,7 @@ import { CreateCommentSchema, CreatePostSchema, UpdatePostSchema } from '../mode
 import { basicAuthMiddleware } from '../middlewares/basic-auth-middleware';
 import { validateCreateCommentSchema } from '../middlewares/posts/validate-schemas/validate-create-comment-schema';
 import { bearerTokenAuthMiddleware } from '../middlewares/bearer-token-auth-middleware';
+import { checkBlogExistsMiddleware } from '../middlewares/check-blog-exists-middleware';
 
 export const postsRouter = Router();
 
@@ -26,6 +27,7 @@ postsRouter.post(
   basicAuthMiddleware,
   sanitizerQueryMiddleware(),
   checkExactMiddleware(validateCreatePostSchema),
+  checkBlogExistsMiddleware.body('blogId'),
   errorHandlingMiddleware<CreatePostSchema>,
   controllers.createPostController
 );
@@ -35,6 +37,7 @@ postsRouter.put(
   basicAuthMiddleware,
   sanitizerQueryMiddleware(),
   checkExactMiddleware(validateUpdatePostSchema),
+  checkBlogExistsMiddleware.body('blogId'),
   errorHandlingMiddleware<UpdatePostSchema>,
   controllers.updatePostController
 );

@@ -58,8 +58,8 @@ export const validateUpdatePostSchema = () => {
       },
       trim: {},
       isLength: {
-        options: { min: 1, max: 100 },
-        errorMessage: 'Max length 100',
+        options: { min: 24, max: 24 },
+        errorMessage: 'Not correct',
       },
     },
   });

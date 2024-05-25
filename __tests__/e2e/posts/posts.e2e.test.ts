@@ -13,6 +13,7 @@ import { PostDbType } from '../../../src/types/post-types';
 import { ID } from './datasets';
 import { getCurrentDate } from '../../../src/utils/helpers';
 import { after } from 'node:test';
+import { ObjectId } from 'mongodb';
 
 describe(`Endpoint (GET) - ${PATH_URL.POSTS}`, () => {
   let req: TestAgent<Test>;
@@ -539,7 +540,7 @@ describe(`Endpoint (PUT) - ${PATH_URL.POSTS}${PATH_URL.ID}`, () => {
 
   it('Should get Error while field "shortDescription" is too long', async () => {
     const insertOneResultBlog = await mongoDBRepository.add<BlogDbType>(blogsCollection, data.dataSetNewBlog);
-
+    // console.log('TEST', ObjectId.isValid('63189b06003380064c4193be'));
     const { insertedId: blogId } = insertOneResultBlog;
 
     const blog = await mongoDBRepository.getById<BlogDbType>(blogsCollection, blogId.toString());

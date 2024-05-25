@@ -19,6 +19,10 @@ export const bearerTokenAuthMiddleware = async (req: Request, res: Response, nex
 
   const { userId } = jwtService.verifyToken(token) as JwtPayload;
 
+  if (!userId) {
+    res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
+  }
+
   const user = await queryRepository.findEntityAndMapIdField<UserDbType, GetUserSchema>(usersCollection, userId, [
     'password',
   ]);

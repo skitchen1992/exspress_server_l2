@@ -4,11 +4,11 @@ import { RequestWithParams } from '../../types/request-types';
 import { mongoDBRepository } from '../../repositories/db-repository';
 import { commentsCollection } from '../../db/collection';
 
-type RequestType = RequestWithParams<{ id: string }>;
+type RequestType = RequestWithParams<{ commentId: string }>;
 
 export const deleteCommentController = async (req: RequestType, res: Response) => {
   try {
-    const deleteResult = await mongoDBRepository.delete(commentsCollection, req.params.id);
+    const deleteResult = await mongoDBRepository.delete(commentsCollection, req.params.commentId);
 
     if (deleteResult.deletedCount === 1) {
       res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);

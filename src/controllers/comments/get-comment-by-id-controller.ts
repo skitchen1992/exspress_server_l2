@@ -8,11 +8,14 @@ import { queryRepository } from '../../repositories/queryRepository';
 
 type ResponseType = GetCommentSchema | null;
 
-export const getCommentByIdController = async (req: RequestWithParams<{ id: string }>, res: Response<ResponseType>) => {
+export const getCommentByIdController = async (
+  req: RequestWithParams<{ commentId: string }>,
+  res: Response<ResponseType>
+) => {
   try {
     const comment = await queryRepository.findEntityAndMapIdField<CommentDbType, GetCommentSchema>(
       commentsCollection,
-      req.params.id,
+      req.params.commentId,
       ['postId']
     );
     if (comment) {

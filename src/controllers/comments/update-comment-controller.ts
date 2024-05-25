@@ -6,11 +6,23 @@ import { commentsCollection } from '../../db/collection';
 import { UpdateCommentSchema } from '../../models/comments/UpdateCommentSchema';
 import { CommentDbType } from '../../types/comments-types';
 
-type RequestType = RequestWithParamsAndBody<UpdateCommentSchema, { id: string }>;
+type RequestType = RequestWithParamsAndBody<UpdateCommentSchema, { commentId: string }>;
 
 export const updateCommentController = async (req: RequestType, res: Response) => {
   try {
-    const updateResult = await mongoDBRepository.update<CommentDbType>(commentsCollection, req.params.id, req.body);
+    const currentUserId = res.locals.user?.id;
+    const requestUserId = req.params.commentId;
+
+    if (currentUserId !== requestUserId) {
+      res.sendStatus(HTTP_STATUSES.FORBIDDEN_403);
+      return;
+    }
+
+    const updateResult = await mongoDBRepository.update<CommentDbType>(
+      commentsCollection,
+      req.params.commentId,
+      req.body
+    );
 
     if (updateResult.modifiedCount === 1) {
       res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);

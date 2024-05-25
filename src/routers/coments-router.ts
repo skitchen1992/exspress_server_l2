@@ -9,16 +9,16 @@ import { UpdateCommentSchema } from '../models/comments/UpdateCommentSchema';
 import { bearerTokenAuthMiddleware } from '../middlewares/bearer-token-auth-middleware';
 
 export const commentsRouter = Router();
-
+//TODO: написать тесты на comments
 commentsRouter.get(
-  PATH_URL.ID,
+  PATH_URL.COMMENT_ID,
   sanitizerQueryMiddleware(),
   errorHandlingMiddleware,
   controllers.getCommentByIdController
 );
 
 commentsRouter.put(
-  PATH_URL.ID,
+  PATH_URL.COMMENT_ID,
   bearerTokenAuthMiddleware,
   sanitizerQueryMiddleware(),
   checkExactMiddleware(validateCommentsPutSchema),
@@ -27,7 +27,7 @@ commentsRouter.put(
 );
 
 commentsRouter.delete(
-  PATH_URL.ID,
+  PATH_URL.COMMENT_ID,
   bearerTokenAuthMiddleware,
   sanitizerQueryMiddleware(),
   errorHandlingMiddleware,

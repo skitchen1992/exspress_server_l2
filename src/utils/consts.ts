@@ -20,6 +20,7 @@ export const HTTP_STATUSES = {
 export const PATH_URL = {
   ROOT: '/',
   ID: '/:id',
+  COMMENT_ID: '/:commentId',
   BLOGS: '/blogs',
   POSTS_FOR_BLOG: '/:blogId/posts',
   COMMENT_FOR_POST: '/:postId/comments',

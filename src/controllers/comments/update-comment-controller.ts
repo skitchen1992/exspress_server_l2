@@ -11,9 +11,9 @@ type RequestType = RequestWithParamsAndBody<UpdateCommentSchema, { commentId: st
 export const updateCommentController = async (req: RequestType, res: Response) => {
   try {
     const currentUserId = res.locals.user?.id;
-    const requestUserId = req.params.commentId;
+    const comment = await mongoDBRepository.getById<CommentDbType>(commentsCollection, req.params.commentId);
 
-    if (currentUserId !== requestUserId) {
+    if (currentUserId !== comment?._id.toString()) {
       res.sendStatus(HTTP_STATUSES.FORBIDDEN_403);
       return;
     }

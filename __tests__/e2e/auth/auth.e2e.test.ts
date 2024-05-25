@@ -78,3 +78,4 @@ describe(`Endpoint (POST) - ${PATH_URL.AUTH}`, () => {
       .expect(HTTP_STATUSES.BAD_REQUEST_400);
   });
 });
+//TODO: написать тесты на Bearer auth

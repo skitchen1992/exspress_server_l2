@@ -40,22 +40,3 @@ export const updateCommentController = async (req: RequestType, res: Response) =
     res.sendStatus(HTTP_STATUSES.INTERNAL_SERVER_ERROR_500);
   }
 };
-
-// export const updateCommentController = async (req: RequestType, res: Response) => {
-//   try {
-//     const updateResult = await mongoDBRepository.update<CommentDbType>(
-//       commentsCollection,
-//       req.params.commentId,
-//       req.body
-//     );
-//
-//     if (updateResult.modifiedCount === 1) {
-//       res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
-//     } else {
-//       res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
-//     }
-//   } catch (e) {
-//     console.log(e);
-//     res.sendStatus(HTTP_STATUSES.INTERNAL_SERVER_ERROR_500);
-//   }
-// };

@@ -34,17 +34,3 @@ export const deleteCommentController = async (req: RequestType, res: Response) =
     console.log(e);
   }
 };
-
-// export const deleteCommentController = async (req: RequestType, res: Response) => {
-//   try {
-//     const deleteResult = await mongoDBRepository.delete(commentsCollection, req.params.commentId);
-//
-//     if (deleteResult.deletedCount === 1) {
-//       res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
-//     } else {
-//       res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
-//     }
-//   } catch (e) {
-//     console.log(e);
-//   }
-// };

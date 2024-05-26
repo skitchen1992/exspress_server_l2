@@ -9,7 +9,6 @@ import { bearerTokenAuthMiddleware } from '../middlewares/bearer-token-auth-midd
 import { validateCommentsPutSchema } from '../middlewares/comments';
 
 export const commentsRouter = Router();
-//TODO: написать тесты на comments
 commentsRouter.get(
   PATH_URL.COMMENT_ID,
   sanitizerQueryMiddleware(),

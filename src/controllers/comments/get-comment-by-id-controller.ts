@@ -4,7 +4,7 @@ import { RequestWithParams } from '../../types/request-types';
 import { commentsCollection } from '../../db/collection';
 import { GetCommentSchema } from '../../models/comments/GetCommentSchema';
 import { CommentDbType } from '../../types/comments-types';
-import { queryRepository } from '../../repositories/queryRepository';
+import { mapperRepository } from '../../repositories/mapperRepository';
 
 type ResponseType = GetCommentSchema | null;
 
@@ -13,7 +13,7 @@ export const getCommentByIdController = async (
   res: Response<ResponseType>
 ) => {
   try {
-    const comment = await queryRepository.findEntityAndMapIdField<CommentDbType, GetCommentSchema>(
+    const comment = await mapperRepository.findEntityAndMapIdField<CommentDbType, GetCommentSchema>(
       commentsCollection,
       req.params.commentId,
       ['postId']

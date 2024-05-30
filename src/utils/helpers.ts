@@ -41,13 +41,12 @@ export const searchQueryBuilder = {
     return { query, sort, skip, pageSize: defaultPageSize, page: defaultPageNumber };
   },
 
-  getPosts: (queryParams: GetPostsQuery, params: { blogId?: string }) => {
+  getPosts: (queryParams: GetPostsQuery, params?: { blogId: string }) => {
     const { sortBy, sortDirection, pageNumber, pageSize } = queryParams;
-    const { blogId } = params;
 
     let query: any = {};
-    if (blogId) {
-      query.blogId = blogId;
+    if (params?.blogId) {
+      query.blogId = params.blogId;
     }
 
     let sort: any = {};
@@ -65,13 +64,12 @@ export const searchQueryBuilder = {
     return { query, sort, skip, pageSize: defaultPageSize, page: defaultPageNumber };
   },
 
-  getComments: (queryParams: GetPostsQuery, params: { postId?: string }) => {
+  getComments: (queryParams: GetPostsQuery, params?: { postId: string }) => {
     const { sortBy, sortDirection, pageNumber, pageSize } = queryParams;
-    const { postId } = params;
 
     let query: any = {};
-    if (postId) {
-      query.postId = postId;
+    if (params?.postId) {
+      query.postId = params.postId;
     }
 
     let sort: any = {};

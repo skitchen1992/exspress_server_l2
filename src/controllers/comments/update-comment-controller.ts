@@ -8,6 +8,7 @@ import { CommentDbType } from '../../types/comments-types';
 
 type RequestType = RequestWithParamsAndBody<UpdateCommentSchema, { commentId: string }>;
 
+// TODO: добавить сервис и вынести логику туда
 export const updateCommentController = async (req: RequestType, res: Response) => {
   try {
     const currentUserId = res.locals.user?.id.toString();

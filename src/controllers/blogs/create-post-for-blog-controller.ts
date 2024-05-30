@@ -1,16 +1,11 @@
 import { Response } from 'express';
 import { HTTP_STATUSES } from '../../utils/consts';
-import { CreatePostSchemaResponse, GetPostSchema, ResponseErrorSchema } from '../../models';
+import { CreatePostSchemaResponse, ResponseErrorSchema } from '../../models';
 import { RequestWithParamsAndBody } from '../../types/request-types';
 import { CreatePostForBlogSchema } from '../../models/posts/CreatePostForBlogSchema';
 import { createPostForBlogService } from '../../services/create-post-for-blog-service';
-import { mongoDBRepository } from '../../repositories/db-repository';
-import { BlogDbType } from '../../types/blog-types';
-import { blogsCollection, postsCollection } from '../../db/collection';
-import { PostDbType } from '../../types/post-types';
 import { queryRepository } from '../../repositories/queryRepository';
-import { isValidObjectId } from '../../utils/helpers';
-import { ErrorMessageSchema } from '../../models/errors/ErrorMessageSchema';
+import { ResultStatus } from '../../types/common/result';
 
 type ResponseType = CreatePostSchemaResponse | ResponseErrorSchema;
 
@@ -19,41 +14,20 @@ export const createPostForBlogController = async (
   res: Response<ResponseType>
 ) => {
   try {
-    const isValid = isValidObjectId(req.params.blogId);
+    const { data: postIdObj, status: blogStatus } = await createPostForBlogService(req.body, req.params);
 
-    if (!isValid) {
-      const errorsMessages: ErrorMessageSchema[] = [
-        {
-          message: 'Not valid',
-          field: 'blogId',
-        },
-      ];
-
-      res.status(HTTP_STATUSES.BAD_REQUEST_400).json({ errorsMessages });
-      return;
-    }
-
-    const blog = await mongoDBRepository.getById<BlogDbType>(blogsCollection, req.params.blogId);
-
-    if (!blog) {
+    if (blogStatus === ResultStatus.NotFound) {
       res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
       return;
     }
 
-    const insertedId = await createPostForBlogService(req.body, req.params);
-    if (!insertedId) {
-      res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
-      return;
+    const { data: post, status: postStatus } = await queryRepository.getPostById(postIdObj!.toString());
+
+    if (postStatus === ResultStatus.Success) {
+      res.status(HTTP_STATUSES.CREATED_201).json(post!);
     }
 
-    const post = await queryRepository.findEntityAndMapIdField<PostDbType, GetPostSchema>(
-      postsCollection,
-      insertedId.toString()
-    );
-
-    if (post) {
-      res.status(HTTP_STATUSES.CREATED_201).json(post);
-    } else {
+    if (postStatus === ResultStatus.NotFound) {
       res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
     }
   } catch (e) {

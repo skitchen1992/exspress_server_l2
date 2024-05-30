@@ -4,14 +4,8 @@ import { CreateCommentSchema, ResponseErrorSchema } from '../../models';
 import { RequestWithParamsAndBody } from '../../types/request-types';
 import { CreateCommentSchemaResponse } from '../../models/comments/CreateCommentSchemaResponse';
 import { createCommentService } from '../../services/create-comment-service';
-import { isValidObjectId } from '../../utils/helpers';
-import { ErrorMessageSchema } from '../../models/errors/ErrorMessageSchema';
-import { mongoDBRepository } from '../../repositories/db-repository';
-import { PostDbType } from '../../types/post-types';
-import { commentsCollection, postsCollection } from '../../db/collection';
 import { queryRepository } from '../../repositories/queryRepository';
-import { CommentDbType } from '../../types/comments-types';
-import { GetCommentSchema } from '../../models/comments/GetCommentSchema';
+import { ResultStatus } from '../../types/common/result';
 
 type ResponseType = CreateCommentSchemaResponse | ResponseErrorSchema;
 
@@ -20,44 +14,21 @@ export const createCommentController = async (
   res: Response<ResponseType>
 ) => {
   try {
-    const isValid = isValidObjectId(req.params.postId);
+    const { data: commentIdObj, status } = await createCommentService(req.body, req.params, res.locals.user!);
 
-    if (!isValid) {
-      const errorsMessages: ErrorMessageSchema[] = [
-        {
-          message: 'Not valid',
-          field: 'postId',
-        },
-      ];
+    if (status === ResultStatus.Success) {
+      const { data, status } = await queryRepository.getCommentById(commentIdObj!.toString());
 
-      res.status(HTTP_STATUSES.BAD_REQUEST_400).json({ errorsMessages });
-      return;
+      if (status === ResultStatus.Success) {
+        res.status(HTTP_STATUSES.CREATED_201).json(data!);
+      }
+
+      if (status === ResultStatus.NotFound) {
+        res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+      }
     }
 
-    const post = await mongoDBRepository.getById<PostDbType>(postsCollection, req.params.postId);
-
-    if (!post) {
-      const errorsMessages: ErrorMessageSchema[] = [
-        {
-          message: 'Not founded',
-          field: 'postId',
-        },
-      ];
-      res.status(HTTP_STATUSES.NOT_FOUND_404).json({ errorsMessages });
-      return;
-    }
-
-    const insertedId = await createCommentService(req.body, req.params, res.locals.user!);
-
-    const comment = await queryRepository.findEntityAndMapIdField<CommentDbType, GetCommentSchema>(
-      commentsCollection,
-      insertedId.toString(),
-      ['postId']
-    );
-
-    if (comment) {
-      res.status(HTTP_STATUSES.CREATED_201).json(comment);
-    } else {
+    if (status === ResultStatus.NotFound) {
       res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
     }
   } catch (e) {

@@ -1,9 +1,9 @@
 import { Response } from 'express';
 import { HTTP_STATUSES } from '../../utils/consts';
 import { RequestWithParams } from '../../types/request-types';
-import { mongoDBRepository } from '../../repositories/db-repository';
-import { commentsCollection } from '../../db/collection';
-import { CommentDbType } from '../../types/comments-types';
+import { queryRepository } from '../../repositories/queryRepository';
+import { ResultStatus } from '../../types/common/result';
+import { deleteCommentService } from '../../services/delete-comment-service';
 
 type RequestType = RequestWithParams<{ commentId: string }>;
 
@@ -11,9 +11,9 @@ export const deleteCommentController = async (req: RequestType, res: Response) =
   try {
     const currentUserId = res.locals.user?.id.toString();
 
-    const comment = await mongoDBRepository.getById<CommentDbType>(commentsCollection, req.params.commentId);
+    const { status, data: comment } = await queryRepository.getCommentById(req.params.commentId);
 
-    if (!comment) {
+    if (status === ResultStatus.NotFound) {
       res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
       return;
     }
@@ -23,14 +23,18 @@ export const deleteCommentController = async (req: RequestType, res: Response) =
       return;
     }
 
-    const deleteResult = await mongoDBRepository.delete(commentsCollection, req.params.commentId);
+    const { status: deleteStatus } = await deleteCommentService(req.params.commentId);
 
-    if (deleteResult.deletedCount === 1) {
+    if (deleteStatus === ResultStatus.Success) {
       res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
-    } else {
+      return;
+    }
+    if (deleteStatus === ResultStatus.NotFound) {
       res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+      return;
     }
   } catch (e) {
     console.log(e);
+    res.sendStatus(HTTP_STATUSES.INTERNAL_SERVER_ERROR_500);
   }
 };

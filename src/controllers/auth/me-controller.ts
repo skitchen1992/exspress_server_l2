@@ -15,6 +15,5 @@ export const meController = async (req: RequestEmpty, res: Response<AuthUserInfo
   } catch (e) {
     console.log(e);
     res.sendStatus(HTTP_STATUSES.INTERNAL_SERVER_ERROR_500);
-    return;
   }
 };

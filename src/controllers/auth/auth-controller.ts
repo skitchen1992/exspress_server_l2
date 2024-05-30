@@ -23,6 +23,7 @@ export const authController = async (
 
     if (user) {
       const isCorrectPass = await passwordBuilder.comparePasswords(req.body.password, user.password);
+
       const token = jwtService.generateToken(
         { userId: user._id.toString(), userLogin: user.login },
         { expiresIn: '30 days' }

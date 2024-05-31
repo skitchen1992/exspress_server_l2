@@ -22,6 +22,7 @@ export { deleteUserController } from './users/delete-user-controller';
 
 export { authController } from './auth/auth-controller';
 export { meController } from './auth/me-controller';
+export { authRegistrationController } from './auth/auth-registration-controller';
 
 export { getCommentByIdController } from './comments/get-comment-by-id-controller';
 export { updateCommentController } from './comments/update-comment-controller';

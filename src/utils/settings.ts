@@ -9,6 +9,9 @@ export const SETTINGS = {
   MONGO_DB_URL: process.env.MONGO_DB_URL,
   SECRET_KEY: process.env.SECRET_KEY,
   JWT_SECRET_KEY: process.env.JWT_SECRET_KEY || '1',
+  EMAIL_USER: process.env.EMAIL_USER,
+  EMAIL_PASS: process.env.EMAIL_PASS,
+
   DB: {
     NAME: {
       PORTAL: 'portal',

@@ -35,6 +35,9 @@ export const PATH_URL = {
     ROOT: '/auth',
     LOGIN: '/login',
     ME: '/me',
+    REGISTRATION: '/registration',
+    REGISTRATION_CONFIRMATION: '/registration-confirmation',
+    REGISTRATION_EMAIL_RESENDING: '/registration-email-resending',
   },
 };
 

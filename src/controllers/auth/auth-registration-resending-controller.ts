@@ -33,7 +33,7 @@ export const authRegistrationResendingController = async (
         errorsMessages: [
           {
             message: 'Email already confirmed',
-            field: 'Code',
+            field: 'email',
           },
         ],
       });
@@ -45,7 +45,7 @@ export const authRegistrationResendingController = async (
         errorsMessages: [
           {
             message: 'Confirmation code expired',
-            field: 'Code',
+            field: 'code',
           },
         ],
       });
@@ -65,7 +65,7 @@ export const authRegistrationResendingController = async (
       errorsMessages: [
         {
           message: 'Email and login should be unique',
-          field: 'User',
+          field: 'email',
         },
       ],
     });

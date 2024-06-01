@@ -17,7 +17,7 @@ export const createUserController = async (req: RequestWithBody<CreateUserSchema
         errorsMessages: [
           {
             message: 'Email and login should be unique',
-            field: 'User',
+            field: 'email',
           },
         ],
       });

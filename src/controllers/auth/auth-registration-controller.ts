@@ -21,7 +21,7 @@ export const authRegistrationController = async (
         errorsMessages: [
           {
             message: 'Email and login should be unique',
-            field: 'User',
+            field: 'email',
           },
         ],
       });
@@ -50,7 +50,7 @@ export const authRegistrationController = async (
           errorsMessages: [
             {
               message: 'Email and login should be unique',
-              field: 'User',
+              field: 'email',
             },
           ],
         });
@@ -62,7 +62,7 @@ export const authRegistrationController = async (
       errorsMessages: [
         {
           message: 'Email and login should be unique',
-          field: 'User',
+          field: 'email',
         },
       ],
     });

@@ -20,7 +20,7 @@ export const authRegistrationConfirmationController = async (
         errorsMessages: [
           {
             message: 'Activation code is not correct',
-            field: 'Code',
+            field: 'code',
           },
         ],
       });
@@ -32,7 +32,7 @@ export const authRegistrationConfirmationController = async (
         errorsMessages: [
           {
             message: 'Email already confirmed',
-            field: 'Code',
+            field: 'code',
           },
         ],
       });
@@ -44,7 +44,7 @@ export const authRegistrationConfirmationController = async (
         errorsMessages: [
           {
             message: 'Confirmation code expired',
-            field: 'Code',
+            field: 'code',
           },
         ],
       });
@@ -60,7 +60,7 @@ export const authRegistrationConfirmationController = async (
         errorsMessages: [
           {
             message: 'Email is not confirmed',
-            field: 'Code',
+            field: 'email',
           },
         ],
       });
@@ -70,7 +70,7 @@ export const authRegistrationConfirmationController = async (
       errorsMessages: [
         {
           message: 'Email and login should be unique',
-          field: 'User',
+          field: 'code',
         },
       ],
     });

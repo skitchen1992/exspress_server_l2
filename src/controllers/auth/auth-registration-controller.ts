@@ -21,7 +21,7 @@ export const authRegistrationController = async (
         errorsMessages: [
           {
             message: 'Email and login already exist',
-            field: 'login',
+            field: 'email',
           },
         ],
       });

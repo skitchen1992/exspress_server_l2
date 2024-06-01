@@ -14,14 +14,14 @@ export const authRegistrationController = async (
   res: Response<ResponseErrorSchema>
 ) => {
   try {
-    const { status } = await queryRepository.isExistsUser(req.body.login, req.body.email);
+    const { status, data } = await queryRepository.isExistsUser(req.body.login, req.body.email);
 
     if (status === ResultStatus.BagRequest) {
       res.status(HTTP_STATUSES.BAD_REQUEST_400).json({
         errorsMessages: [
           {
-            message: 'Email and login already exist',
-            field: 'email',
+            message: 'Email or login already exist',
+            field: data!,
           },
         ],
       });

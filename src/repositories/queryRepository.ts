@@ -169,13 +169,13 @@ class QueryRepository {
     };
   }
 
-  public async isExistsUser(login: string, email: string): Promise<Result> {
+  public async isExistsUser(login: string, email: string) {
     const hasUserByLogin = await mongoDBRepository.getByField<UserDbType>(usersCollection, ['login'], login);
     const hasUserByEmail = await mongoDBRepository.getByField<UserDbType>(usersCollection, ['email'], email);
 
     if (hasUserByLogin || hasUserByEmail) {
       return {
-        data: null,
+        data: hasUserByLogin ? 'login' : 'email',
         status: ResultStatus.BagRequest,
       };
     } else {

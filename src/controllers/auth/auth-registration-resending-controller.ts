@@ -21,7 +21,7 @@ export const authRegistrationResendingController = async (
         errorsMessages: [
           {
             message: 'Email not found',
-            field: 'Email',
+            field: 'email',
           },
         ],
       });

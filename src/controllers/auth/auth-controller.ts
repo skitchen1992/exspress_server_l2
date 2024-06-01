@@ -6,7 +6,7 @@ import { AuthUserSchema } from '../../models';
 import { mongoDBRepository } from '../../repositories/db-repository';
 import { UserDbType } from '../../types/users-types';
 import { usersCollection } from '../../db/collection';
-import { passwordBuilder } from '../../utils/helpers';
+import { hashBuilder } from '../../utils/helpers';
 import { jwtService } from '../../services/jwt-service';
 import { AuthUserSchemaResponse } from '../../models';
 
@@ -22,7 +22,8 @@ export const authController = async (
     );
 
     if (user) {
-      const isCorrectPass = await passwordBuilder.comparePasswords(req.body.password, user.password);
+      const isCorrectPass = await hashBuilder.compare(req.body.password, user.password);
+
       const token = jwtService.generateToken(
         { userId: user._id.toString(), userLogin: user.login },
         { expiresIn: '30 days' }

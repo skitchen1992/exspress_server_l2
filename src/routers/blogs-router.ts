@@ -7,7 +7,7 @@ import { sanitizerQueryMiddleware } from '../middlewares/sanitizer-query-middlew
 import { basicAuthMiddleware } from '../middlewares/basic-auth-middleware';
 import { CreateBlogSchema, UpdateBlogSchema } from '../models';
 import { CreatePostForBlogSchema } from '../models/posts/CreatePostForBlogSchema';
-import { validateCreatePostForBlogSchema } from '../middlewares/posts/validate-schemas/validate-create-post-for-blog-schema';
+import { validateCreatePostForBlogSchema } from '../middlewares/blogs/validate-schemas/validate-create-post-for-blog-schema';
 
 export const blogsRouter = Router();
 
@@ -42,8 +42,6 @@ blogsRouter.post(
   PATH_URL.POSTS_FOR_BLOG,
   basicAuthMiddleware,
   sanitizerQueryMiddleware(),
-  //remove for tests
-  //checkExactMiddleware(validateUserPostSchema),
   validateCreatePostForBlogSchema(),
   errorHandlingMiddleware<CreatePostForBlogSchema>,
   controllers.createPostForBlogController
@@ -53,8 +51,6 @@ blogsRouter.put(
   PATH_URL.ID,
   basicAuthMiddleware,
   sanitizerQueryMiddleware(),
-  //remove for tests
-  //checkExactMiddleware(validateBlogPutSchema),
   validateBlogPutSchema(),
   errorHandlingMiddleware<UpdateBlogSchema>,
   controllers.updateBlogController

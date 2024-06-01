@@ -4,7 +4,7 @@ import { jwtService } from '../services/jwt-service';
 import { JwtPayload } from 'jsonwebtoken';
 import { UserDbType } from '../types/users-types';
 import { usersCollection } from '../db/collection';
-import { queryRepository } from '../repositories/queryRepository';
+import { mapperRepository } from '../repositories/mapperRepository';
 import { GetUserSchema } from '../models';
 
 export const bearerTokenAuthMiddleware = async (req: Request, res: Response, next: NextFunction) => {
@@ -24,7 +24,7 @@ export const bearerTokenAuthMiddleware = async (req: Request, res: Response, nex
     return;
   }
 
-  const user = await queryRepository.findEntityAndMapIdField<UserDbType, GetUserSchema>(usersCollection, userId, [
+  const user = await mapperRepository.findEntityAndMapIdField<UserDbType, GetUserSchema>(usersCollection, userId, [
     'password',
   ]);
 

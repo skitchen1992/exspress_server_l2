@@ -1,5 +1,6 @@
-import { getCurrentDate, getPageCount, isValidObjectId, searchQueryBuilder } from '../../src/utils/helpers';
+import { getPageCount, isValidObjectId, searchQueryBuilder } from '../../src/utils/helpers';
 import { ObjectId } from 'mongodb';
+import { getCurrentDate } from '../../src/utils/dates/dates';
 
 test('getPageCount calculates correct page count', () => {
   expect(getPageCount(100, 10)).toBe(10);

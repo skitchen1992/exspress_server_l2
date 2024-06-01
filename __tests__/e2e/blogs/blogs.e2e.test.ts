@@ -11,7 +11,9 @@ import { BlogDbType } from '../../../src/types/blog-types';
 import { ID } from './datasets';
 import { PostDbType } from '../../../src/types/post-types';
 import { mongoDBRepository } from '../../../src/repositories/db-repository';
-import { getCurrentDate } from '../../../src/utils/helpers';
+import { queryRepository } from '../../../src/repositories/queryRepository';
+import { body } from 'express-validator';
+import { getCurrentDate } from '../../../src/utils/dates/dates';
 
 describe(`Endpoint (GET) - ${PATH_URL.BLOGS}`, () => {
   let req: TestAgent<Test>;
@@ -444,14 +446,17 @@ describe(`Endpoint (POST) - ${PATH_URL.POSTS_FOR_BLOG}`, () => {
       })
     );
 
-    const dbRes = await mongoDBRepository.getById<PostDbType>(postsCollection, res.body.id);
+    const { data } = await queryRepository.getPostById(res.body.id);
 
-    expect(dbRes).toEqual(
+    const { title, shortDescription, content, blogId: blogID, blogName } = data!;
+
+    expect({ title, shortDescription, content, blogId, blogName }).toEqual(
       expect.objectContaining({
         title: 'New title',
         shortDescription: 'New shortDescription',
         content: 'New content',
-        blogId,
+        blogId: blogId,
+        blogName: 'Nikita',
       })
     );
   });

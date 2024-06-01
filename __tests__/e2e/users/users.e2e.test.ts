@@ -11,7 +11,8 @@ import { SETTINGS } from '../../../src/utils/settings';
 import * as data from '../users/datasets';
 import { ID } from '../blogs/datasets';
 import { after } from 'node:test';
-import { getCurrentDate } from '../../../src/utils/helpers';
+
+import { getCurrentDate } from '../../../src/utils/dates/dates';
 
 describe(`Endpoint (GET) - ${PATH_URL.USERS}`, () => {
   let req: TestAgent<Test>;

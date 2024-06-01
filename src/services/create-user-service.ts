@@ -1,12 +1,13 @@
-import { CreateUserSchema, GetUserSchema } from '../models';
+import { CreateUserSchema } from '../models';
 import { mongoDBRepository } from '../repositories/db-repository';
 import { usersCollection } from '../db/collection';
-import { queryRepository } from '../repositories/queryRepository';
 import { UserDbType } from '../types/users-types';
-import { getCurrentDate, passwordBuilder } from '../utils/helpers';
+import { hashBuilder } from '../utils/helpers';
+import { ResultStatus } from '../types/common/result';
+import { getCurrentDate } from '../utils/dates/dates';
 
 export const createUserService = async (body: CreateUserSchema) => {
-  const passwordHash = await passwordBuilder.hashPassword(body.password);
+  const passwordHash = await hashBuilder.hash(body.password);
 
   const newUser: UserDbType = {
     login: body.login,
@@ -15,13 +16,11 @@ export const createUserService = async (body: CreateUserSchema) => {
     createdAt: getCurrentDate(),
   };
 
-  const { insertedId } = await mongoDBRepository.add<UserDbType>(usersCollection, newUser);
+  const { insertedId, acknowledged } = await mongoDBRepository.add<UserDbType>(usersCollection, newUser);
 
-  const user = await queryRepository.findAndMapUser<UserDbType, GetUserSchema>(usersCollection, insertedId.toString());
-
-  if (user) {
-    return user;
+  if (acknowledged) {
+    return { data: insertedId.toString(), status: ResultStatus.Success };
   } else {
-    return null;
+    return { data: null, status: ResultStatus.BagRequest };
   }
 };

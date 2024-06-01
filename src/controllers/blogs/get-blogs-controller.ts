@@ -1,31 +1,17 @@
 import { Response } from 'express';
 import { HTTP_STATUSES } from '../../utils/consts';
-import { GetBlogListSchema, GetBlogSchema } from '../../models';
+import { GetBlogListSchema } from '../../models';
 import { RequestWithQuery } from '../../types/request-types';
-import { BlogDbType, GetBlogsQuery } from '../../types/blog-types';
-import { getPageCount, searchQueryBuilder } from '../../utils/helpers';
+import { GetBlogsQuery } from '../../types/blog-types';
 import { queryRepository } from '../../repositories/queryRepository';
-import { blogsCollection } from '../../db/collection';
 
 export const getBlogsController = async (req: RequestWithQuery<GetBlogsQuery>, res: Response<GetBlogListSchema>) => {
   try {
-    const filters = searchQueryBuilder.getBlogs(req.query);
+    const { data } = await queryRepository.getBlogs(req.query);
 
-    const { entities: blogList, totalCount } = await queryRepository.findEntitiesAndMapIdFieldInArray<
-      BlogDbType,
-      GetBlogSchema
-    >(blogsCollection, filters);
-
-    const blogs: GetBlogListSchema = {
-      pagesCount: getPageCount(totalCount, filters.pageSize),
-      page: filters.page,
-      pageSize: filters.pageSize,
-      totalCount,
-      items: blogList,
-    };
-
-    res.status(HTTP_STATUSES.OK_200).json(blogs);
+    res.status(HTTP_STATUSES.OK_200).json(data);
   } catch (e) {
     console.log(e);
+    res.sendStatus(HTTP_STATUSES.INTERNAL_SERVER_ERROR_500);
   }
 };

@@ -9,24 +9,21 @@ export const getPageCount = (totalCount: number, pageSize: number) => {
   return Math.ceil(totalCount / pageSize);
 };
 
-export const getCurrentDate = () => {
-  return new Date().toISOString();
-};
-
 export const isValidObjectId = (id: string): boolean => {
   return ObjectId.isValid(id);
 };
 
+type Filters = Record<string, string>;
 export const searchQueryBuilder = {
   getBlogs: (queryParams: GetBlogsQuery) => {
     const { searchNameTerm, sortBy, sortDirection, pageNumber, pageSize } = queryParams;
 
-    let query: any = {};
+    const query: Record<string, unknown> = {};
     if (searchNameTerm) {
       query.name = { $regex: new RegExp(`.*${searchNameTerm}.*`, 'i') };
     }
 
-    let sort: any = {};
+    const sort: Filters = {};
     if (sortBy) {
       sort[sortBy] = sortDirection || DEFAULT_SORT;
     } else {
@@ -41,16 +38,15 @@ export const searchQueryBuilder = {
     return { query, sort, skip, pageSize: defaultPageSize, page: defaultPageNumber };
   },
 
-  getPosts: (queryParams: GetPostsQuery, params: { blogId?: string }) => {
+  getPosts: (queryParams: GetPostsQuery, params?: { blogId: string }) => {
     const { sortBy, sortDirection, pageNumber, pageSize } = queryParams;
-    const { blogId } = params;
 
-    let query: any = {};
-    if (blogId) {
-      query.blogId = blogId;
+    const query: Filters = {};
+    if (params?.blogId) {
+      query.blogId = params.blogId;
     }
 
-    let sort: any = {};
+    const sort: Filters = {};
     if (sortBy) {
       sort[sortBy] = sortDirection || DEFAULT_SORT;
     } else {
@@ -65,16 +61,15 @@ export const searchQueryBuilder = {
     return { query, sort, skip, pageSize: defaultPageSize, page: defaultPageNumber };
   },
 
-  getComments: (queryParams: GetPostsQuery, params: { postId?: string }) => {
+  getComments: (queryParams: GetPostsQuery, params?: { postId: string }) => {
     const { sortBy, sortDirection, pageNumber, pageSize } = queryParams;
-    const { postId } = params;
 
-    let query: any = {};
-    if (postId) {
-      query.postId = postId;
+    const query: Filters = {};
+    if (params?.postId) {
+      query.postId = params.postId;
     }
 
-    let sort: any = {};
+    const sort: Filters = {};
     if (sortBy) {
       sort[sortBy] = sortDirection || DEFAULT_SORT;
     } else {
@@ -92,7 +87,7 @@ export const searchQueryBuilder = {
   getUsers: (queryParams: GetUsersQuery) => {
     const { sortBy, sortDirection, pageNumber, pageSize, searchLoginTerm, searchEmailTerm } = queryParams;
 
-    let query: any = {};
+    const query: Record<string, unknown> = {};
     if (searchLoginTerm && searchEmailTerm) {
       query.$or = [
         { login: { $regex: new RegExp(`.*${searchLoginTerm}.*`, 'i') } },
@@ -107,7 +102,7 @@ export const searchQueryBuilder = {
       }
     }
 
-    let sort: any = {};
+    const sort: Filters = {};
     if (sortBy) {
       sort[sortBy] = sortDirection || DEFAULT_SORT;
     } else {
@@ -123,12 +118,12 @@ export const searchQueryBuilder = {
   },
 };
 
-export const passwordBuilder = {
-  hashPassword: async (password: string, saltRounds = 10) => {
+export const hashBuilder = {
+  hash: async (input: string, saltRounds = 10) => {
     const salt = await genSalt(saltRounds);
-    return await hash(password, salt);
+    return await hash(input, salt);
   },
-  comparePasswords: async (password: string, hashedPassword: string) => {
-    return await compare(password, hashedPassword);
+  compare: async (input: string, hashedInput: string) => {
+    return await compare(input, hashedInput);
   },
 };

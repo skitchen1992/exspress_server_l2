@@ -2,7 +2,8 @@ import { CreateCommentSchema, GetUserSchema } from '../models';
 import { mongoDBRepository } from '../repositories/db-repository';
 import { commentsCollection } from '../db/collection';
 import { CommentDbType } from '../types/comments-types';
-import { getCurrentDate } from '../utils/helpers';
+import { ResultStatus } from '../types/common/result';
+import { getCurrentDate } from '../utils/dates/dates';
 
 export const createCommentService = async (
   body: CreateCommentSchema,
@@ -19,7 +20,11 @@ export const createCommentService = async (
     createdAt: getCurrentDate(),
   };
 
-  const { insertedId } = await mongoDBRepository.add<CommentDbType>(commentsCollection, newComment);
+  const { insertedId, acknowledged } = await mongoDBRepository.add<CommentDbType>(commentsCollection, newComment);
 
-  return insertedId;
+  if (acknowledged) {
+    return { data: insertedId, status: ResultStatus.Success };
+  } else {
+    return { data: null, status: ResultStatus.NotFound };
+  }
 };

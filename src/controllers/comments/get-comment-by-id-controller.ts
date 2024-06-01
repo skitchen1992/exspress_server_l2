@@ -1,10 +1,9 @@
 import { Response } from 'express';
 import { HTTP_STATUSES } from '../../utils/consts';
 import { RequestWithParams } from '../../types/request-types';
-import { commentsCollection } from '../../db/collection';
 import { GetCommentSchema } from '../../models/comments/GetCommentSchema';
-import { CommentDbType } from '../../types/comments-types';
 import { queryRepository } from '../../repositories/queryRepository';
+import { ResultStatus } from '../../types/common/result';
 
 type ResponseType = GetCommentSchema | null;
 
@@ -13,15 +12,16 @@ export const getCommentByIdController = async (
   res: Response<ResponseType>
 ) => {
   try {
-    const comment = await queryRepository.findEntityAndMapIdField<CommentDbType, GetCommentSchema>(
-      commentsCollection,
-      req.params.commentId,
-      ['postId']
-    );
-    if (comment) {
-      res.status(HTTP_STATUSES.OK_200).json(comment);
-    } else {
+    const { data, status } = await queryRepository.getCommentById(req.params.commentId);
+
+    if (status === ResultStatus.Success) {
+      res.status(HTTP_STATUSES.OK_200).json(data);
+      return;
+    }
+
+    if (status === ResultStatus.NotFound) {
       res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+      return;
     }
   } catch (e) {
     console.log(e);

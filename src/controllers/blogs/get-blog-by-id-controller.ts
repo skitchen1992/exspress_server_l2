@@ -2,23 +2,23 @@ import { Response } from 'express';
 import { HTTP_STATUSES } from '../../utils/consts';
 import { GetBlogSchema } from '../../models';
 import { RequestWithParams } from '../../types/request-types';
-import { mongoDBRepository } from '../../repositories/db-repository';
-import { BlogDbType } from '../../types/blog-types';
-import { blogsCollection } from '../../db/collection';
-import { mapIdField } from '../../utils/map';
+import { queryRepository } from '../../repositories/queryRepository';
+import { ResultStatus } from '../../types/common/result';
 
 type ResponseType = GetBlogSchema | null;
 
 export const getBlogByIdController = async (req: RequestWithParams<{ id: string }>, res: Response<ResponseType>) => {
   try {
-    const blog = await mongoDBRepository.getById<BlogDbType>(blogsCollection, req.params.id);
+    const { data, status } = await queryRepository.getBlogById(req.params.id);
 
-    if (blog) {
-      const mapBlogs = mapIdField<GetBlogSchema>(blog);
+    if (status === ResultStatus.Success) {
+      res.status(HTTP_STATUSES.OK_200).json(data);
+      return;
+    }
 
-      res.status(HTTP_STATUSES.OK_200).json(mapBlogs);
-    } else {
+    if (status === ResultStatus.NotFound) {
       res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+      return;
     }
   } catch (e) {
     console.log(e);

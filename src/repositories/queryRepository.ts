@@ -1,50 +1,189 @@
-import { GetQuerySettings, mongoDBRepository } from './db-repository';
-import { Collection } from 'mongodb';
-import { Document } from 'bson';
-import { mapIdAndPassFieldsField, mapIdAndPassFieldsInArray, mapIdField, mapIdFieldInArray } from '../utils/map';
+import { getPageCount, searchQueryBuilder } from '../utils/helpers';
+import { BlogDbType, GetBlogsQuery } from '../types/blog-types';
+import {
+  GetBlogListSchema,
+  GetBlogSchema,
+  GetCommentListSchema,
+  GetPostListSchema,
+  GetPostSchema,
+  GetUserListSchema,
+  GetUserSchema,
+} from '../models';
+import { blogsCollection, commentsCollection, postsCollection, usersCollection } from '../db/collection';
+import { mapperRepository } from './mapperRepository';
+import { Result, ResultStatus } from '../types/common/result';
+import { GetPostsQuery, PostDbType } from '../types/post-types';
+import { CommentDbType, GetCommentsQuery } from '../types/comments-types';
+import { GetCommentSchema } from '../models/comments/GetCommentSchema';
+import { EmailConfirmationWithId, GetUsersQuery, IUserByEmail, UserDbType } from '../types/users-types';
+import { mongoDBRepository } from './db-repository';
 
 class QueryRepository {
-  async findEntityAndMapIdField<T extends Document, R>(
-    collection: Collection<T>,
-    id: string,
-    fieldsToRemove?: string[]
-  ): Promise<R | null> {
-    const entity = await mongoDBRepository.getById(collection, id);
+  public async getBlogById(id: string) {
+    const blog = await mapperRepository.findEntityAndMapIdField<BlogDbType, GetBlogSchema>(blogsCollection, id);
 
-    return entity ? mapIdField(entity, fieldsToRemove) : null;
+    return { data: blog, status: blog ? ResultStatus.Success : ResultStatus.NotFound };
   }
 
-  async findEntitiesAndMapIdFieldInArray<T extends Document, R>(
-    collection: Collection<T>,
-    settings: GetQuerySettings,
-    fieldsToRemove?: string[]
-  ): Promise<{ entities: R[]; totalCount: number }> {
-    const entitiesFromDB = await mongoDBRepository.get<T>(collection, settings);
+  public async getBlogs(query: GetBlogsQuery): Promise<Result<GetBlogListSchema>> {
+    const filters = searchQueryBuilder.getBlogs(query);
 
-    const totalCount: number = await this.getTotalCount(collection, settings);
+    const { entities: blogList, totalCount } = await mapperRepository.findEntitiesAndMapIdFieldInArray<
+      BlogDbType,
+      GetBlogSchema
+    >(blogsCollection, filters);
 
-    return { entities: mapIdFieldInArray(entitiesFromDB, fieldsToRemove), totalCount };
+    const blogs: GetBlogListSchema = {
+      pagesCount: getPageCount(totalCount, filters.pageSize),
+      page: filters.page,
+      pageSize: filters.pageSize,
+      totalCount,
+      items: blogList,
+    };
+
+    return { data: blogs, status: ResultStatus.Success };
   }
 
-  async findAndMapUser<T extends Document, R>(collection: Collection<T>, id: string): Promise<R | null> {
-    const user = await mongoDBRepository.getById<T>(collection, id);
-
-    return user ? mapIdAndPassFieldsField(user) : null;
+  public async getPostById(id: string) {
+    const post = await mapperRepository.findEntityAndMapIdField<PostDbType, GetPostSchema>(postsCollection, id);
+    return { data: post, status: post ? ResultStatus.Success : ResultStatus.NotFound };
   }
 
-  async findAndMapUserList<T extends Document, R>(
-    collection: Collection<T>,
-    settings: GetQuerySettings
-  ): Promise<{ userList: R[]; totalCount: number }> {
-    const usersFromDB = await mongoDBRepository.get<T>(collection, settings);
+  public async getPosts(query: GetPostsQuery, params?: { blogId: string }) {
+    const filters = searchQueryBuilder.getPosts(query, params);
 
-    const totalCount: number = await this.getTotalCount(collection, settings);
+    const { entities: postList, totalCount } = await mapperRepository.findEntitiesAndMapIdFieldInArray<
+      PostDbType,
+      GetPostSchema
+    >(postsCollection, filters);
 
-    return { userList: mapIdAndPassFieldsInArray(usersFromDB), totalCount };
+    const posts: GetPostListSchema = {
+      pagesCount: getPageCount(totalCount, filters.pageSize),
+      page: filters.page,
+      pageSize: filters.pageSize,
+      totalCount,
+      items: postList,
+    };
+
+    return { data: posts, status: ResultStatus.Success };
   }
 
-  async getTotalCount<T extends Document, R>(collection: Collection<T>, settings: GetQuerySettings): Promise<number> {
-    return await mongoDBRepository.getTotalCount(collection, settings.query);
+  public async getCommentById(id: string) {
+    const comment = await mapperRepository.findEntityAndMapIdField<CommentDbType, GetCommentSchema>(
+      commentsCollection,
+      id,
+      ['postId']
+    );
+    return { data: comment, status: comment ? ResultStatus.Success : ResultStatus.NotFound };
+  }
+
+  public async getComments(query: GetCommentsQuery, params?: { postId: string }) {
+    const filters = searchQueryBuilder.getComments(query, params);
+
+    const { entities: commentList, totalCount } = await mapperRepository.findEntitiesAndMapIdFieldInArray<
+      CommentDbType,
+      GetCommentSchema
+    >(commentsCollection, filters, ['postId']);
+
+    const comments: GetCommentListSchema = {
+      pagesCount: getPageCount(totalCount, filters.pageSize),
+      page: filters.page,
+      pageSize: filters.pageSize,
+      totalCount,
+      items: commentList,
+    };
+
+    return { data: comments, status: ResultStatus.Success };
+  }
+
+  public async getUserById(id: string) {
+    const user = await mapperRepository.findEntityAndMapIdField<UserDbType, GetUserSchema>(usersCollection, id, [
+      'password',
+      'emailConfirmation',
+    ]);
+    return { data: user, status: user ? ResultStatus.Success : ResultStatus.NotFound };
+  }
+
+  public async getUserByEmail(email: string) {
+    const user = await mongoDBRepository.getByField<UserDbType>(usersCollection, ['email'], email);
+
+    if (user && user.emailConfirmation) {
+      const data: IUserByEmail = {
+        confirmationCode: user.emailConfirmation.confirmationCode,
+        expirationDate: user.emailConfirmation.expirationDate,
+        isConfirmed: user.emailConfirmation.isConfirmed,
+        email: user.email,
+        id: user._id.toString(),
+      };
+      return { data: data, status: ResultStatus.Success };
+    } else {
+      return { data: null, status: ResultStatus.NotFound };
+    }
+  }
+
+  public async getUserByConfirmationCode(code: string) {
+    const user = await mongoDBRepository.getByField<UserDbType>(
+      usersCollection,
+      ['emailConfirmation.confirmationCode'],
+      code
+    );
+
+    if (user?.emailConfirmation) {
+      const data: EmailConfirmationWithId = {
+        confirmationCode: user.emailConfirmation.confirmationCode,
+        expirationDate: user.emailConfirmation.expirationDate,
+        isConfirmed: user.emailConfirmation.isConfirmed,
+        id: user._id.toString(),
+      };
+      return { data: data, status: ResultStatus.Success };
+    } else {
+      return { data: null, status: ResultStatus.NotFound };
+    }
+  }
+
+  public async getUsers(query: GetUsersQuery) {
+    const filters = searchQueryBuilder.getUsers(query);
+
+    const { entities: userList, totalCount } = await mapperRepository.findEntitiesAndMapIdFieldInArray<
+      UserDbType,
+      GetUserSchema
+    >(usersCollection, filters, ['password', 'emailConfirmation']);
+
+    const users: GetUserListSchema = {
+      pagesCount: getPageCount(totalCount, filters.pageSize),
+      page: filters.page,
+      pageSize: filters.pageSize,
+      totalCount,
+      items: userList,
+    };
+
+    return { data: users, status: ResultStatus.Success };
+  }
+
+  public async getUserConfirmationData(id: string) {
+    const user = await mongoDBRepository.getById<UserDbType>(usersCollection, id);
+
+    return {
+      data: user?.emailConfirmation,
+      status: user?.emailConfirmation ? ResultStatus.Success : ResultStatus.NotFound,
+    };
+  }
+
+  public async isExistsUser(login: string, email: string): Promise<Result> {
+    const hasUserByLogin = await mongoDBRepository.getByField<UserDbType>(usersCollection, ['login'], login);
+    const hasUserByEmail = await mongoDBRepository.getByField<UserDbType>(usersCollection, ['email'], email);
+
+    if (hasUserByLogin || hasUserByEmail) {
+      return {
+        data: null,
+        status: ResultStatus.BagRequest,
+      };
+    } else {
+      return {
+        data: null,
+        status: ResultStatus.Success,
+      };
+    }
   }
 }
 

@@ -1,22 +1,25 @@
-import { CreatePostSchema } from '../models';
+import { CreatePostSchema, GetBlogSchema } from '../models';
 import { mongoDBRepository } from '../repositories/db-repository';
-import { BlogDbType } from '../types/blog-types';
 import { postsCollection } from '../db/collection';
 import { PostDbType } from '../types/post-types';
-import { getCurrentDate } from '../utils/helpers';
-import { WithId } from 'mongodb';
+import { ResultStatus } from '../types/common/result';
+import { getCurrentDate } from '../utils/dates/dates';
 
-export const createPostService = async (body: CreatePostSchema, blog: WithId<BlogDbType>) => {
+export const createPostService = async (body: CreatePostSchema, blog: GetBlogSchema) => {
   const newPost: PostDbType = {
     title: body.title,
     shortDescription: body.shortDescription,
     content: body.content,
     blogName: blog.name,
-    blogId: blog._id.toString(),
+    blogId: blog.id,
     createdAt: getCurrentDate(),
   };
 
-  const { insertedId } = await mongoDBRepository.add<PostDbType>(postsCollection, newPost);
+  const { insertedId, acknowledged } = await mongoDBRepository.add<PostDbType>(postsCollection, newPost);
 
-  return insertedId;
+  if (acknowledged) {
+    return { data: insertedId, status: ResultStatus.Success };
+  } else {
+    return { data: null, status: ResultStatus.NotFound };
+  }
 };

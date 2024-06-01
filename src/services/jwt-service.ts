@@ -1,4 +1,4 @@
-import jwt, { Jwt, JwtPayload, Secret, SignOptions, VerifyErrors, VerifyOptions } from 'jsonwebtoken';
+import jwt, { Jwt, JwtPayload, Secret, SignOptions, VerifyOptions } from 'jsonwebtoken';
 import { SETTINGS } from '../utils/settings';
 
 class JwtService {

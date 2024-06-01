@@ -10,7 +10,6 @@ import { AuthUserSchema } from '../models';
 import { validateAuthRegistrationSchema } from '../middlewares/auth/validate-schemas/validate-auth-registration-schema';
 import { validateAuthRegistrationConfirmationSchema } from '../middlewares/auth/validate-schemas/validate-auth-registration-confirmation-schema';
 import { validateAuthRegistrationResendingSchema } from '../middlewares/auth/validate-schemas/validate-auth-registration-resending-schema';
-import { authRegistrationResendingController } from '../controllers/auth/auth-registration-resending-controller';
 
 export const authRouter = Router();
 

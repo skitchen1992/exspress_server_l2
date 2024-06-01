@@ -10,7 +10,7 @@
     "jest:coverage": "jest --coverage",
     "test": "yarn jest",
     "format": "prettier --write \"src/**/*.ts\"",
-    "lint": "yarn run eslint \"src\""
+    "lint": "yarn run eslint \"src\" --max-warnings=17"
   },
   "dependencies": {
     "@types/bcryptjs": "2.4.6",

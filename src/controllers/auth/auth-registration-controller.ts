@@ -15,7 +15,7 @@ export const authRegistrationController = async (
 ) => {
   try {
     const { status } = await queryRepository.isExistsUser(req.body.login, req.body.email);
-
+    console.log('test');
     if (status === ResultStatus.BagRequest) {
       res.status(HTTP_STATUSES.BAD_REQUEST_400).json({
         errorsMessages: [

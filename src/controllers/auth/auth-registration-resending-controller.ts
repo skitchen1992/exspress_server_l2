@@ -8,6 +8,8 @@ import { getCurrentDate, isExpiredDate } from '../../utils/dates/dates';
 import { AuthRegistrationResendingSchema } from '../../models/auth/AuthRegistrationResendingSchema';
 import { emailService } from '../../services/email-service';
 import { deleteUserService } from '../../services/delete-user-service';
+import { updateUserConfirmationService } from '../../services/update-user-confermation-service';
+import { v4 as uuidv4 } from 'uuid';
 
 export const authRegistrationResendingController = async (
   req: RequestWithBody<AuthRegistrationResendingSchema>,
@@ -53,7 +55,11 @@ export const authRegistrationResendingController = async (
     }
 
     try {
-      await emailService.sendRegisterEmail(req.body.email, data!.confirmationCode);
+      await updateUserConfirmationService(data!.id, 'emailConfirmation.confirmationCode', uuidv4());
+
+      const { data: updatedUser } = await queryRepository.getUserByEmail(req.body.email);
+
+      await emailService.sendRegisterEmail(req.body.email, updatedUser!.confirmationCode);
 
       res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
       return;

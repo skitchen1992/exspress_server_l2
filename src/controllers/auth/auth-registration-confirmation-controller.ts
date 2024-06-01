@@ -51,7 +51,11 @@ export const authRegistrationConfirmationController = async (
       return;
     }
 
-    const { status: updateStatus } = await updateUserConfirmationService(data!.id);
+    const { status: updateStatus } = await updateUserConfirmationService(
+      data!.id,
+      'emailConfirmation.isConfirmed',
+      true
+    );
 
     if (updateStatus === ResultStatus.Success) {
       res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);

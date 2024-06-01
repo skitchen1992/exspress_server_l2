@@ -20,8 +20,8 @@ export const authRegistrationController = async (
       res.status(HTTP_STATUSES.BAD_REQUEST_400).json({
         errorsMessages: [
           {
-            message: 'Email and login should be unique',
-            field: 'email',
+            message: 'Email and login already exist',
+            field: 'login',
           },
         ],
       });
@@ -35,9 +35,9 @@ export const authRegistrationController = async (
 
       if (status === ResultStatus.Success) {
         try {
-          //for tests
-          res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
           await emailService.sendRegisterEmail(req.body.email, data!.confirmationCode);
+
+          res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
 
           return;
         } catch (e) {

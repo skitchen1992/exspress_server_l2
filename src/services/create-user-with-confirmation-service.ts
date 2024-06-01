@@ -4,7 +4,7 @@ import { UserDbType } from '../types/users-types';
 import { hashBuilder } from '../utils/helpers';
 import { ResultStatus } from '../types/common/result';
 import { CreateUserWithConfirmationSchema } from '../models/auth/CreateUserWithConfirmationSchema';
-import { uuid } from 'uuidv4';
+import { v4 as uuidv4 } from 'uuid';
 import { add, getCurrentDate } from '../utils/dates/dates';
 
 export const createUserWithConfirmationService = async (body: CreateUserWithConfirmationSchema) => {
@@ -17,7 +17,7 @@ export const createUserWithConfirmationService = async (body: CreateUserWithConf
     createdAt: getCurrentDate(),
     emailConfirmation: {
       isConfirmed: false,
-      confirmationCode: uuid(),
+      confirmationCode: uuidv4(),
       expirationDate: add(new Date(), { hours: 1 }),
     },
   };

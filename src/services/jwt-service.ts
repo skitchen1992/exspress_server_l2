@@ -25,4 +25,4 @@ class JwtService {
   }
 }
 
-export const jwtService = new JwtService(SETTINGS.JWT_SECRET_KEY);
+export const jwtService = new JwtService(SETTINGS.JWT_SECRET_KEY!);

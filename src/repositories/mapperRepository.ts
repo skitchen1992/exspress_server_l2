@@ -26,7 +26,7 @@ class MapperRepository {
     return { entities: mapIdFieldInArray(entitiesFromDB, fieldsToRemove), totalCount };
   }
 
-  async getTotalCount<T extends Document, R>(collection: Collection<T>, settings: GetQuerySettings): Promise<number> {
+  async getTotalCount<T extends Document>(collection: Collection<T>, settings: GetQuerySettings): Promise<number> {
     return await mongoDBRepository.getTotalCount(collection, settings.query);
   }
 }

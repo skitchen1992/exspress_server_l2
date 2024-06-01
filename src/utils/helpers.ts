@@ -17,16 +17,17 @@ export const isValidObjectId = (id: string): boolean => {
   return ObjectId.isValid(id);
 };
 
+type Filters = Record<string, string>;
 export const searchQueryBuilder = {
   getBlogs: (queryParams: GetBlogsQuery) => {
     const { searchNameTerm, sortBy, sortDirection, pageNumber, pageSize } = queryParams;
 
-    let query: any = {};
+    const query: Record<string, unknown> = {};
     if (searchNameTerm) {
       query.name = { $regex: new RegExp(`.*${searchNameTerm}.*`, 'i') };
     }
 
-    let sort: any = {};
+    const sort: Filters = {};
     if (sortBy) {
       sort[sortBy] = sortDirection || DEFAULT_SORT;
     } else {
@@ -44,12 +45,12 @@ export const searchQueryBuilder = {
   getPosts: (queryParams: GetPostsQuery, params?: { blogId: string }) => {
     const { sortBy, sortDirection, pageNumber, pageSize } = queryParams;
 
-    let query: any = {};
+    const query: Filters = {};
     if (params?.blogId) {
       query.blogId = params.blogId;
     }
 
-    let sort: any = {};
+    const sort: Filters = {};
     if (sortBy) {
       sort[sortBy] = sortDirection || DEFAULT_SORT;
     } else {
@@ -67,12 +68,12 @@ export const searchQueryBuilder = {
   getComments: (queryParams: GetPostsQuery, params?: { postId: string }) => {
     const { sortBy, sortDirection, pageNumber, pageSize } = queryParams;
 
-    let query: any = {};
+    const query: Filters = {};
     if (params?.postId) {
       query.postId = params.postId;
     }
 
-    let sort: any = {};
+    const sort: Filters = {};
     if (sortBy) {
       sort[sortBy] = sortDirection || DEFAULT_SORT;
     } else {
@@ -90,7 +91,7 @@ export const searchQueryBuilder = {
   getUsers: (queryParams: GetUsersQuery) => {
     const { sortBy, sortDirection, pageNumber, pageSize, searchLoginTerm, searchEmailTerm } = queryParams;
 
-    let query: any = {};
+    const query: Record<string, unknown> = {};
     if (searchLoginTerm && searchEmailTerm) {
       query.$or = [
         { login: { $regex: new RegExp(`.*${searchLoginTerm}.*`, 'i') } },
@@ -105,7 +106,7 @@ export const searchQueryBuilder = {
       }
     }
 
-    let sort: any = {};
+    const sort: Filters = {};
     if (sortBy) {
       sort[sortBy] = sortDirection || DEFAULT_SORT;
     } else {

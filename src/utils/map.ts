@@ -4,7 +4,7 @@ export const mapIdField = <R>(object: WithId<Record<string, unknown>>, fieldsToR
   if (object && typeof object === 'object') {
     const { _id, ...rest } = object;
 
-    let result: Record<string, unknown> = { id: _id, ...rest };
+    const result: Record<string, unknown> = { id: _id, ...rest };
     for (const field of fieldsToRemove) {
       delete result[field];
     }

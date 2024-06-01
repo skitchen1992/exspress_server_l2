@@ -2,11 +2,11 @@ import { CreateUserSchema } from '../models';
 import { mongoDBRepository } from '../repositories/db-repository';
 import { usersCollection } from '../db/collection';
 import { UserDbType } from '../types/users-types';
-import { getCurrentDate, passwordBuilder } from '../utils/helpers';
+import { getCurrentDate, hashBuilder } from '../utils/helpers';
 import { ResultStatus } from '../types/common/result';
 
 export const createUserService = async (body: CreateUserSchema) => {
-  const passwordHash = await passwordBuilder.hashPassword(body.password);
+  const passwordHash = await hashBuilder.hash(body.password);
 
   const newUser: UserDbType = {
     login: body.login,

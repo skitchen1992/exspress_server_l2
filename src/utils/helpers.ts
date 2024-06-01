@@ -121,12 +121,12 @@ export const searchQueryBuilder = {
   },
 };
 
-export const passwordBuilder = {
-  hashPassword: async (password: string, saltRounds = 10) => {
+export const hashBuilder = {
+  hash: async (input: string, saltRounds = 10) => {
     const salt = await genSalt(saltRounds);
-    return await hash(password, salt);
+    return await hash(input, salt);
   },
-  comparePasswords: async (password: string, hashedPassword: string) => {
-    return await compare(password, hashedPassword);
+  compare: async (input: string, hashedInput: string) => {
+    return await compare(input, hashedInput);
   },
 };

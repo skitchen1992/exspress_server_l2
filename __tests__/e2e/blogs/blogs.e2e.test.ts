@@ -11,9 +11,9 @@ import { BlogDbType } from '../../../src/types/blog-types';
 import { ID } from './datasets';
 import { PostDbType } from '../../../src/types/post-types';
 import { mongoDBRepository } from '../../../src/repositories/db-repository';
-import { getCurrentDate } from '../../../src/utils/helpers';
 import { queryRepository } from '../../../src/repositories/queryRepository';
 import { body } from 'express-validator';
+import { getCurrentDate } from '../../../src/utils/dates/dates';
 
 describe(`Endpoint (GET) - ${PATH_URL.BLOGS}`, () => {
   let req: TestAgent<Test>;

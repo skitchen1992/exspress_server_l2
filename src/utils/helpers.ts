@@ -9,10 +9,6 @@ export const getPageCount = (totalCount: number, pageSize: number) => {
   return Math.ceil(totalCount / pageSize);
 };
 
-export const getCurrentDate = () => {
-  return new Date().toISOString();
-};
-
 export const isValidObjectId = (id: string): boolean => {
   return ObjectId.isValid(id);
 };

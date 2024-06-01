@@ -2,7 +2,8 @@ import { CreateBlogSchema } from '../models';
 import { mongoDBRepository } from '../repositories/db-repository';
 import { BlogDbType } from '../types/blog-types';
 import { blogsCollection } from '../db/collection';
-import { getCurrentDate } from '../utils/helpers';
+
+import { getCurrentDate } from '../utils/dates/dates';
 
 export const createBlogService = async (body: CreateBlogSchema) => {
   const newBlog: BlogDbType = {

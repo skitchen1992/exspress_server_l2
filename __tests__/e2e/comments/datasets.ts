@@ -1,4 +1,4 @@
-import { getCurrentDate } from '../../../src/utils/helpers';
+import { getCurrentDate } from '../../../src/utils/dates/dates';
 
 export const ID = '1A2B3C4D5E6F7A8B9C0D1E2F';
 

@@ -15,7 +15,7 @@ import { Result, ResultStatus } from '../types/common/result';
 import { GetPostsQuery, PostDbType } from '../types/post-types';
 import { CommentDbType, GetCommentsQuery } from '../types/comments-types';
 import { GetCommentSchema } from '../models/comments/GetCommentSchema';
-import { GetUsersQuery, UserDbType } from '../types/users-types';
+import { EmailConfirmationWithId, GetUsersQuery, IUserByEmail, UserDbType } from '../types/users-types';
 import { mongoDBRepository } from './db-repository';
 
 class QueryRepository {
@@ -24,6 +24,7 @@ class QueryRepository {
 
     return { data: blog, status: blog ? ResultStatus.Success : ResultStatus.NotFound };
   }
+
   public async getBlogs(query: GetBlogsQuery): Promise<Result<GetBlogListSchema>> {
     const filters = searchQueryBuilder.getBlogs(query);
 
@@ -98,8 +99,46 @@ class QueryRepository {
   public async getUserById(id: string) {
     const user = await mapperRepository.findEntityAndMapIdField<UserDbType, GetUserSchema>(usersCollection, id, [
       'password',
+      'emailConfirmation',
     ]);
     return { data: user, status: user ? ResultStatus.Success : ResultStatus.NotFound };
+  }
+
+  public async getUserByEmail(email: string) {
+    const user = await mongoDBRepository.getByField<UserDbType>(usersCollection, ['email'], email);
+
+    if (user && user.emailConfirmation) {
+      const data: IUserByEmail = {
+        confirmationCode: user.emailConfirmation.confirmationCode,
+        expirationDate: user.emailConfirmation.expirationDate,
+        isConfirmed: user.emailConfirmation.isConfirmed,
+        email: user.email,
+        id: user._id.toString(),
+      };
+      return { data: data, status: ResultStatus.Success };
+    } else {
+      return { data: null, status: ResultStatus.NotFound };
+    }
+  }
+
+  public async getUserByConfirmationCode(code: string) {
+    const user = await mongoDBRepository.getByField<UserDbType>(
+      usersCollection,
+      ['emailConfirmation.confirmationCode'],
+      code
+    );
+
+    if (user?.emailConfirmation) {
+      const data: EmailConfirmationWithId = {
+        confirmationCode: user.emailConfirmation.confirmationCode,
+        expirationDate: user.emailConfirmation.expirationDate,
+        isConfirmed: user.emailConfirmation.isConfirmed,
+        id: user._id.toString(),
+      };
+      return { data: data, status: ResultStatus.Success };
+    } else {
+      return { data: null, status: ResultStatus.NotFound };
+    }
   }
 
   public async getUsers(query: GetUsersQuery) {
@@ -108,7 +147,7 @@ class QueryRepository {
     const { entities: userList, totalCount } = await mapperRepository.findEntitiesAndMapIdFieldInArray<
       UserDbType,
       GetUserSchema
-    >(usersCollection, filters, ['password']);
+    >(usersCollection, filters, ['password', 'emailConfirmation']);
 
     const users: GetUserListSchema = {
       pagesCount: getPageCount(totalCount, filters.pageSize),
@@ -119,6 +158,15 @@ class QueryRepository {
     };
 
     return { data: users, status: ResultStatus.Success };
+  }
+
+  public async getUserConfirmationData(id: string) {
+    const user = await mongoDBRepository.getById<UserDbType>(usersCollection, id);
+
+    return {
+      data: user?.emailConfirmation,
+      status: user?.emailConfirmation ? ResultStatus.Success : ResultStatus.NotFound,
+    };
   }
 
   public async isExistsUser(login: string, email: string): Promise<Result> {

@@ -2,9 +2,9 @@ import { mongoDBRepository } from '../repositories/db-repository';
 import { postsCollection } from '../db/collection';
 import { PostDbType } from '../types/post-types';
 import { CreatePostForBlogSchema } from '../models/posts/CreatePostForBlogSchema';
-import { getCurrentDate } from '../utils/helpers';
 import { queryRepository } from '../repositories/queryRepository';
 import { ResultStatus } from '../types/common/result';
+import { getCurrentDate } from '../utils/dates/dates';
 
 export const createPostForBlogService = async (body: CreatePostForBlogSchema, params: { blogId: string }) => {
   const { status, data } = await queryRepository.getBlogById(params.blogId);

@@ -10,9 +10,9 @@ import { blogsCollection, commentsCollection, connectToDb, postsCollection } fro
 import { BlogDbType } from '../../../src/types/blog-types';
 import { PostDbType } from '../../../src/types/post-types';
 import { mongoDBRepository } from '../../../src/repositories/db-repository';
-import { getCurrentDate } from '../../../src/utils/helpers';
 import { CommentDbType } from '../../../src/types/comments-types';
 import { ID } from './datasets';
+import { getCurrentDate } from '../../../src/utils/dates/dates';
 
 describe(`Endpoint (GET) - ${PATH_URL.COMMENTS}`, () => {
   let req: TestAgent<Test>;

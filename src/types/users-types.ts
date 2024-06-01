@@ -1,9 +1,28 @@
+export type EmailConfirmationWithId = EmailConfirmation & {
+  id: string;
+};
+
+export type EmailConfirmation = {
+  confirmationCode: string;
+  expirationDate: string;
+  isConfirmed: boolean;
+};
+
 export type UserDbType = {
   login: string;
   email: string;
   password: string;
   createdAt: string;
+  emailConfirmation?: EmailConfirmation;
 };
+
+export interface IUserByEmail {
+  confirmationCode: string;
+  email: string;
+  expirationDate: string;
+  isConfirmed: boolean;
+  id: string;
+}
 
 export type GetUsersQuery = {
   /**

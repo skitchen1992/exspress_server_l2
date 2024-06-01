@@ -11,9 +11,9 @@ import { mongoDBRepository } from '../../../src/repositories/db-repository';
 import { BlogDbType } from '../../../src/types/blog-types';
 import { PostDbType } from '../../../src/types/post-types';
 import { ID } from './datasets';
-import { getCurrentDate } from '../../../src/utils/helpers';
 import { after } from 'node:test';
 import { ObjectId } from 'mongodb';
+import { getCurrentDate } from '../../../src/utils/dates/dates';
 
 describe(`Endpoint (GET) - ${PATH_URL.POSTS}`, () => {
   let req: TestAgent<Test>;

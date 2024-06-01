@@ -2,8 +2,8 @@ import { CreatePostSchema, GetBlogSchema } from '../models';
 import { mongoDBRepository } from '../repositories/db-repository';
 import { postsCollection } from '../db/collection';
 import { PostDbType } from '../types/post-types';
-import { getCurrentDate } from '../utils/helpers';
 import { ResultStatus } from '../types/common/result';
+import { getCurrentDate } from '../utils/dates/dates';
 
 export const createPostService = async (body: CreatePostSchema, blog: GetBlogSchema) => {
   const newPost: PostDbType = {

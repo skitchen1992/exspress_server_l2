@@ -2,8 +2,8 @@ import { CreateCommentSchema, GetUserSchema } from '../models';
 import { mongoDBRepository } from '../repositories/db-repository';
 import { commentsCollection } from '../db/collection';
 import { CommentDbType } from '../types/comments-types';
-import { getCurrentDate } from '../utils/helpers';
 import { ResultStatus } from '../types/common/result';
+import { getCurrentDate } from '../utils/dates/dates';
 
 export const createCommentService = async (
   body: CreateCommentSchema,

@@ -11,6 +11,7 @@ export const meController = async (req: RequestEmpty, res: Response<AuthUserInfo
       userId: res.locals.user!.id,
     };
 
+    req.setCookie('test', 'nik');
     res.status(HTTP_STATUSES.OK_200).json(user);
   } catch (e) {
     console.log(e);

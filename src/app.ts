@@ -7,11 +7,15 @@ import { testingRouter } from './routers/testing-router';
 import { usersRouter } from './routers/users-router';
 import { authRouter } from './routers/auth-router';
 import { commentsRouter } from './routers/coments-router';
+import CookieWrapper from './middlewares/cookie-middleware';
 
 export const app = express();
 
 app.use(express.json());
 app.use(cors());
+
+const cookieWrapper = new CookieWrapper();
+app.use(cookieWrapper.middleware());
 
 app.get(PATH_URL.ROOT, (req, res) => {
   res.status(HTTP_STATUSES.OK_200).json({ version: '1.0' });

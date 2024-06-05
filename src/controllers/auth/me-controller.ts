@@ -10,7 +10,8 @@ export const meController = async (req: RequestEmpty, res: Response<AuthUserInfo
       login: res.locals.user!.login,
       userId: res.locals.user!.id,
     };
-
+    const cookie = req.cookies;
+    debugger;
     req.setCookie('test', 'nik');
     res.status(HTTP_STATUSES.OK_200).json(user);
   } catch (e) {

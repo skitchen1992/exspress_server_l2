@@ -38,8 +38,17 @@ export const PATH_URL = {
     REGISTRATION: '/registration',
     REGISTRATION_CONFIRMATION: '/registration-confirmation',
     REGISTRATION_EMAIL_RESENDING: '/registration-email-resending',
+    REFRESH_TOKEN: '/refresh-token',
+    LOGOUT: '/logout',
   },
 };
+
+export const COOKIE_KEY = {
+  REFRESH_TOKEN: 'refreshToken',
+};
+
+export const ACCESS_TOKEN_EXPIRES_IN = 10;
+export const REFRESH_TOKEN_EXPIRES_IN = 20;
 
 export const getBlogsQueryParams: (keyof Required<GetBlogsQuery>)[] = [
   'searchNameTerm',

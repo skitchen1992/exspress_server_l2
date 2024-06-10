@@ -21,6 +21,20 @@ authRouter.post(
   controllers.authController
 );
 
+authRouter.post(
+  PATH_URL.AUTH.REFRESH_TOKEN,
+  sanitizerQueryMiddleware(),
+  errorHandlingMiddleware,
+  controllers.refreshTokenController
+);
+
+authRouter.post(
+  PATH_URL.AUTH.LOGOUT,
+  sanitizerQueryMiddleware(),
+  errorHandlingMiddleware,
+  controllers.logoutTokenController
+);
+
 authRouter.get(
   PATH_URL.AUTH.ME,
   bearerTokenAuthMiddleware,

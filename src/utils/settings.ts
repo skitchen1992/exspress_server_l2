@@ -20,6 +20,7 @@ export const SETTINGS = {
       POSTS: 'posts',
       USERS: 'users',
       COMMENTS: 'comments',
+      TOKENS: 'tokens',
     },
   },
 };

@@ -28,10 +28,10 @@ export const authRegistrationController = async (
       return;
     }
 
-    const { data: userId, status: getUserStatus } = await createUserWithConfirmationService(req.body);
+    const { data: userId, status: userStatus } = await createUserWithConfirmationService(req.body);
 
-    if (getUserStatus === ResultStatus.Success) {
-      const { data, status } = await queryRepository.getUserConfirmationData(userId!);
+    if (userStatus === ResultStatus.Success && userId) {
+      const { data, status } = await queryRepository.getUserConfirmationData(userId);
 
       if (status === ResultStatus.Success) {
         try {

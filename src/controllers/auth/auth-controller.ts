@@ -14,45 +14,53 @@ export const authController = async (
   try {
     const { data: user, status } = await queryRepository.getUserByFields(['login', 'email'], req.body.loginOrEmail);
 
-    if (status === ResultStatus.Success) {
-      const isCorrectPass = await hashBuilder.compare(req.body.password, user!.password);
-
-      if (isCorrectPass) {
-        const { data, status } = await addTokenToUserService(user!._id.toString(), user!.login);
-
-        if (status === ResultStatus.Success && data) {
-          req.setCookie(COOKIE_KEY.REFRESH_TOKEN, data.refreshToken);
-
-          res.status(HTTP_STATUSES.OK_200).json({ accessToken: data.accessToken });
-        } else {
-          res.status(HTTP_STATUSES.UNAUTHORIZED_401).json({
-            errorsMessages: [
-              {
-                message: 'Password or login is wrong',
-                field: 'User',
-              },
-            ],
-          });
-        }
-      } else {
-        res.status(HTTP_STATUSES.UNAUTHORIZED_401).json({
-          errorsMessages: [
-            {
-              message: 'Password or login is wrong',
-              field: 'User',
-            },
-          ],
-        });
-      }
-    } else {
+    if (status !== ResultStatus.Success) {
       res.status(HTTP_STATUSES.UNAUTHORIZED_401).json({
         errorsMessages: [
           {
-            message: 'Login or Password  is wrong',
+            message: 'Login or Password is wrong',
             field: 'User',
           },
         ],
       });
+
+      return;
+    }
+
+    const isCorrectPass = await hashBuilder.compare(req.body.password, user!.password);
+
+    if (!isCorrectPass) {
+      res.status(HTTP_STATUSES.UNAUTHORIZED_401).json({
+        errorsMessages: [
+          {
+            message: 'Password or login is wrong',
+            field: 'User',
+          },
+        ],
+      });
+
+      return;
+    }
+
+    const { data, status: tokenStatus } = await addTokenToUserService(user!._id.toString(), user!.login);
+
+    if (tokenStatus !== ResultStatus.Success && !data) {
+      res.status(HTTP_STATUSES.UNAUTHORIZED_401).json({
+        errorsMessages: [
+          {
+            message: 'Password or login is wrong',
+            field: 'User',
+          },
+        ],
+      });
+
+      return;
+    }
+
+    if (tokenStatus === ResultStatus.Success && data) {
+      req.setCookie(COOKIE_KEY.REFRESH_TOKEN, data.refreshToken);
+
+      res.status(HTTP_STATUSES.OK_200).json({ accessToken: data.accessToken });
     }
   } catch (e) {
     console.log(e);

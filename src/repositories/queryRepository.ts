@@ -12,6 +12,7 @@ import {
 import {
   blogsCollection,
   commentsCollection,
+  deviceAuthSessionsCollection,
   documentsCollection,
   postsCollection,
   usersCollection,
@@ -23,6 +24,7 @@ import { CommentDbType, GetCommentsQuery } from '../types/comments-types';
 import { GetCommentSchema } from '../models/comments/GetCommentSchema';
 import { EmailConfirmationWithId, GetUsersQuery, IUserByEmail, UserDbType } from '../types/users-types';
 import { mongoDBRepository } from './db-repository';
+import { DeviceAuthSessionDbType } from '../types/device-auth-session-types';
 
 class QueryRepository {
   public async getBlogById(id: string) {
@@ -187,6 +189,18 @@ class QueryRepository {
     return {
       data: user?.emailConfirmation,
       status: user?.emailConfirmation ? ResultStatus.Success : ResultStatus.NotFound,
+    };
+  }
+
+  public async getDeviceAuthSession(deviceId: string) {
+    const deviceAuthSession = await mongoDBRepository.getByField<DeviceAuthSessionDbType>(
+      deviceAuthSessionsCollection,
+      ['deviceId'],
+      deviceId
+    );
+    return {
+      data: deviceAuthSession,
+      status: deviceAuthSession ? ResultStatus.Success : ResultStatus.NotFound,
     };
   }
 

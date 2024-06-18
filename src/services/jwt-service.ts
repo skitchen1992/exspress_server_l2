@@ -23,6 +23,12 @@ class JwtService {
   decodeToken(token: string): null | { [key: string]: any } | string {
     return jwt.decode(token);
   }
+
+  getTokenExpirationDate(token: string): string {
+    const payload = this.verifyToken(token) as { [key: string]: any };
+
+    return new Date(payload.exp * 1000).toISOString(); // конвертируем секунды в миллисекунды
+  }
 }
 
 export const jwtService = new JwtService(SETTINGS.JWT_SECRET_KEY!);

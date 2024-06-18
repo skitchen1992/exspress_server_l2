@@ -9,7 +9,7 @@ import { AuthRegistrationResendingSchema } from '../../models/auth/AuthRegistrat
 import { emailService } from '../../services/email-service';
 import { deleteUserService } from '../../services/delete-user-service';
 import { updateUserConfirmationService } from '../../services/update-user-confermation-service';
-import { v4 as uuidv4 } from 'uuid';
+import { getUniqueId } from '../../utils/helpers';
 
 export const authRegistrationResendingController = async (
   req: RequestWithBody<AuthRegistrationResendingSchema>,
@@ -55,7 +55,7 @@ export const authRegistrationResendingController = async (
     }
 
     try {
-      await updateUserConfirmationService(data!.id, 'emailConfirmation.confirmationCode', uuidv4());
+      await updateUserConfirmationService(data!.id, 'emailConfirmation.confirmationCode', getUniqueId());
 
       const { data: updatedUser } = await queryRepository.getUserByEmail(req.body.email);
 

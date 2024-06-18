@@ -19,14 +19,14 @@ export const refreshTokenController = async (
       return;
     }
 
-    const { userId } = (jwtService.verifyToken(refreshToken) as JwtPayload) ?? {};
+    const { userId, deviceId } = (jwtService.verifyToken(refreshToken) as JwtPayload) ?? {};
 
-    if (!userId) {
+    if (!userId || !deviceId) {
       res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
       return;
     }
 
-    const { data, status } = await updateTokenToUserService(userId, refreshToken);
+    const { data, status } = await updateTokenToUserService(userId, deviceId);
 
     if (status === ResultStatus.Success && data) {
       req.setCookie(COOKIE_KEY.REFRESH_TOKEN, data.refreshToken);

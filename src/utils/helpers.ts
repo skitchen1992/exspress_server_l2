@@ -4,9 +4,14 @@ import { GetPostsQuery } from '../types/post-types';
 import { GetUsersQuery } from '../types/users-types';
 import { compare, genSalt, hash } from 'bcryptjs';
 import { ObjectId } from 'mongodb';
+import { v4 as uuidv4 } from 'uuid';
 
 export const getPageCount = (totalCount: number, pageSize: number) => {
   return Math.ceil(totalCount / pageSize);
+};
+
+export const getUniqueId = () => {
+  return uuidv4();
 };
 
 export const isValidObjectId = (id: string): boolean => {

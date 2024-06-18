@@ -5,7 +5,7 @@ import {
   commentsCollection,
   documentsCollection,
   postsCollection,
-  tokensCollection,
+  deviceAuthSessionsCollection,
   usersCollection,
 } from '../../db/collection';
 
@@ -15,7 +15,7 @@ export const deleteAllDataController = async (req: Request, res: Response) => {
     await postsCollection.deleteMany({});
     await usersCollection.deleteMany({});
     await commentsCollection.deleteMany({});
-    await tokensCollection.deleteMany({});
+    await deviceAuthSessionsCollection.deleteMany({});
     await documentsCollection.deleteMany({});
 
     res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);

@@ -6,6 +6,7 @@ import { hashBuilder } from '../../utils/helpers';
 import { queryRepository } from '../../repositories/queryRepository';
 import { ResultStatus } from '../../types/common/result';
 import { addTokenToUserService } from '../../services/add-token-to-user-service';
+import { deleteTokenToUserService } from '../../services/delete-token-to-user-service';
 
 export const authController = async (
   req: RequestWithBody<AuthUserSchema>,
@@ -23,7 +24,6 @@ export const authController = async (
           },
         ],
       });
-
       return;
     }
 
@@ -42,7 +42,19 @@ export const authController = async (
       return;
     }
 
-    const { data, status: tokenStatus } = await addTokenToUserService(user!._id.toString(), user!.login);
+    const refreshToken = req.getCookie(COOKIE_KEY.REFRESH_TOKEN);
+
+    const userAgentHeader = req.headers['user-agent'];
+
+    if (refreshToken) {
+      await deleteTokenToUserService(refreshToken, userAgentHeader);
+    }
+
+    const { data, status: tokenStatus } = await addTokenToUserService({
+      userId: user!._id.toString(),
+      ip: req.ip!,
+      title: userAgentHeader || '',
+    });
 
     if (tokenStatus !== ResultStatus.Success && !data) {
       res.status(HTTP_STATUSES.UNAUTHORIZED_401).json({
@@ -64,5 +76,6 @@ export const authController = async (
     }
   } catch (e) {
     console.log(e);
+    res.sendStatus(HTTP_STATUSES.INTERNAL_SERVER_ERROR_500);
   }
 };

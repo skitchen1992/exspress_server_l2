@@ -1,22 +1,37 @@
 import { mongoDBRepository } from '../repositories/db-repository';
-import { tokensCollection } from '../db/collection';
+import { deviceAuthSessionsCollection } from '../db/collection';
 import { ResultStatus } from '../types/common/result';
-import { TokenDbType } from '../types/tokens-types';
+import { DeviceAuthSessionDbType } from '../types/device-auth-session-types';
+import { getCurrentDate, isExpiredDate } from '../utils/dates/dates';
+import { jwtService } from './jwt-service';
+import { JwtPayload } from 'jsonwebtoken';
+import { queryRepository } from '../repositories/queryRepository';
 
 export const logoutService = async (refreshToken: string) => {
-  const tokenFromDb = await mongoDBRepository.getByField<TokenDbType>(tokensCollection, ['refreshToken'], refreshToken);
+  const { userId, deviceId } = (jwtService.verifyToken(refreshToken) as JwtPayload) ?? {};
 
-  if (!tokenFromDb) {
+  if (!userId || !deviceId) {
     return { status: ResultStatus.Unauthorized, data: null };
   }
 
-  if (tokenFromDb.isExpired) {
+  const { data: deviceAuthSession } = await queryRepository.getDeviceAuthSession(deviceId);
+
+  if (!deviceAuthSession) {
     return { status: ResultStatus.Unauthorized, data: null };
   }
 
-  const updateResult = await mongoDBRepository.update<TokenDbType>(tokensCollection, tokenFromDb._id.toString(), {
-    isExpired: true,
-  });
+  if (isExpiredDate(deviceAuthSession.tokenExpirationDate, getCurrentDate())) {
+    return { status: ResultStatus.Unauthorized, data: null };
+  }
+
+  const updateResult = await mongoDBRepository.update<DeviceAuthSessionDbType>(
+    deviceAuthSessionsCollection,
+    deviceAuthSession._id.toString(),
+    {
+      tokenExpirationDate: getCurrentDate(),
+      lastActiveDate: getCurrentDate(),
+    }
+  );
 
   if (updateResult.modifiedCount === 1) {
     return { status: ResultStatus.Success, data: null };

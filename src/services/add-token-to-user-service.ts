@@ -1,33 +1,50 @@
 import { mongoDBRepository } from '../repositories/db-repository';
-import { tokensCollection } from '../db/collection';
+import { deviceAuthSessionsCollection } from '../db/collection';
 import { ResultStatus } from '../types/common/result';
 import { jwtService } from './jwt-service';
-import { TokenDbType } from '../types/tokens-types';
+import { DeviceAuthSessionDbType } from '../types/device-auth-session-types';
 import { ObjectId } from 'mongodb';
 import { ACCESS_TOKEN_EXPIRES_IN, REFRESH_TOKEN_EXPIRES_IN } from '../utils/consts';
 import { getDateFromObjectId } from '../utils/dates/dates';
+import { getUniqueId } from '../utils/helpers';
 
-export const addTokenToUserService = async (userId: string, userLogin: string) => {
-  const accessToken = jwtService.generateToken({ userId, userLogin }, { expiresIn: ACCESS_TOKEN_EXPIRES_IN });
+type Payload = {
+  userId: string;
+  ip: string;
+  title: string;
+  deviceIdFromCookie?: string;
+};
 
-  const refreshToken = jwtService.generateToken({ userId, userLogin }, { expiresIn: REFRESH_TOKEN_EXPIRES_IN });
+export const addTokenToUserService = async (payload: Payload) => {
+  const { userId, ip, title, deviceIdFromCookie } = payload;
 
   const objectId = new ObjectId();
+  const deviceId = deviceIdFromCookie || getUniqueId();
 
-  const data: TokenDbType = {
-    refreshToken,
-    userId,
-    isExpired: false,
-    createdAt: getDateFromObjectId(objectId),
+  const accessToken = jwtService.generateToken({ userId }, { expiresIn: ACCESS_TOKEN_EXPIRES_IN });
+
+  const refreshToken = jwtService.generateToken({ userId, deviceId }, { expiresIn: REFRESH_TOKEN_EXPIRES_IN });
+
+  const data: DeviceAuthSessionDbType = {
     _id: objectId,
+    userId,
+    ip,
+    title,
+    lastActiveDate: getDateFromObjectId(objectId),
+    tokenIssueDate: getDateFromObjectId(objectId),
+    tokenExpirationDate: jwtService.getTokenExpirationDate(refreshToken),
+    deviceId,
   };
 
-  const insertOneResult = await mongoDBRepository.add<TokenDbType>(tokensCollection, data);
+  const insertOneResult = await mongoDBRepository.add<DeviceAuthSessionDbType>(deviceAuthSessionsCollection, data);
 
-  const token = await mongoDBRepository.getById<TokenDbType>(tokensCollection, insertOneResult.insertedId.toString());
+  const session = await mongoDBRepository.getById<DeviceAuthSessionDbType>(
+    deviceAuthSessionsCollection,
+    insertOneResult.insertedId.toString()
+  );
 
-  if (token) {
-    return { status: ResultStatus.Success, data: { refreshToken: token?.refreshToken, accessToken } };
+  if (session) {
+    return { status: ResultStatus.Success, data: { refreshToken, accessToken } };
   } else {
     return { status: ResultStatus.NotFound, data: null };
   }

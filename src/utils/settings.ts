@@ -21,6 +21,7 @@ export const SETTINGS = {
       USERS: 'users',
       COMMENTS: 'comments',
       TOKENS: 'tokens',
+      DOCUMENTS: 'documents',
     },
   },
 };

@@ -5,6 +5,7 @@ import { jwtService } from './jwt-service';
 import { TokenDbType } from '../types/tokens-types';
 import { ACCESS_TOKEN_EXPIRES_IN, REFRESH_TOKEN_EXPIRES_IN } from '../utils/consts';
 import { ObjectId } from 'mongodb';
+import { getDateFromObjectId } from '../utils/dates/dates';
 
 export const updateTokenToUserService = async (userId: string, refreshToken: string) => {
   const newAccessToken = jwtService.generateToken({ userId }, { expiresIn: ACCESS_TOKEN_EXPIRES_IN });
@@ -34,7 +35,7 @@ export const updateTokenToUserService = async (userId: string, refreshToken: str
     refreshToken: newRefreshToken,
     userId,
     isExpired: false,
-    createdAt: objectId.getTimestamp().toISOString(),
+    createdAt: getDateFromObjectId(objectId),
     _id: objectId,
   };
 

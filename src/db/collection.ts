@@ -5,6 +5,7 @@ import { PostDbType } from '../types/post-types';
 import { UserDbType } from '../types/users-types';
 import { CommentDbType } from '../types/comments-types';
 import { TokenDbType } from '../types/tokens-types';
+import { DocumentDbType } from '../types/documents-types';
 
 let client: MongoClient;
 export let db: Db;
@@ -14,6 +15,7 @@ export let postsCollection: Collection<PostDbType>;
 export let usersCollection: Collection<UserDbType>;
 export let commentsCollection: Collection<CommentDbType>;
 export let tokensCollection: Collection<TokenDbType>;
+export let documentsCollection: Collection<DocumentDbType>;
 
 export const connectToDb = async (mongoUrl: string): Promise<boolean> => {
   try {
@@ -26,6 +28,7 @@ export const connectToDb = async (mongoUrl: string): Promise<boolean> => {
     usersCollection = db.collection<UserDbType>(SETTINGS.DB.COLLECTION.USERS);
     commentsCollection = db.collection<CommentDbType>(SETTINGS.DB.COLLECTION.COMMENTS);
     tokensCollection = db.collection<TokenDbType>(SETTINGS.DB.COLLECTION.TOKENS);
+    documentsCollection = db.collection<DocumentDbType>(SETTINGS.DB.COLLECTION.DOCUMENTS);
 
     await client.connect();
 

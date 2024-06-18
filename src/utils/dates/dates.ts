@@ -1,12 +1,21 @@
-import { add as addFns, compareAsc, parseISO } from 'date-fns';
+import { add as addFns, compareAsc, parseISO, subSeconds } from 'date-fns';
 import type { Duration } from 'date-fns/types';
+import { ObjectId } from 'mongodb';
 
 export function add(date: Date | number | string, duration: Duration) {
   return addFns(date, duration).toISOString();
 }
 
+export function subtractSeconds(date: Date | number | string, amount: number) {
+  return subSeconds(date, amount).toISOString();
+}
+
 export const getCurrentDate = () => {
   return new Date().toISOString();
+};
+
+export const getDateFromObjectId = (objectId: ObjectId) => {
+  return objectId.getTimestamp().toISOString();
 };
 
 export function isExpiredDate(expirationDate: string, currentDate: string): boolean {

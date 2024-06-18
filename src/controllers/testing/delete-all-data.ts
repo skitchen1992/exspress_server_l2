@@ -3,6 +3,7 @@ import { HTTP_STATUSES } from '../../utils/consts';
 import {
   blogsCollection,
   commentsCollection,
+  documentsCollection,
   postsCollection,
   tokensCollection,
   usersCollection,
@@ -15,6 +16,7 @@ export const deleteAllDataController = async (req: Request, res: Response) => {
     await usersCollection.deleteMany({});
     await commentsCollection.deleteMany({});
     await tokensCollection.deleteMany({});
+    await documentsCollection.deleteMany({});
 
     res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
   } catch (e) {

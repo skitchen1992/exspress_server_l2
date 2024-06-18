@@ -10,7 +10,7 @@ const startApp = async () => {
       console.log('Not connected to data base');
       process.exit(1);
     }
-
+    app.set('trust proxy', true);
     app.listen(SETTINGS.PORT, () => {
       console.log(`App listening on port ${SETTINGS.PORT}`);
     });

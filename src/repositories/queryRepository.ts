@@ -9,7 +9,13 @@ import {
   GetUserListSchema,
   GetUserSchema,
 } from '../models';
-import { blogsCollection, commentsCollection, postsCollection, usersCollection } from '../db/collection';
+import {
+  blogsCollection,
+  commentsCollection,
+  documentsCollection,
+  postsCollection,
+  usersCollection,
+} from '../db/collection';
 import { mapperRepository } from './mapperRepository';
 import { Result, ResultStatus } from '../types/common/result';
 import { GetPostsQuery, PostDbType } from '../types/post-types';
@@ -199,6 +205,16 @@ class QueryRepository {
         status: ResultStatus.Success,
       };
     }
+  }
+
+  public async getDocumentsCount(ip: string, url: string, date: string) {
+    const filters = {
+      ip,
+      url,
+      date: { $gte: date },
+    };
+
+    return await mongoDBRepository.getTotalCount(documentsCollection, filters);
   }
 }
 

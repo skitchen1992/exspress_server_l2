@@ -1,5 +1,5 @@
 import { GetQuerySettings, mongoDBRepository } from './db-repository';
-import { Collection } from 'mongodb';
+import { Collection, Filter } from 'mongodb';
 import { Document } from 'bson';
 import { mapIdField, mapIdFieldInArray } from '../utils/map';
 
@@ -21,13 +21,13 @@ class MapperRepository {
   ): Promise<{ entities: R[]; totalCount: number }> {
     const entitiesFromDB = await mongoDBRepository.get<T>(collection, settings);
 
-    const totalCount: number = await this.getTotalCount(collection, settings);
+    const totalCount: number = await this.getTotalCount(collection, settings.query);
 
     return { entities: mapIdFieldInArray(entitiesFromDB, fieldsToRemove), totalCount };
   }
 
-  async getTotalCount<T extends Document>(collection: Collection<T>, settings: GetQuerySettings): Promise<number> {
-    return await mongoDBRepository.getTotalCount(collection, settings.query);
+  async getTotalCount<T extends Document>(collection: Collection<T>, filters?: Filter<T>): Promise<number> {
+    return await mongoDBRepository.getTotalCount<T>(collection, filters);
   }
 }
 

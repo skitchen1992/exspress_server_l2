@@ -12,14 +12,13 @@ type Payload = {
   userId: string;
   ip: string;
   title: string;
-  deviceIdFromCookie?: string;
 };
 
 export const addTokenToUserService = async (payload: Payload) => {
-  const { userId, ip, title, deviceIdFromCookie } = payload;
+  const { userId, ip, title } = payload;
 
   const objectId = new ObjectId();
-  const deviceId = deviceIdFromCookie || getUniqueId();
+  const deviceId = getUniqueId();
 
   const accessToken = jwtService.generateToken({ userId }, { expiresIn: ACCESS_TOKEN_EXPIRES_IN });
 

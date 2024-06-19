@@ -8,6 +8,7 @@ import { usersRouter } from './routers/users-router';
 import { authRouter } from './routers/auth-router';
 import { commentsRouter } from './routers/coments-router';
 import CookieWrapper from './middlewares/cookie-middleware';
+import { securityRouter } from './routers/security-router';
 
 export const app = express();
 
@@ -32,3 +33,5 @@ app.use(PATH_URL.COMMENTS, commentsRouter);
 app.use(PATH_URL.TESTING.ROOT, testingRouter);
 
 app.use(PATH_URL.AUTH.ROOT, authRouter);
+
+app.use(PATH_URL.SECURITY.ROOT, securityRouter);

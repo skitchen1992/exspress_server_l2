@@ -42,6 +42,11 @@ export const PATH_URL = {
     REFRESH_TOKEN: '/refresh-token',
     LOGOUT: '/logout',
   },
+  SECURITY: {
+    ROOT: '/security',
+    DEVICES: '/devices',
+    DEVICE_ID: '/:deviceId',
+  },
 };
 
 export const COOKIE_KEY = {

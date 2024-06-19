@@ -4,6 +4,7 @@ import {
   GetBlogListSchema,
   GetBlogSchema,
   GetCommentListSchema,
+  GetDeviceSchema,
   GetPostListSchema,
   GetPostSchema,
   GetUserListSchema,
@@ -25,10 +26,11 @@ import { GetCommentSchema } from '../models/comments/GetCommentSchema';
 import { EmailConfirmationWithId, GetUsersQuery, IUserByEmail, UserDbType } from '../types/users-types';
 import { mongoDBRepository } from './db-repository';
 import { DeviceAuthSessionDbType } from '../types/device-auth-session-types';
+import { getCurrentDate } from '../utils/dates/dates';
 
 class QueryRepository {
   public async getBlogById(id: string) {
-    const blog = await mapperRepository.findEntityAndMapIdField<BlogDbType, GetBlogSchema>(blogsCollection, id);
+    const blog = await mapperRepository.getEntityAndMapIdField<BlogDbType, GetBlogSchema>(blogsCollection, id);
 
     return { data: blog, status: blog ? ResultStatus.Success : ResultStatus.NotFound };
   }
@@ -36,7 +38,7 @@ class QueryRepository {
   public async getBlogs(query: GetBlogsQuery): Promise<Result<GetBlogListSchema>> {
     const filters = searchQueryBuilder.getBlogs(query);
 
-    const { entities: blogList, totalCount } = await mapperRepository.findEntitiesAndMapIdFieldInArray<
+    const { entities: blogList, totalCount } = await mapperRepository.getEntitiesAndMapIdFieldInArray<
       BlogDbType,
       GetBlogSchema
     >(blogsCollection, filters);
@@ -53,14 +55,14 @@ class QueryRepository {
   }
 
   public async getPostById(id: string) {
-    const post = await mapperRepository.findEntityAndMapIdField<PostDbType, GetPostSchema>(postsCollection, id);
+    const post = await mapperRepository.getEntityAndMapIdField<PostDbType, GetPostSchema>(postsCollection, id);
     return { data: post, status: post ? ResultStatus.Success : ResultStatus.NotFound };
   }
 
   public async getPosts(query: GetPostsQuery, params?: { blogId: string }) {
     const filters = searchQueryBuilder.getPosts(query, params);
 
-    const { entities: postList, totalCount } = await mapperRepository.findEntitiesAndMapIdFieldInArray<
+    const { entities: postList, totalCount } = await mapperRepository.getEntitiesAndMapIdFieldInArray<
       PostDbType,
       GetPostSchema
     >(postsCollection, filters);
@@ -77,7 +79,7 @@ class QueryRepository {
   }
 
   public async getCommentById(id: string, fieldsToRemove: string[] = ['postId']) {
-    const comment = await mapperRepository.findEntityAndMapIdField<CommentDbType, GetCommentSchema>(
+    const comment = await mapperRepository.getEntityAndMapIdField<CommentDbType, GetCommentSchema>(
       commentsCollection,
       id,
       fieldsToRemove
@@ -92,7 +94,7 @@ class QueryRepository {
   ) {
     const filters = searchQueryBuilder.getComments(query, params);
 
-    const { entities: commentList, totalCount } = await mapperRepository.findEntitiesAndMapIdFieldInArray<
+    const { entities: commentList, totalCount } = await mapperRepository.getEntitiesAndMapIdFieldInArray<
       CommentDbType,
       GetCommentSchema
     >(commentsCollection, filters, fieldsToRemove);
@@ -109,7 +111,7 @@ class QueryRepository {
   }
 
   public async getUserById(id: string, fieldsToRemove: string[] = ['password', 'emailConfirmation']) {
-    const user = await mapperRepository.findEntityAndMapIdField<UserDbType, GetUserSchema>(
+    const user = await mapperRepository.getEntityAndMapIdField<UserDbType, GetUserSchema>(
       usersCollection,
       id,
       fieldsToRemove
@@ -167,7 +169,7 @@ class QueryRepository {
   public async getUsers(query: GetUsersQuery, fieldsToRemove: string[] = ['password', 'emailConfirmation']) {
     const filters = searchQueryBuilder.getUsers(query);
 
-    const { entities: userList, totalCount } = await mapperRepository.findEntitiesAndMapIdFieldInArray<
+    const { entities: userList, totalCount } = await mapperRepository.getEntitiesAndMapIdFieldInArray<
       UserDbType,
       GetUserSchema
     >(usersCollection, filters, fieldsToRemove);
@@ -202,6 +204,18 @@ class QueryRepository {
       data: deviceAuthSession,
       status: deviceAuthSession ? ResultStatus.Success : ResultStatus.NotFound,
     };
+  }
+
+  public async getDeviceList(deviceId: string) {
+    const filters = { deviceId, tokenExpirationDate: { $gt: getCurrentDate() } };
+
+    const data = await mapperRepository.findEntityList<DeviceAuthSessionDbType, GetDeviceSchema>(
+      deviceAuthSessionsCollection,
+      filters,
+      ['userId', 'tokenIssueDate', 'tokenExpirationDate', 'id']
+    );
+
+    return { data, status: ResultStatus.Success };
   }
 
   public async isExistsUser(login: string, email: string) {

@@ -6,7 +6,8 @@ import { hashBuilder } from '../../utils/helpers';
 import { queryRepository } from '../../repositories/queryRepository';
 import { ResultStatus } from '../../types/common/result';
 import { addTokenToUserService } from '../../services/add-token-to-user-service';
-import { deleteTokenToUserService } from '../../services/delete-token-to-user-service';
+import { jwtService } from '../../services/jwt-service';
+import { JwtPayload } from 'jsonwebtoken';
 
 export const authController = async (
   req: RequestWithBody<AuthUserSchema>,
@@ -44,11 +45,17 @@ export const authController = async (
 
     const refreshToken = req.getCookie(COOKIE_KEY.REFRESH_TOKEN);
 
-    const userAgentHeader = req.headers['user-agent'];
-
     if (refreshToken) {
-      await deleteTokenToUserService(refreshToken, userAgentHeader);
+      const { deviceId } = (jwtService.verifyToken(refreshToken) as JwtPayload) ?? {};
+
+      if (deviceId) {
+        res.sendStatus(HTTP_STATUSES.FORBIDDEN_403);
+
+        return;
+      }
     }
+
+    const userAgentHeader = req.headers['user-agent'];
 
     const { data, status: tokenStatus } = await addTokenToUserService({
       userId: user!._id.toString(),

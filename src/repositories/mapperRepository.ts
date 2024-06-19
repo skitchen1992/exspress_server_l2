@@ -4,7 +4,7 @@ import { Document } from 'bson';
 import { mapIdField, mapIdFieldInArray } from '../utils/map';
 
 class MapperRepository {
-  async findEntityAndMapIdField<T extends Document, R>(
+  async getEntityAndMapIdField<T extends Document, R>(
     collection: Collection<T>,
     id: string,
     fieldsToRemove?: string[]
@@ -14,7 +14,7 @@ class MapperRepository {
     return entity ? mapIdField(entity, fieldsToRemove) : null;
   }
 
-  async findEntitiesAndMapIdFieldInArray<T extends Document, R>(
+  async getEntitiesAndMapIdFieldInArray<T extends Document, R>(
     collection: Collection<T>,
     settings: GetQuerySettings,
     fieldsToRemove?: string[]
@@ -28,6 +28,18 @@ class MapperRepository {
 
   async getTotalCount<T extends Document>(collection: Collection<T>, filters?: Filter<T>): Promise<number> {
     return await mongoDBRepository.getTotalCount<T>(collection, filters);
+  }
+
+  async findEntityList<T extends Document, R>(
+    collection: Collection<T>,
+    settings: Filter<T>,
+    fieldsToRemove?: string[]
+  ): Promise<{ entities: R[]; totalCount: number }> {
+    const entitiesFromDB = await mongoDBRepository.find<T>(collection, settings);
+
+    const totalCount: number = await this.getTotalCount(collection, settings);
+
+    return { entities: mapIdFieldInArray(entitiesFromDB, fieldsToRemove), totalCount };
   }
 }
 

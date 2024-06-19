@@ -43,6 +43,10 @@ export class MongoDB extends DbRepository {
     return collection.find(query).sort(sort).skip(skip).limit(pageSize).toArray();
   }
 
+  public async find<T extends Document>(collection: Collection<T>, settings: Filter<T>): Promise<WithId<T>[]> {
+    return collection.find(settings).toArray();
+  }
+
   public async getById<T extends Document>(collection: Collection<T>, id: string): Promise<WithId<T> | null> {
     const filter = { _id: new ObjectId(id) } as Filter<T>;
 

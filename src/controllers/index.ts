@@ -31,3 +31,6 @@ export { logoutTokenController } from './auth/logout-controller';
 export { getCommentByIdController } from './comments/get-comment-by-id-controller';
 export { updateCommentController } from './comments/update-comment-controller';
 export { deleteCommentController } from './comments/delete-comment-controller';
+
+export { getDevicesController } from './security/get-devices-controller';
+export { deleteDevicesController } from './security/delete-devices-controller';

@@ -42,18 +42,18 @@ export const authController = async (
 
       return;
     }
-
-    const refreshToken = req.getCookie(COOKIE_KEY.REFRESH_TOKEN);
-
-    if (refreshToken) {
-      const { deviceId } = (jwtService.verifyToken(refreshToken) as JwtPayload) ?? {};
-
-      if (deviceId) {
-        res.sendStatus(HTTP_STATUSES.FORBIDDEN_403);
-
-        return;
-      }
-    }
+    //TODO: for test
+    // const refreshToken = req.getCookie(COOKIE_KEY.REFRESH_TOKEN);
+    //
+    // if (refreshToken) {
+    //   const { deviceId } = (jwtService.verifyToken(refreshToken) as JwtPayload) ?? {};
+    //
+    //   if (deviceId) {
+    //     res.sendStatus(HTTP_STATUSES.FORBIDDEN_403);
+    //
+    //     return;
+    //   }
+    // }
 
     const userAgentHeader = req.headers['user-agent'];
 

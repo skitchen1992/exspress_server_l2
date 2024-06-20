@@ -6,6 +6,11 @@ import { deleteDeviceService } from '../../services/delete-device-service';
 
 export const deleteDeviceController = async (req: RequestWithParams<{ deviceId: string }>, res: Response) => {
   try {
+    if (!req.params.deviceId) {
+      res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+      return;
+    }
+
     const refreshToken = req.getCookie(COOKIE_KEY.REFRESH_TOKEN);
 
     if (!refreshToken) {

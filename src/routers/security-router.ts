@@ -17,5 +17,12 @@ securityRouter.delete(
   PATH_URL.SECURITY.DEVICES,
   sanitizerQueryMiddleware(),
   errorHandlingMiddleware,
-  controllers.deleteDevicesController
+  controllers.deleteDeviceListController
+);
+
+securityRouter.delete(
+  PATH_URL.SECURITY.DEVICE_ID,
+  sanitizerQueryMiddleware(),
+  errorHandlingMiddleware,
+  controllers.deleteDeviceController
 );

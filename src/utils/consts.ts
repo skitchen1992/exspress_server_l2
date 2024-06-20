@@ -45,7 +45,7 @@ export const PATH_URL = {
   SECURITY: {
     ROOT: '/security',
     DEVICES: '/devices',
-    DEVICE_ID: '/:deviceId',
+    DEVICE_ID: '/devices/:deviceId',
   },
 };
 

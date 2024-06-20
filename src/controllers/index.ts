@@ -33,4 +33,5 @@ export { updateCommentController } from './comments/update-comment-controller';
 export { deleteCommentController } from './comments/delete-comment-controller';
 
 export { getDevicesController } from './security/get-devices-controller';
-export { deleteDevicesController } from './security/delete-devices-controller';
+export { deleteDeviceListController } from './security/delete-device-list-controller';
+export { deleteDeviceController } from './security/delete-device-controller';

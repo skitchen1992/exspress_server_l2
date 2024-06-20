@@ -1,11 +1,10 @@
 import { Response } from 'express';
 import { COOKIE_KEY, HTTP_STATUSES } from '../../utils/consts';
-import { GetDeviceSchema } from '../../models';
-import { RequestEmpty } from '../../types/request-types';
+import { RequestWithParams } from '../../types/request-types';
 import { ResultStatus } from '../../types/common/result';
-import { deleteDeviceListService } from '../../services/delete-device-list-service';
+import { deleteDeviceService } from '../../services/delete-device-service';
 
-export const deleteDevicesController = async (req: RequestEmpty, res: Response<GetDeviceSchema[]>) => {
+export const deleteDeviceController = async (req: RequestWithParams<{ deviceId: string }>, res: Response) => {
   try {
     const refreshToken = req.getCookie(COOKIE_KEY.REFRESH_TOKEN);
 
@@ -14,13 +13,24 @@ export const deleteDevicesController = async (req: RequestEmpty, res: Response<G
       return;
     }
 
-    const { status } = await deleteDeviceListService(refreshToken);
+    const { status } = await deleteDeviceService(refreshToken, req.params.deviceId);
 
     if (status === ResultStatus.Success) {
       res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
-    } else {
-      res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
+      return;
     }
+
+    if (status === ResultStatus.Unauthorized) {
+      res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
+      return;
+    }
+
+    if (status === ResultStatus.Forbidden) {
+      res.sendStatus(HTTP_STATUSES.FORBIDDEN_403);
+      return;
+    }
+
+    res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
   } catch (e) {
     console.log(e);
     res.sendStatus(HTTP_STATUSES.INTERNAL_SERVER_ERROR_500);

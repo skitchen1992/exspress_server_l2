@@ -22,7 +22,11 @@ class CookieWrapper {
         req.setCookie = (
           name: string,
           value: string,
-          options: CookieOptions = { httpOnly: true, secure: true, sameSite: 'none' }
+          options: CookieOptions = {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none',
+          }
         ) => {
           res.cookie(name, value, options);
         };

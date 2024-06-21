@@ -24,18 +24,20 @@ export const logoutService = async (refreshToken: string) => {
     return { status: ResultStatus.Unauthorized, data: null };
   }
 
-  const updateResult = await mongoDBRepository.update<DeviceAuthSessionDbType>(
-    deviceAuthSessionsCollection,
-    deviceAuthSession._id.toString(),
-    {
-      tokenExpirationDate: getCurrentDate(),
-      lastActiveDate: getCurrentDate(),
-    }
-  );
+  //TODO: временно скрыл
 
-  if (updateResult.modifiedCount === 1) {
-    return { status: ResultStatus.Success, data: null };
-  }
+  // const updateResult = await mongoDBRepository.update<DeviceAuthSessionDbType>(
+  //   deviceAuthSessionsCollection,
+  //   deviceAuthSession._id.toString(),
+  //   {
+  //     tokenExpirationDate: getCurrentDate(),
+  //     lastActiveDate: getCurrentDate(),
+  //   }
+  // );
+  //
+  // if (updateResult.modifiedCount === 1) {
+  //   return { status: ResultStatus.Success, data: null };
+  // }
 
   return { status: ResultStatus.Unauthorized, data: null };
 };

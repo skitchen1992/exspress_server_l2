@@ -8,8 +8,7 @@ import { queryRepository } from '../repositories/queryRepository';
 
 export const addVisitRecordService = async (ip: string, url: string) => {
   const totalCount: number = await queryRepository.getDocumentsCount(ip, url, subtractSeconds(new Date(), 10));
-
-  if (totalCount >= 4) {
+  if (totalCount >= 5) {
     return { status: ResultStatus.BagRequest, data: null };
   }
 

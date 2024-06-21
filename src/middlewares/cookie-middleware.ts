@@ -10,7 +10,7 @@ class CookieWrapper {
 
   public middleware(): RequestHandler {
     return (req: Request, res: Response, next: NextFunction) => {
-      this.parser(req, res, (err) => {
+      return this.parser(req, res, (err) => {
         if (err) {
           return next(err);
         }

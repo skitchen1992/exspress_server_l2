@@ -14,19 +14,19 @@ export const logoutService = async (refreshToken: string) => {
     return { status: ResultStatus.Unauthorized, data: null };
   }
   //
-  // const data = await mongoDBRepository.getByField<DeviceAuthSessionDbType>(
-  //   deviceAuthSessionsCollection,
-  //   ['deviceId'],
-  //   deviceId
-  // );
-  //
-  // if (!data?.tokenExpirationDate) {
-  //   return { status: ResultStatus.NotFound, data: null };
-  // }
-  //
-  // if (data.tokenExpirationDate !== fromUnixTimeToISO(exp)) {
-  //   return { status: ResultStatus.Unauthorized, data: null };
-  // }
+  const data = await mongoDBRepository.getByField<DeviceAuthSessionDbType>(
+    deviceAuthSessionsCollection,
+    ['deviceId'],
+    deviceId
+  );
+
+  if (!data?.tokenExpirationDate) {
+    return { status: ResultStatus.NotFound, data: null };
+  }
+
+  if (data.tokenExpirationDate !== fromUnixTimeToISO(exp)) {
+    return { status: ResultStatus.Unauthorized, data: null };
+  }
   //
   const { data: deviceAuthSession } = await queryRepository.getDeviceAuthSession(deviceId);
 

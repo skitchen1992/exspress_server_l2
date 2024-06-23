@@ -1,7 +1,6 @@
-import { add as addFns, compareAsc, formatISO, fromUnixTime, parseISO, subSeconds } from 'date-fns';
+import { add as addFns, compareAsc, fromUnixTime, parseISO, subSeconds } from 'date-fns';
 import type { Duration } from 'date-fns/types';
 import { ObjectId } from 'mongodb';
-import { FormatISOOptions } from 'date-fns/formatISO';
 
 export function add(date: Date | number | string, duration: Duration) {
   return addFns(date, duration).toISOString();

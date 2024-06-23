@@ -28,14 +28,7 @@ export const authController = async (
       });
       return;
     }
-    //
-    const { status: VisitRecordStatus } = await addVisitRecordService(req.ip!, req.baseUrl || req.originalUrl);
 
-    if (VisitRecordStatus === ResultStatus.BagRequest) {
-      res.sendStatus(HTTP_STATUSES.TOO_MANY_REQUESTS_429);
-      return;
-    }
-    //
     const isCorrectPass = await hashBuilder.compare(req.body.password, user!.password);
 
     if (!isCorrectPass) {

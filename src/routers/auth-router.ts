@@ -16,7 +16,7 @@ export const authRouter = Router();
 
 authRouter.post(
   PATH_URL.AUTH.LOGIN,
-  // guardVisitMiddleware,
+  guardVisitMiddleware,
   sanitizerQueryMiddleware(),
   checkExactMiddleware(validateAuthPostSchema),
   errorHandlingMiddleware<AuthUserSchema>,

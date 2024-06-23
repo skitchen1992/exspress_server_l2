@@ -7,7 +7,7 @@ import { ACCESS_TOKEN_EXPIRES_IN, REFRESH_TOKEN_EXPIRES_IN } from '../utils/cons
 import { fromUnixTimeToISO, getCurrentDate, isExpiredDate } from '../utils/dates/dates';
 import { queryRepository } from '../repositories/queryRepository';
 
-export const updateTokenToUserService = async (userId: string, deviceId: string, exp: number) => {
+export const refreshTokenService = async (userId: string, deviceId: string, exp: number) => {
   const data = await mongoDBRepository.getByField<DeviceAuthSessionDbType>(
     deviceAuthSessionsCollection,
     ['deviceId'],
@@ -21,7 +21,7 @@ export const updateTokenToUserService = async (userId: string, deviceId: string,
   if (data.tokenExpirationDate !== fromUnixTimeToISO(exp)) {
     return { status: ResultStatus.Unauthorized, data: null };
   }
-  //
+
   const newAccessToken = jwtService.generateToken({ userId }, { expiresIn: ACCESS_TOKEN_EXPIRES_IN });
   const newRefreshToken = jwtService.generateToken({ userId, deviceId }, { expiresIn: REFRESH_TOKEN_EXPIRES_IN });
 

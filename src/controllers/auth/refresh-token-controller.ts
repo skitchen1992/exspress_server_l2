@@ -4,9 +4,8 @@ import { AuthUserSchemaResponse, ResponseErrorSchema } from '../../models';
 import { RequestEmpty } from '../../types/request-types';
 import { jwtService } from '../../services/jwt-service';
 import { JwtPayload } from 'jsonwebtoken';
-import { updateTokenToUserService } from '../../services/update-token-to-user-service';
+import { refreshTokenService } from '../../services/refresh-token-service';
 import { ResultStatus } from '../../types/common/result';
-import { fromUnixTimeToISO } from '../../utils/dates/dates';
 
 export const refreshTokenController = async (
   req: RequestEmpty,
@@ -27,7 +26,7 @@ export const refreshTokenController = async (
       return;
     }
 
-    const { data, status } = await updateTokenToUserService(userId, deviceId, exp);
+    const { data, status } = await refreshTokenService(userId, deviceId, exp);
 
     if (status === ResultStatus.Success && data) {
       req.setCookie(COOKIE_KEY.REFRESH_TOKEN, data.refreshToken);

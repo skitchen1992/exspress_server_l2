@@ -39,5 +39,5 @@ export const logoutService = async (refreshToken: string) => {
   //   return { status: ResultStatus.Success, data: null };
   // }
 
-  return { status: ResultStatus.Unauthorized, data: null };
+  return { status: ResultStatus.Success, data: null };
 };

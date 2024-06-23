@@ -10,5 +10,6 @@ export const guardVisitMiddleware = async (req: Request, res: Response, next: Ne
     next();
   } else {
     res.sendStatus(HTTP_STATUSES.TOO_MANY_REQUESTS_429);
+    return;
   }
 };

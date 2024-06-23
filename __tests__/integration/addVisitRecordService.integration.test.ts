@@ -30,7 +30,7 @@ afterAll(async () => {
 
 describe('addVisitRecordService', () => {
   it(`Should get ${ResultStatus.BagRequest} if totalCount is greater than 5`, async () => {
-    await documentsCollection.insertMany(testSeeder.createDocumentsListDto(7));
+    await documentsCollection.insertMany(testSeeder.createDocumentsListDto(5));
 
     const result = await addVisitRecordService('1', 'url');
 

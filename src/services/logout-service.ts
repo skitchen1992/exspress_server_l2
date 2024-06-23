@@ -2,18 +2,32 @@ import { mongoDBRepository } from '../repositories/db-repository';
 import { deviceAuthSessionsCollection } from '../db/collection';
 import { ResultStatus } from '../types/common/result';
 import { DeviceAuthSessionDbType } from '../types/device-auth-session-types';
-import { getCurrentDate, isExpiredDate } from '../utils/dates/dates';
+import { fromUnixTimeToISO, getCurrentDate, isExpiredDate } from '../utils/dates/dates';
 import { jwtService } from './jwt-service';
 import { JwtPayload } from 'jsonwebtoken';
 import { queryRepository } from '../repositories/queryRepository';
 
 export const logoutService = async (refreshToken: string) => {
-  const { userId, deviceId } = (jwtService.verifyToken(refreshToken) as JwtPayload) ?? {};
+  const { userId, deviceId, exp } = (jwtService.verifyToken(refreshToken) as JwtPayload) ?? {};
 
-  if (!userId || !deviceId) {
+  if (!userId || !deviceId || !exp) {
     return { status: ResultStatus.Unauthorized, data: null };
   }
+  //
+  const data = await mongoDBRepository.getByField<DeviceAuthSessionDbType>(
+    deviceAuthSessionsCollection,
+    ['deviceId'],
+    deviceId
+  );
 
+  if (!data?.tokenExpirationDate) {
+    return { status: ResultStatus.NotFound, data: null };
+  }
+
+  if (data.tokenExpirationDate !== fromUnixTimeToISO(exp)) {
+    return { status: ResultStatus.Unauthorized, data: null };
+  }
+  //
   const { data: deviceAuthSession } = await queryRepository.getDeviceAuthSession(deviceId);
 
   if (!deviceAuthSession) {

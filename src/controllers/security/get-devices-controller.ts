@@ -11,6 +11,8 @@ export const getDevicesController = async (req: RequestEmpty, res: Response<GetD
   try {
     const refreshToken = req.getCookie(COOKIE_KEY.REFRESH_TOKEN);
 
+    debugger;
+
     if (!refreshToken) {
       res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
       return;

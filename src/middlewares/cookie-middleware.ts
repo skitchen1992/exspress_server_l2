@@ -24,7 +24,7 @@ class CookieWrapper {
           value: string,
           options: CookieOptions = {
             httpOnly: true,
-            secure: false,
+            secure: true,
             sameSite: 'none',
           }
         ) => {

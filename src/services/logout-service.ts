@@ -42,7 +42,7 @@ export const logoutService = async (refreshToken: string) => {
     deviceAuthSessionsCollection,
     deviceAuthSession._id.toString(),
     {
-      tokenExpirationDate: getCurrentDate(),
+      //tokenExpirationDate: getCurrentDate(),
       lastActiveDate: getCurrentDate(),
     }
   );

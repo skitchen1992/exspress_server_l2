@@ -1,6 +1,7 @@
-import { add as addFns, compareAsc, parseISO, subSeconds } from 'date-fns';
+import { add as addFns, compareAsc, formatISO, fromUnixTime, parseISO, subSeconds } from 'date-fns';
 import type { Duration } from 'date-fns/types';
 import { ObjectId } from 'mongodb';
+import { FormatISOOptions } from 'date-fns/formatISO';
 
 export function add(date: Date | number | string, duration: Duration) {
   return addFns(date, duration).toISOString();
@@ -12,6 +13,10 @@ export function subtractSeconds(date: Date | number | string, amount: number) {
 
 export const getCurrentDate = () => {
   return new Date().toISOString();
+};
+
+export const fromUnixTimeToISO = (value: number) => {
+  return fromUnixTime(value).toISOString();
 };
 
 export const getDateFromObjectId = (objectId: ObjectId) => {

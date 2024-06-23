@@ -206,8 +206,8 @@ class QueryRepository {
     };
   }
 
-  public async getDeviceList(deviceId: string) {
-    const filters = { deviceId, tokenExpirationDate: { $gt: getCurrentDate() } };
+  public async getDeviceList(userId: string) {
+    const filters = { userId, tokenExpirationDate: { $gt: getCurrentDate() } };
 
     const data = await mapperRepository.findEntityList<DeviceAuthSessionDbType, GetDeviceSchema>(
       deviceAuthSessionsCollection,

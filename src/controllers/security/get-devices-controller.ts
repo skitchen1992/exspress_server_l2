@@ -23,7 +23,7 @@ export const getDevicesController = async (req: RequestEmpty, res: Response<GetD
       return;
     }
 
-    const { data, status } = await queryRepository.getDeviceList(deviceId);
+    const { data, status } = await queryRepository.getDeviceList(userId);
 
     if (status === ResultStatus.Success) {
       res.status(HTTP_STATUSES.OK_200).json(data.entities);

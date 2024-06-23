@@ -6,6 +6,7 @@ import { jwtService } from '../../services/jwt-service';
 import { JwtPayload } from 'jsonwebtoken';
 import { updateTokenToUserService } from '../../services/update-token-to-user-service';
 import { ResultStatus } from '../../types/common/result';
+import { fromUnixTimeToISO } from '../../utils/dates/dates';
 
 export const refreshTokenController = async (
   req: RequestEmpty,
@@ -19,14 +20,14 @@ export const refreshTokenController = async (
       return;
     }
 
-    const { userId, deviceId } = (jwtService.verifyToken(refreshToken) as JwtPayload) ?? {};
+    const { userId, deviceId, exp } = (jwtService.verifyToken(refreshToken) as JwtPayload) ?? {};
 
-    if (!userId || !deviceId) {
+    if (!userId || !deviceId || !exp) {
       res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
       return;
     }
 
-    const { data, status } = await updateTokenToUserService(userId, deviceId);
+    const { data, status } = await updateTokenToUserService(userId, deviceId, exp);
 
     if (status === ResultStatus.Success && data) {
       req.setCookie(COOKIE_KEY.REFRESH_TOKEN, data.refreshToken);

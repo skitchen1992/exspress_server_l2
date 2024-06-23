@@ -13,7 +13,7 @@ export const logoutService = async (refreshToken: string) => {
   if (!userId || !deviceId || !exp) {
     return { status: ResultStatus.Unauthorized, data: null };
   }
-  //
+
   const data = await mongoDBRepository.getByField<DeviceAuthSessionDbType>(
     deviceAuthSessionsCollection,
     ['deviceId'],
@@ -27,7 +27,7 @@ export const logoutService = async (refreshToken: string) => {
   if (data.tokenExpirationDate !== fromUnixTimeToISO(exp)) {
     return { status: ResultStatus.Unauthorized, data: null };
   }
-  //
+
   const { data: deviceAuthSession } = await queryRepository.getDeviceAuthSession(deviceId);
 
   if (!deviceAuthSession) {
@@ -37,19 +37,6 @@ export const logoutService = async (refreshToken: string) => {
   if (isExpiredDate(deviceAuthSession.tokenExpirationDate, getCurrentDate())) {
     return { status: ResultStatus.Unauthorized, data: null };
   }
-
-  // const updateResult = await mongoDBRepository.update<DeviceAuthSessionDbType>(
-  //   deviceAuthSessionsCollection,
-  //   deviceAuthSession._id.toString(),
-  //   {
-  //     tokenExpirationDate: getCurrentDate(),
-  //     lastActiveDate: getCurrentDate(),
-  //   }
-  // );
-
-  // if (updateResult.modifiedCount === 1) {
-  //   return { status: ResultStatus.Success, data: null };
-  // }
 
   const deleteResult = await mongoDBRepository.delete<DeviceAuthSessionDbType>(
     deviceAuthSessionsCollection,

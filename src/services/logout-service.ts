@@ -14,19 +14,19 @@ export const logoutService = async (refreshToken: string) => {
     return { status: ResultStatus.Unauthorized, data: null };
   }
   //
-  const data = await mongoDBRepository.getByField<DeviceAuthSessionDbType>(
-    deviceAuthSessionsCollection,
-    ['deviceId'],
-    deviceId
-  );
-
-  if (!data?.tokenExpirationDate) {
-    return { status: ResultStatus.NotFound, data: null };
-  }
-
-  if (data.tokenExpirationDate !== fromUnixTimeToISO(exp)) {
-    return { status: ResultStatus.Unauthorized, data: null };
-  }
+  // const data = await mongoDBRepository.getByField<DeviceAuthSessionDbType>(
+  //   deviceAuthSessionsCollection,
+  //   ['deviceId'],
+  //   deviceId
+  // );
+  //
+  // if (!data?.tokenExpirationDate) {
+  //   return { status: ResultStatus.NotFound, data: null };
+  // }
+  //
+  // if (data.tokenExpirationDate !== fromUnixTimeToISO(exp)) {
+  //   return { status: ResultStatus.Unauthorized, data: null };
+  // }
   //
   const { data: deviceAuthSession } = await queryRepository.getDeviceAuthSession(deviceId);
 
@@ -38,20 +38,18 @@ export const logoutService = async (refreshToken: string) => {
     return { status: ResultStatus.Unauthorized, data: null };
   }
 
-  //TODO: временно скрыл
+  const updateResult = await mongoDBRepository.update<DeviceAuthSessionDbType>(
+    deviceAuthSessionsCollection,
+    deviceAuthSession._id.toString(),
+    {
+      tokenExpirationDate: getCurrentDate(),
+      lastActiveDate: getCurrentDate(),
+    }
+  );
 
-  // const updateResult = await mongoDBRepository.update<DeviceAuthSessionDbType>(
-  //   deviceAuthSessionsCollection,
-  //   deviceAuthSession._id.toString(),
-  //   {
-  //     tokenExpirationDate: getCurrentDate(),
-  //     lastActiveDate: getCurrentDate(),
-  //   }
-  // );
-  //
-  // if (updateResult.modifiedCount === 1) {
-  //   return { status: ResultStatus.Success, data: null };
-  // }
+  if (updateResult.modifiedCount === 1) {
+    return { status: ResultStatus.Success, data: null };
+  }
 
-  return { status: ResultStatus.Success, data: null };
+  return { status: ResultStatus.Unauthorized, data: null };
 };

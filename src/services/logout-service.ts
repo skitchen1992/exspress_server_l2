@@ -38,17 +38,26 @@ export const logoutService = async (refreshToken: string) => {
     return { status: ResultStatus.Unauthorized, data: null };
   }
 
-  const updateResult = await mongoDBRepository.update<DeviceAuthSessionDbType>(
+  // const updateResult = await mongoDBRepository.update<DeviceAuthSessionDbType>(
+  //   deviceAuthSessionsCollection,
+  //   deviceAuthSession._id.toString(),
+  //   {
+  //     tokenExpirationDate: getCurrentDate(),
+  //     lastActiveDate: getCurrentDate(),
+  //   }
+  // );
+
+  // if (updateResult.modifiedCount === 1) {
+  //   return { status: ResultStatus.Success, data: null };
+  // }
+
+  const deleteResult = await mongoDBRepository.delete<DeviceAuthSessionDbType>(
     deviceAuthSessionsCollection,
-    deviceAuthSession._id.toString(),
-    {
-      //tokenExpirationDate: getCurrentDate(),
-      lastActiveDate: getCurrentDate(),
-    }
+    deviceAuthSession._id.toString()
   );
 
-  if (updateResult.modifiedCount === 1) {
-    return { status: ResultStatus.Success, data: null };
+  if (deleteResult.deletedCount === 1) {
+    return { data: null, status: ResultStatus.Success };
   }
 
   return { status: ResultStatus.Unauthorized, data: null };

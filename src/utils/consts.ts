@@ -11,6 +11,7 @@ export const HTTP_STATUSES = {
   FORBIDDEN_403: 403,
   NOT_FOUND_404: 404,
   METHOD_NOT_ALLOWED_405: 405,
+  TOO_MANY_REQUESTS_429: 429,
   INTERNAL_SERVER_ERROR_500: 500,
   BAD_GATEWAY_502: 502,
   SERVICE_UNAVAILABLE_503: 503,
@@ -38,8 +39,22 @@ export const PATH_URL = {
     REGISTRATION: '/registration',
     REGISTRATION_CONFIRMATION: '/registration-confirmation',
     REGISTRATION_EMAIL_RESENDING: '/registration-email-resending',
+    REFRESH_TOKEN: '/refresh-token',
+    LOGOUT: '/logout',
+  },
+  SECURITY: {
+    ROOT: '/security',
+    DEVICES: '/devices',
+    DEVICE_ID: '/devices/:deviceId',
   },
 };
+
+export const COOKIE_KEY = {
+  REFRESH_TOKEN: 'refreshToken',
+};
+
+export const ACCESS_TOKEN_EXPIRED_IN = 10;
+export const REFRESH_TOKEN_EXPIRED_IN = 20;
 
 export const getBlogsQueryParams: (keyof Required<GetBlogsQuery>)[] = [
   'searchNameTerm',

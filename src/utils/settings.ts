@@ -20,6 +20,8 @@ export const SETTINGS = {
       POSTS: 'posts',
       USERS: 'users',
       COMMENTS: 'comments',
+      DEVICE_AUTH_SESSIONS: 'deviceAuthSessions',
+      DOCUMENTS: 'documents',
     },
   },
 };

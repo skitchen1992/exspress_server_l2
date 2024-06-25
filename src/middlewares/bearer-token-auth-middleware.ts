@@ -2,10 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { HTTP_STATUSES } from '../utils/consts';
 import { jwtService } from '../services/jwt-service';
 import { JwtPayload } from 'jsonwebtoken';
-import { UserDbType } from '../types/users-types';
-import { usersCollection } from '../db/collection';
-import { mapperRepository } from '../repositories/mapperRepository';
-import { GetUserSchema } from '../models';
+import { queryRepository } from '../repositories/queryRepository';
 
 export const bearerTokenAuthMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
@@ -24,9 +21,7 @@ export const bearerTokenAuthMiddleware = async (req: Request, res: Response, nex
     return;
   }
 
-  const user = await mapperRepository.findEntityAndMapIdField<UserDbType, GetUserSchema>(usersCollection, userId, [
-    'password',
-  ]);
+  const { data: user } = await queryRepository.getUserById(userId, ['password']);
 
   if (user) {
     res.locals.user = user;

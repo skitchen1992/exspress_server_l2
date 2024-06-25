@@ -18,3 +18,4 @@ export type { GetCommentListSchema } from './comments/GetCommentListSchema';
 export type { AuthUserInfoSchemaResponse } from './auth/AuthUserInfoSchemaResponse';
 export type { AuthUserSchema } from './auth/AuthUserSchema';
 export type { AuthUserSchemaResponse } from './auth/AuthUserSchemaResponse';
+export type { GetDeviceSchema } from './security/GetDeviceListSchema';

@@ -1,10 +1,9 @@
 import { mongoDBRepository } from '../repositories/db-repository';
 import { usersCollection } from '../db/collection';
 import { UserDbType } from '../types/users-types';
-import { hashBuilder } from '../utils/helpers';
+import { getUniqueId, hashBuilder } from '../utils/helpers';
 import { ResultStatus } from '../types/common/result';
 import { CreateUserWithConfirmationSchema } from '../models/auth/CreateUserWithConfirmationSchema';
-import { v4 as uuidv4 } from 'uuid';
 import { add, getCurrentDate } from '../utils/dates/dates';
 
 export const createUserWithConfirmationService = async (body: CreateUserWithConfirmationSchema) => {
@@ -17,7 +16,7 @@ export const createUserWithConfirmationService = async (body: CreateUserWithConf
     createdAt: getCurrentDate(),
     emailConfirmation: {
       isConfirmed: false,
-      confirmationCode: uuidv4(),
+      confirmationCode: getUniqueId(),
       expirationDate: add(new Date(), { hours: 1 }),
     },
   };

@@ -2,28 +2,35 @@ import { HTTP_STATUSES, PATH_URL } from '../../../src/utils/consts';
 import TestAgent from 'supertest/lib/agent';
 import { agent, Test } from 'supertest';
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import { connectToDb, usersCollection } from '../../../src/db/collection';
+import { connectToDb, db } from '../../../src/db/collection';
 import { app } from '../../../src/app';
 import { createAuthorizationHeader } from '../../test-helpers';
 import { SETTINGS } from '../../../src/utils/settings';
+import { testSeeder } from '../../test.seeder';
+import { createUserWithConfirmationService } from '../../../src/services/create-user-with-confirmation-service';
 
-describe(`Endpoint (POST) - ${PATH_URL.AUTH}`, () => {
-  let req: TestAgent<Test>;
-  let mongoServer: MongoMemoryServer;
+let req: TestAgent<Test>;
+let mongoServer: MongoMemoryServer;
 
-  beforeEach(async () => {
-    mongoServer = await MongoMemoryServer.create();
-    await connectToDb(mongoServer.getUri());
+beforeAll(async () => {
+  mongoServer = await MongoMemoryServer.create();
+  await connectToDb(mongoServer.getUri());
 
-    req = agent(app);
+  req = agent(app);
 
-    await usersCollection.deleteMany();
-  });
+  await db.dropDatabase();
+});
 
-  afterEach(async () => {
-    await usersCollection.deleteMany();
-  });
+beforeEach(async () => {
+  await db.dropDatabase();
+});
 
+afterAll(async () => {
+  await db.dropDatabase();
+  await mongoServer.stop();
+});
+
+describe(`Endpoint (POST) - ${PATH_URL.AUTH.LOGIN}`, () => {
   it(`Should get status ${HTTP_STATUSES.NO_CONTENT_204}`, async () => {
     await req
       .post(PATH_URL.USERS)
@@ -76,5 +83,42 @@ describe(`Endpoint (POST) - ${PATH_URL.AUTH}`, () => {
         email: 'example@example.com',
       })
       .expect(HTTP_STATUSES.BAD_REQUEST_400);
+  });
+});
+
+describe(`Endpoint (POST) - ${PATH_URL.AUTH.REGISTRATION}`, () => {
+  it(`Should get status ${HTTP_STATUSES.NO_CONTENT_204}`, async () => {
+    await req
+      .post(`${PATH_URL.AUTH.ROOT}${PATH_URL.AUTH.REGISTRATION}`)
+      .send({
+        login: 'login',
+        password: 'password',
+        email: 'example@example.com',
+      })
+      .expect(HTTP_STATUSES.NO_CONTENT_204);
+  });
+
+  it(`Should get status ${HTTP_STATUSES.BAD_REQUEST_400}`, async () => {
+    const data = testSeeder.createUserDto();
+
+    await createUserWithConfirmationService(data);
+
+    const res = await req
+      .post(`${PATH_URL.AUTH.ROOT}${PATH_URL.AUTH.REGISTRATION}`)
+      .send({
+        login: data.login,
+        password: data.password,
+        email: data.email,
+      })
+      .expect(HTTP_STATUSES.BAD_REQUEST_400);
+
+    expect(res.body).toEqual({
+      errorsMessages: [
+        {
+          message: 'Email or login already exist',
+          field: 'login',
+        },
+      ],
+    });
   });
 });

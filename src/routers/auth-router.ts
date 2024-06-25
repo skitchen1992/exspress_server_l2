@@ -10,15 +10,31 @@ import { AuthUserSchema } from '../models';
 import { validateAuthRegistrationSchema } from '../middlewares/auth/validate-schemas/validate-auth-registration-schema';
 import { validateAuthRegistrationConfirmationSchema } from '../middlewares/auth/validate-schemas/validate-auth-registration-confirmation-schema';
 import { validateAuthRegistrationResendingSchema } from '../middlewares/auth/validate-schemas/validate-auth-registration-resending-schema';
+import { guardVisitMiddleware } from '../middlewares/guard-visit-middleware';
 
 export const authRouter = Router();
 
 authRouter.post(
   PATH_URL.AUTH.LOGIN,
+  guardVisitMiddleware,
   sanitizerQueryMiddleware(),
   checkExactMiddleware(validateAuthPostSchema),
   errorHandlingMiddleware<AuthUserSchema>,
   controllers.authController
+);
+
+authRouter.post(
+  PATH_URL.AUTH.REFRESH_TOKEN,
+  sanitizerQueryMiddleware(),
+  errorHandlingMiddleware,
+  controllers.refreshTokenController
+);
+
+authRouter.post(
+  PATH_URL.AUTH.LOGOUT,
+  sanitizerQueryMiddleware(),
+  errorHandlingMiddleware,
+  controllers.logoutTokenController
 );
 
 authRouter.get(
@@ -31,6 +47,7 @@ authRouter.get(
 
 authRouter.post(
   PATH_URL.AUTH.REGISTRATION,
+  guardVisitMiddleware,
   sanitizerQueryMiddleware(),
   checkExactMiddleware(validateAuthRegistrationSchema),
   errorHandlingMiddleware,
@@ -39,6 +56,7 @@ authRouter.post(
 
 authRouter.post(
   PATH_URL.AUTH.REGISTRATION_CONFIRMATION,
+  guardVisitMiddleware,
   sanitizerQueryMiddleware(),
   checkExactMiddleware(validateAuthRegistrationConfirmationSchema),
   errorHandlingMiddleware,
@@ -47,6 +65,7 @@ authRouter.post(
 
 authRouter.post(
   PATH_URL.AUTH.REGISTRATION_EMAIL_RESENDING,
+  guardVisitMiddleware,
   sanitizerQueryMiddleware(),
   checkExactMiddleware(validateAuthRegistrationResendingSchema),
   errorHandlingMiddleware,

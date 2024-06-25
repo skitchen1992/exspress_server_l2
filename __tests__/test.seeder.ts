@@ -10,6 +10,16 @@ export const testSeeder = {
     };
   },
 
+  createUserListDto(count: number) {
+    return new Array(count).fill(null).map((item, index) => {
+      return {
+        login: `test${index}`,
+        email: `test${index}@gmail.com`,
+        password: `123456789${index}`,
+      };
+    });
+  },
+
   createDocumentsDto() {
     return {
       ip: '1',

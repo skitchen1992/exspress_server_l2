@@ -4,7 +4,7 @@ import { ResultStatus } from '../types/common/result';
 import { jwtService } from './jwt-service';
 import { DeviceAuthSessionDbType } from '../types/device-auth-session-types';
 import { ObjectId } from 'mongodb';
-import { ACCESS_TOKEN_EXPIRES_IN, REFRESH_TOKEN_EXPIRES_IN } from '../utils/consts';
+import { ACCESS_TOKEN_EXPIRED_IN, REFRESH_TOKEN_EXPIRED_IN } from '../utils/consts';
 import { getDateFromObjectId } from '../utils/dates/dates';
 import { getUniqueId } from '../utils/helpers';
 
@@ -20,9 +20,9 @@ export const addTokenToUserService = async (payload: Payload) => {
   const objectId = new ObjectId();
   const deviceId = getUniqueId();
 
-  const accessToken = jwtService.generateToken({ userId }, { expiresIn: ACCESS_TOKEN_EXPIRES_IN });
+  const accessToken = jwtService.generateToken({ userId }, { expiresIn: ACCESS_TOKEN_EXPIRED_IN });
 
-  const refreshToken = jwtService.generateToken({ userId, deviceId }, { expiresIn: REFRESH_TOKEN_EXPIRES_IN });
+  const refreshToken = jwtService.generateToken({ userId, deviceId }, { expiresIn: REFRESH_TOKEN_EXPIRED_IN });
 
   const data: DeviceAuthSessionDbType = {
     _id: objectId,

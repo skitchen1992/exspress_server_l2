@@ -53,8 +53,8 @@ export const COOKIE_KEY = {
   REFRESH_TOKEN: 'refreshToken',
 };
 
-export const ACCESS_TOKEN_EXPIRES_IN = 10;
-export const REFRESH_TOKEN_EXPIRES_IN = 20;
+export const ACCESS_TOKEN_EXPIRED_IN = 10;
+export const REFRESH_TOKEN_EXPIRED_IN = 20;
 
 export const getBlogsQueryParams: (keyof Required<GetBlogsQuery>)[] = [
   'searchNameTerm',

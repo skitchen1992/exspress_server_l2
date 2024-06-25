@@ -3,7 +3,7 @@ import { deviceAuthSessionsCollection } from '../db/collection';
 import { ResultStatus } from '../types/common/result';
 import { jwtService } from './jwt-service';
 import { DeviceAuthSessionDbType } from '../types/device-auth-session-types';
-import { ACCESS_TOKEN_EXPIRES_IN, REFRESH_TOKEN_EXPIRES_IN } from '../utils/consts';
+import { ACCESS_TOKEN_EXPIRED_IN, REFRESH_TOKEN_EXPIRED_IN } from '../utils/consts';
 import { fromUnixTimeToISO, getCurrentDate, isExpiredDate } from '../utils/dates/dates';
 import { queryRepository } from '../repositories/queryRepository';
 
@@ -22,8 +22,8 @@ export const refreshTokenService = async (userId: string, deviceId: string, exp:
     return { status: ResultStatus.Unauthorized, data: null };
   }
 
-  const newAccessToken = jwtService.generateToken({ userId }, { expiresIn: ACCESS_TOKEN_EXPIRES_IN });
-  const newRefreshToken = jwtService.generateToken({ userId, deviceId }, { expiresIn: REFRESH_TOKEN_EXPIRES_IN });
+  const newAccessToken = jwtService.generateToken({ userId }, { expiresIn: ACCESS_TOKEN_EXPIRED_IN });
+  const newRefreshToken = jwtService.generateToken({ userId, deviceId }, { expiresIn: REFRESH_TOKEN_EXPIRED_IN });
 
   const { data: deviceAuthSession } = await queryRepository.getDeviceAuthSession(deviceId);
 
